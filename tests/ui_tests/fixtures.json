@@ -576,6 +576,7 @@
 "test_msg_signmessage.py::test_signmessage_pagination[utf_nospace]": "9a36cae6e21029e403b4f30ec88fc6da92ac8643b2c63ad7da7b7bc57ecc106b",
 "test_msg_signmessage.py::test_signmessage_pagination[utf_text]": "4ac1d8e2491164d442b700ea65e430867d74a941ac0d0dc8d4f51f4494fd0bb0",
 "test_msg_signmessage.py::test_signmessage_pagination_trailing_newline": "3ecd60468981b8c59cae21ae1189ad42b9d69b87e86c17e51b40185e31a5c52d",
+"test_msg_signmessage.py::test_signmessage_path_warning": "c43661bf77b16b40aba29b63ce672599dc6ad1bc64b2214050b4241f714d01e3",
 "test_msg_signtx.py-test_attack_change_input_address": "5f230e46301f0af85b5c40944cae1a8e4d3fc576fb19d7b7374decb463c8be62",
 "test_msg_signtx.py-test_attack_change_outputs": "2e8e05aa366da0ce2990a2b8b76f13973af8eaa11ec0cb5591412a9a5ba48da4",
 "test_msg_signtx.py-test_attack_modify_change_address": "72b96c639ac76ecccbe5d710a1c84eba6711879c329952b18ffab385ca79bafd",
