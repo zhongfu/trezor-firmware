@@ -56,6 +56,8 @@
 #define TXSIZE_WITNESSPKHASH 22
 /* size of a p2wsh script (1 version, 1 push, 32 hash) */
 #define TXSIZE_WITNESSSCRIPT 34
+/* size of a p2tr script (1 version, 1 push, 32 hash) */
+#define TXSIZE_TAPROOT 34
 /* size of a p2pkh script (dup, hash, push, 20 pubkeyhash, equal, checksig) */
 #define TXSIZE_P2PKHASH 25
 /* size of a p2sh script (hash, push, 20 scripthash, equal) */
@@ -943,6 +945,8 @@ uint32_t tx_input_weight(const CoinInfo *coin, const TxInputType *txinput) {
     input_script_size += ser_length_size(input_script_size);
     weight += 4 * input_script_size;
   } else if (txinput->script_type == InputScriptType_SPENDWITNESS ||
+             // TODO: is the following line correct?
+             txinput->script_type == InputScriptType_SPENDTAPROOT ||
              txinput->script_type == InputScriptType_SPENDP2SHWITNESS) {
     if (txinput->script_type == InputScriptType_SPENDP2SHWITNESS) {
       weight += 4 * (2 + (txinput->has_multisig ? TXSIZE_WITNESSSCRIPT
@@ -964,6 +968,8 @@ uint32_t tx_output_weight(const CoinInfo *coin, const TxOutputType *txoutput) {
     if (txoutput->script_type == OutputScriptType_PAYTOWITNESS) {
       output_script_size =
           txoutput->has_multisig ? TXSIZE_WITNESSSCRIPT : TXSIZE_WITNESSPKHASH;
+    } else if (txoutput->script_type == OutputScriptType_PAYTOTAPROOT) {
+      output_script_size = TXSIZE_TAPROOT;
     } else if (txoutput->script_type == OutputScriptType_PAYTOP2SHWITNESS) {
       output_script_size = TXSIZE_P2SCRIPT;
     } else {
