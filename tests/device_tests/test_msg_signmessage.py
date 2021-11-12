@@ -364,6 +364,7 @@ def test_signmessage_path_warning(client):
                     code=messages.ButtonRequestType.UnknownDerivationPath
                 ),
                 message_filters.ButtonRequest(code=messages.ButtonRequestType.Other),
+                message_filters.ButtonRequest(code=messages.ButtonRequestType.Other),
                 messages.MessageSignature,
             ]
         )
