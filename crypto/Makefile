@@ -4,8 +4,14 @@ LD       ?= $(CC)
 
 SANFLAGS += -fsanitize=fuzzer
 
-CFLAGS   += $(SANFLAGS)
+CFLAGS   += $(SANFLAGS) \
+			-fsanitize-ignorelist=fuzzer/sanitizer_ignorelist.txt
 LDFLAGS  += $(SANFLAGS)
+
+# this works around clang optimization issues in relation with -fsanitize=undefined
+# TODO is there a better solution, for example by disabling a specific optimization technique?
+blake2b.o: OPTFLAGS += -O0
+blake2s.o: OPTFLAGS += -O0
 endif
 
 CC       ?= gcc
