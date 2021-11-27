@@ -61,6 +61,10 @@ ifeq ($(VALGRIND),1)
 CFLAGS += -DVALGRIND
 endif
 
+ifeq ($(VALGRIND),1)
+CFLAGS += -DVALGRIND
+endif
+
 CFLAGS += -I.
 CFLAGS += -I..
 CFLAGS += -DUSE_ETHEREUM=1
