@@ -4,6 +4,7 @@ LD       ?= $(CC)
 
 SANFLAGS += -fsanitize=fuzzer
 
+# TODO not all clang variants support -fsanitize-ignorelist
 CFLAGS   += $(SANFLAGS) \
 			-fsanitize-ignorelist=fuzzer/sanitizer_ignorelist.txt
 LDFLAGS  += $(SANFLAGS)
