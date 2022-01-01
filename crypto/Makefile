@@ -3,14 +3,16 @@ CC       ?= clang
 LD       ?= $(CC)
 
 SANFLAGS += -fsanitize=fuzzer
-
-# TODO not all clang variants support -fsanitize-ignorelist
-CFLAGS   += $(SANFLAGS) \
-			-fsanitize-ignorelist=fuzzer/sanitizer_ignorelist.txt
+CFLAGS   += $(SANFLAGS)
 LDFLAGS  += $(SANFLAGS)
 
-# this works around clang optimization issues in relation with -fsanitize=undefined
+# TODO gcc as well as older clang versions <= 12 do not support this feature
+$(info "info: using -fsanitize-ignorelist")
+CFLAGS   += -fsanitize-ignorelist=fuzzer/sanitizer_ignorelist.txt
+
 # TODO is there a better solution, for example by disabling a specific optimization technique?
+# there is a clang optimization issue in relation with the blake2 code at -fsanitize=undefined
+$(warning "warning: disable optimization on blake2 code as workaround")
 blake2b.o: OPTFLAGS += -O0
 blake2s.o: OPTFLAGS += -O0
 endif
@@ -56,6 +58,12 @@ ZKP_CFLAGS = \
 	-DENABLE_MODULE_EXTRAKEYS
 ZKP_PATH = ../vendor/secp256k1-zkp
 CFLAGS += -DSECP256K1_CONTEXT_SIZE=208
+
+# TODO remove this workaround once possible
+ifeq ($(CC),clang-14)
+$(warning "warning: suppress clang-14 compiler warning for secp256k1-zkp code")
+ZKP_CFLAGS += -Wno-bitwise-instead-of-logical
+endif
 
 VALGRIND ?= 1
 ifeq ($(VALGRIND),1)
