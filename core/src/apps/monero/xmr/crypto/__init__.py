@@ -23,7 +23,7 @@ random_bytes = random.bytes
 ct_equals = tcry.ct_equals
 
 
-def keccak_factory(data=None):
+def keccak_factory(data: bytes=None) -> sha3_256:
     return sha3_256(data=data, keccak=True)
 
 
@@ -39,7 +39,7 @@ def keccak_2hash(inp, buff=None):
     return buff
 
 
-def compute_hmac(key, msg):
+def compute_hmac(key: bytes, msg: bytes) -> bytes:
     digestmod = keccak_factory
     inner = digestmod()
     block_size = inner.block_size
@@ -310,7 +310,7 @@ def check_signature(data: bytes, c: Sc25519, r: Sc25519, pub: Ge25519) -> bool:
     return not sc_isnonzero(res)
 
 
-def xor8(buff: bytes, key: bytes) -> bytes:
+def xor8(buff: bytearray, key: bytes) -> bytes:
     for i in range(8):
         buff[i] ^= key[i]
     return buff

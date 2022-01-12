@@ -61,8 +61,8 @@ def _export_key_image(
     additional_tx_pub_key: Ge25519 | None,
     out_idx: int,
     test: bool = True,
-    sub_addr_major: int = None,
-    sub_addr_minor: int = None,
+    sub_addr_major: int | None = None,
+    sub_addr_minor: int | None = None,
 ) -> tuple[Ge25519, Sig]:
     """
     Generates key image for the TXO + signature for the key image
