@@ -6,8 +6,6 @@ else ifeq ($(ADDRESS_SANITIZER),1)
 SANFLAGS += -fsanitize=address
 endif
 
-export ASAN_OPTIONS=verify_asan_link_order=0
-
 CC       ?= gcc
 
 OPTFLAGS ?= -O3 -g
