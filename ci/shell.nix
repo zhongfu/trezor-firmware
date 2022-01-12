@@ -109,6 +109,8 @@ stdenvNoCC.mkDerivation ({
 
   # Used by rust bindgen
   LIBCLANG_PATH = "${llvmPackages.libclang.lib}/lib";
+  # Used by crypto test in ci/test.yml
+  LIBASAN_PATH = "${gcc-unwrapped.lib}/lib/libasan.so";
 
   # don't try to use stack protector for Apple Silicon (emulator) binaries
   # it's broken at the moment

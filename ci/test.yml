@@ -391,14 +391,14 @@ crypto test:
     - ./crypto/tests/aestst
     - ./crypto/tests/test_check
     - ./crypto/tests/test_openssl 1000
-    - nix-shell --run "ITERS=10 poetry run pytest --junitxml=crypto/tests/junit.xml crypto/tests | ts -s"
+    - nix-shell --run "cd crypto && ITERS=10 LD_PRELOAD=$LIBASAN_PATH poetry run pytest --junitxml=tests/junit.xml tests | ts -s"
     - nix-shell --run "CK_TIMEOUT_MULTIPLIER=20 valgrind -q --error-exitcode=1 ./crypto/tests/test_check | ts -s"
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_SHORT_SHA"
     paths:
-      - crypto/tests/junit.xml
+      - tests/junit.xml
     reports:
-      junit: crypto/tests/junit.xml
+      junit: tests/junit.xml
     expire_in: 1 week
     when: always
 
