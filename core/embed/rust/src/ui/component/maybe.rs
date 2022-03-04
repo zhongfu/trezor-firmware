@@ -73,7 +73,9 @@ where
     type Msg = T::Msg;
 
     fn place(&mut self, bounds: Rect) -> Rect {
-        self.inner.place(bounds)
+        let area = self.inner.place(bounds);
+        self.pad.place(area);
+        area
     }
 
     fn event(&mut self, ctx: &mut EventCtx, event: Event) -> Option<Self::Msg> {
