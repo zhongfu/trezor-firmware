@@ -190,10 +190,20 @@ mod tests {
     fn test_break_text() {
         assert_eq!(
             break_text("abcd ef", 24),
-            vec![Span {
-                text: "ab",
-                append: Appendix::Hyphen
-            }]
+            vec![
+                Span {
+                    text: "a",
+                    append: Appendix::Hyphen
+                },
+                Span {
+                    text: "bcd",
+                    append: Appendix::None
+                },
+                Span {
+                    text: "ef",
+                    append: Appendix::None
+                }
+            ]
         )
     }
 
