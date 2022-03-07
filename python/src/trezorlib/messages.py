@@ -253,6 +253,8 @@ class MessageType(IntEnum):
     WebAuthnCredentials = 801
     WebAuthnAddResidentCredential = 802
     WebAuthnRemoveResidentCredential = 803
+    HelloWorldRequest = 900
+    HelloWorldResponse = 901
 
 
 class FailureType(IntEnum):
@@ -4926,6 +4928,40 @@ class EthereumAccessList(protobuf.MessageType):
     ) -> None:
         self.storage_keys: Sequence["bytes"] = storage_keys if storage_keys is not None else []
         self.address = address
+
+
+class HelloWorldRequest(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 900
+    FIELDS = {
+        1: protobuf.Field("name", "string", repeated=False, required=True),
+        2: protobuf.Field("amount", "uint32", repeated=False, required=False),
+        3: protobuf.Field("show_display", "bool", repeated=False, required=False),
+    }
+
+    def __init__(
+        self,
+        *,
+        name: "str",
+        amount: Optional["int"] = 1,
+        show_display: Optional["bool"] = None,
+    ) -> None:
+        self.name = name
+        self.amount = amount
+        self.show_display = show_display
+
+
+class HelloWorldResponse(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 901
+    FIELDS = {
+        1: protobuf.Field("text", "string", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        text: "str",
+    ) -> None:
+        self.text = text
 
 
 class MoneroTransactionSourceEntry(protobuf.MessageType):

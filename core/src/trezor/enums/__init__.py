@@ -245,6 +245,8 @@ if TYPE_CHECKING:
         WebAuthnCredentials = 801
         WebAuthnAddResidentCredential = 802
         WebAuthnRemoveResidentCredential = 803
+        HelloWorldRequest = 900
+        HelloWorldResponse = 901
 
     class FailureType(IntEnum):
         UnexpectedMessage = 1

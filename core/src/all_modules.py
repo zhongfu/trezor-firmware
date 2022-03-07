@@ -382,6 +382,8 @@ apps.misc.get_ecdh_session_key
 import apps.misc.get_ecdh_session_key
 apps.misc.get_entropy
 import apps.misc.get_entropy
+apps.misc.hello_world
+import apps.misc.hello_world
 apps.misc.sign_identity
 import apps.misc.sign_identity
 apps.workflow_handlers
