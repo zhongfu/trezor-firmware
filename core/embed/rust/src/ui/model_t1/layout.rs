@@ -92,7 +92,11 @@ mod tests {
     use crate::{
         error::Error,
         trace::Trace,
-        ui::model_t1::component::{Dialog, DialogMsg},
+        ui::{
+            component::Component,
+            display,
+            model_t1::component::{Dialog, DialogMsg},
+        },
     };
 
     use super::*;
@@ -121,7 +125,7 @@ mod tests {
 
     #[test]
     fn trace_example_layout() {
-        let layout = Dialog::new(
+        let mut layout = Dialog::new(
             FormattedText::new::<theme::T1DefaultText>(
                 "Testing text layout, with some text, and some more text. And {param}",
             )
@@ -137,6 +141,7 @@ mod tests {
                 theme::button_default(),
             )),
         );
+        layout.place(display::screen());
         assert_eq!(
             trace(&layout),
             r#"<Dialog content:<Text content:Testing text layout,
@@ -148,7 +153,7 @@ arameters! > left:<Button text:Left > right:<Button text:Right > >"#
 
     #[test]
     fn trace_layout_title() {
-        let layout = Frame::new(
+        let mut layout = Frame::new(
             "Please confirm",
             Dialog::new(
                 FormattedText::new::<theme::T1DefaultText>(
@@ -167,6 +172,7 @@ arameters! > left:<Button text:Left > right:<Button text:Right > >"#
                 )),
             ),
         );
+        layout.place(display::screen());
         assert_eq!(
             trace(&layout),
             r#"<Frame title:Please confirm content:<Dialog content:<Text content:Testing text layout,

@@ -54,8 +54,10 @@ where
         let (content_area, button_area) = bounds.split_bottom(button_height);
         let (content_area, scrollbar_area) = content_area.split_right(ScrollBar::WIDTH);
         let content_area = content_area.inset(Insets::top(1));
-        self.pad.place(content_area);
+        self.pad.place(bounds);
         self.content.place(content_area);
+        let page_count = self.content.page_count();
+        self.scrollbar.set_count_and_active_page(page_count, 0);
         self.scrollbar.place(scrollbar_area);
         self.prev.place(button_area);
         self.next.place(button_area);

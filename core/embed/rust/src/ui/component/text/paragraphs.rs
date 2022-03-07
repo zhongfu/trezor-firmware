@@ -1,4 +1,3 @@
-use core::ops::{Range, RangeFrom};
 use heapless::Vec;
 
 use crate::ui::{
@@ -7,7 +6,7 @@ use crate::ui::{
     geometry::{Dimensions, Insets, LinearPlacement, Rect},
 };
 
-use super::layout::{DefaultTextTheme, LayoutFit, TextLayout, TextNoOp, TextRenderer};
+use super::layout::{DefaultTextTheme, LayoutFit, TextLayout};
 
 pub const MAX_PARAGRAPHS: usize = 6;
 /// Maximum space between paragraphs. Actual result may be smaller (even 0) if

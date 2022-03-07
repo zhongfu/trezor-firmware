@@ -75,6 +75,7 @@ where
 
     fn place(&mut self, bounds: Rect) -> Rect {
         let layout = PageLayout::new(bounds);
+        self.pad.place(bounds);
         self.swipe.place(bounds);
         self.buttons.place(layout.buttons);
         self.scrollbar.place(layout.scrollbar);
