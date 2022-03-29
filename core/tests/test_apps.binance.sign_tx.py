@@ -5,7 +5,7 @@ from trezor.crypto.hashlib import sha256
 
 if not utils.BITCOIN_ONLY:
     from apps.binance.helpers import produce_json_for_signing
-    from apps.binance.sign_tx import generate_content_signature, sign_tx
+    from apps.binance.sign_tx import generate_content_signature
     from trezor.messages import BinanceCancelMsg
     from trezor.messages import BinanceCoin
     from trezor.messages import BinanceInputOutput

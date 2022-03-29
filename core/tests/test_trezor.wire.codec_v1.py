@@ -1,5 +1,4 @@
 from common import *
-from ubinascii import unhexlify
 import ustruct
 
 from trezor import io

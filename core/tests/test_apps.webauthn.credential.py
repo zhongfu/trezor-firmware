@@ -4,7 +4,6 @@ import storage.device
 from apps.common import mnemonic
 from apps.webauthn.credential import Fido2Credential, U2fCredential, NAME_MAX_LENGTH
 from apps.webauthn.fido2 import distinguishable_cred_list
-from trezor.crypto.curve import nist256p1
 from trezor.crypto.hashlib import sha256
 
 

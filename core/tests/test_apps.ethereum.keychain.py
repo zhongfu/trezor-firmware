@@ -13,7 +13,6 @@ if not utils.BITCOIN_ONLY:
         with_keychain_from_path,
         with_keychain_from_chain_id,
     )
-    from apps.ethereum.networks import by_chain_id, by_slip44
 
     from trezor.messages import EthereumGetAddress
     from trezor.messages import EthereumSignTx

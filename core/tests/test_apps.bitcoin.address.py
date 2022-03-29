@@ -4,7 +4,6 @@ from trezor.messages import GetAddress
 from trezor.utils import HashWriter
 
 from apps.common import coins
-from apps.bitcoin import scripts
 from apps.bitcoin.addresses import *
 from apps.bitcoin.keychain import validate_path_against_script_type
 from apps.bitcoin.writers import *

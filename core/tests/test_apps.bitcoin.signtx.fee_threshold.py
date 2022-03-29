@@ -1,7 +1,7 @@
 from common import *
 
 from trezor.utils import chunks
-from trezor.crypto import bip32, bip39
+from trezor.crypto import bip39
 from trezor.messages import SignTx
 from trezor.messages import TxAckInput
 from trezor.messages import TxAckInputWrapper
