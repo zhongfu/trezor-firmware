@@ -4,7 +4,6 @@ from trezor.ui import display
 
 
 class TestDisplay(unittest.TestCase):
-
     def test_clear(self):
         display.clear()
 
@@ -24,10 +23,10 @@ class TestDisplay(unittest.TestCase):
         pass
 
     def test_text(self):
-        display.text(120, 120, 'Test', 0, 0xFFFF, 0x0000)
-        display.text(120, 120, 'Test', 0, 0xFFFF, 0x0000, 2)
-        display.text(120, 120, 'Test', 0, 0xFFFF, 0x0000, 2, 1)
-        display.text(120, 120, 'Těst', 0, 0xFFFF, 0x0000, 2, 2)
+        display.text(120, 120, "Test", 0, 0xFFFF, 0x0000)
+        display.text(120, 120, "Test", 0, 0xFFFF, 0x0000, 2)
+        display.text(120, 120, "Test", 0, 0xFFFF, 0x0000, 2, 1)
+        display.text(120, 120, "Těst", 0, 0xFFFF, 0x0000, 2, 2)
 
         display.text(120, 120, "ǑǑǑǑǑǑǑǑ", 0, 0xFFFF, 0x0000)
         for off in (0, 2, 3, 8, 16):
@@ -38,16 +37,16 @@ class TestDisplay(unittest.TestCase):
             display.text(120, 120, "ǑǑǑǑǑǑǑǑ", 0, 0xFFFF, 0x0000, off, tlen)
 
     def test_text_center(self):
-        display.text_center(120, 120, 'Test', 0, 0xFFFF, 0x0000)
+        display.text_center(120, 120, "Test", 0, 0xFFFF, 0x0000)
 
     def test_text_right(self):
-        display.text_right(120, 120, 'Test', 0, 0xFFFF, 0x0000)
+        display.text_right(120, 120, "Test", 0, 0xFFFF, 0x0000)
 
     def test_text_width(self):
-        display.text_width('Test', 0)
-        display.text_width('Test', 0, 2)
-        display.text_width('Test', 0, 2, 1)
-        display.text_width('Těst', 0, 2, 2)
+        display.text_width("Test", 0)
+        display.text_width("Test", 0, 2)
+        display.text_width("Test", 0, 2, 1)
+        display.text_width("Těst", 0, 2, 2)
 
         display.text_width("ǑǑǑǑǑǑǑǑ", 0)
         for off in (0, 2, 3, 8, 16):
@@ -65,7 +64,7 @@ class TestDisplay(unittest.TestCase):
         self.assertEqual(display.text_width("ǑǑǑǑǑǑǑǑ", 15, 1), 0)
 
     def test_qrcode(self):
-        display.qrcode(0, 0, 'Test', 4)
+        display.qrcode(0, 0, "Test", 4)
 
     def test_loader(self):
         display.loader(333, False, 0, 0xFFFF, 0x0000)
@@ -93,5 +92,5 @@ class TestDisplay(unittest.TestCase):
         pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -21,16 +21,15 @@ from apps.bitcoin import writers
 
 
 class TestApprover(unittest.TestCase):
-
     def setUp(self):
-        self.coin = coins.by_name('Bitcoin')
+        self.coin = coins.by_name("Bitcoin")
         self.max_fee_rate_percent = 0.3
         self.coordinator_name = "www.example.com"
 
         self.msg_auth = AuthorizeCoinJoin(
             coordinator=self.coordinator_name,
             max_rounds=10,
-            max_coordinator_fee_rate=int(self.max_fee_rate_percent * 10**8),
+            max_coordinator_fee_rate=int(self.max_fee_rate_percent * 10 ** 8),
             max_fee_per_kvbyte=7000,
             address_n=[H_(84), H_(0), H_(0)],
             coin_name=self.coin.coin_name,
@@ -51,31 +50,34 @@ class TestApprover(unittest.TestCase):
                 amount=denomination,
                 script_pubkey=bytes(22),
                 script_type=InputScriptType.EXTERNAL,
-                sequence=0xffffffff,
+                sequence=0xFFFFFFFF,
                 witness="",
-            ) for i in range(99)
+            )
+            for i in range(99)
         ]
 
         # Our input.
-        inputs.insert(30,
+        inputs.insert(
+            30,
             TxInput(
                 prev_hash=b"",
                 prev_index=0,
                 address_n=[H_(84), H_(0), H_(0), 0, 1],
                 amount=denomination,
                 script_type=InputScriptType.SPENDWITNESS,
-                sequence=0xffffffff,
-            )
+                sequence=0xFFFFFFFF,
+            ),
         )
 
         # Other's CoinJoined outputs.
         outputs = [
             TxOutput(
                 address="",
-                amount=denomination-fees,
+                amount=denomination - fees,
                 script_type=OutputScriptType.PAYTOWITNESS,
                 payment_req_index=0,
-            ) for i in range(99)
+            )
+            for i in range(99)
         ]
 
         # Our CoinJoined output.
@@ -84,10 +86,10 @@ class TestApprover(unittest.TestCase):
             TxOutput(
                 address="",
                 address_n=[H_(84), H_(0), H_(0), 0, 2],
-                amount=denomination-fees,
+                amount=denomination - fees,
                 script_type=OutputScriptType.PAYTOWITNESS,
                 payment_req_index=0,
-            )
+            ),
         )
 
         # Coordinator's output.
@@ -101,13 +103,18 @@ class TestApprover(unittest.TestCase):
         )
 
         authorization = CoinJoinAuthorization(self.msg_auth)
-        tx = SignTx(outputs_count=len(outputs), inputs_count=len(inputs), coin_name=self.coin.coin_name, lock_time=0)
+        tx = SignTx(
+            outputs_count=len(outputs),
+            inputs_count=len(inputs),
+            coin_name=self.coin.coin_name,
+            lock_time=0,
+        )
         approver = CoinJoinApprover(tx, self.coin, authorization)
         signer = Bitcoin(tx, None, self.coin, approver)
 
         # Compute payment request signature.
         # Private key of m/0h for "all all ... all" seed.
-        private_key = b'?S\ti\x8b\xc5o{,\xab\x03\x194\xea\xa8[_:\xeb\xdf\xce\xef\xe50\xf17D\x98`\xb9dj'
+        private_key = b"?S\ti\x8b\xc5o{,\xab\x03\x194\xea\xa8[_:\xeb\xdf\xce\xef\xe50\xf17D\x98`\xb9dj"
         h_pr = HashWriter(sha256())
         writers.write_bytes_fixed(h_pr, b"SL\x00\x24", 4)
         writers.write_bytes_prefixed(h_pr, b"")  # Empty nonce.
@@ -143,7 +150,12 @@ class TestApprover(unittest.TestCase):
 
     def test_coinjoin_input_account_depth_mismatch(self):
         authorization = CoinJoinAuthorization(self.msg_auth)
-        tx = SignTx(outputs_count=201, inputs_count=100, coin_name=self.coin.coin_name, lock_time=0)
+        tx = SignTx(
+            outputs_count=201,
+            inputs_count=100,
+            coin_name=self.coin.coin_name,
+            lock_time=0,
+        )
         approver = CoinJoinApprover(tx, self.coin, authorization)
 
         txi = TxInput(
@@ -151,7 +163,7 @@ class TestApprover(unittest.TestCase):
             prev_index=0,
             address_n=[H_(49), H_(0), H_(0), 0],
             amount=10000000,
-            script_type=InputScriptType.SPENDWITNESS
+            script_type=InputScriptType.SPENDWITNESS,
         )
 
         with self.assertRaises(wire.ProcessError):
@@ -159,7 +171,12 @@ class TestApprover(unittest.TestCase):
 
     def test_coinjoin_input_account_path_mismatch(self):
         authorization = CoinJoinAuthorization(self.msg_auth)
-        tx = SignTx(outputs_count=201, inputs_count=100, coin_name=self.coin.coin_name, lock_time=0)
+        tx = SignTx(
+            outputs_count=201,
+            inputs_count=100,
+            coin_name=self.coin.coin_name,
+            lock_time=0,
+        )
         approver = CoinJoinApprover(tx, self.coin, authorization)
 
         txi = TxInput(
@@ -167,12 +184,12 @@ class TestApprover(unittest.TestCase):
             prev_index=0,
             address_n=[H_(49), H_(0), H_(0), 0, 2],
             amount=10000000,
-            script_type=InputScriptType.SPENDWITNESS
+            script_type=InputScriptType.SPENDWITNESS,
         )
 
         with self.assertRaises(wire.ProcessError):
             await_result(approver.add_internal_input(txi))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

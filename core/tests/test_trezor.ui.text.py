@@ -122,7 +122,6 @@ class TestTextSpan(unittest.TestCase):
         self.assertFalse(span.next_line())
         self.assertEqual("world", span.string[span.start : span.start + span.length])
 
-
     def test_has_more_content_trailing_newline(self):
         span = text.Span("1\n2\n3\n")
 

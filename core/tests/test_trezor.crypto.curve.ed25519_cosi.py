@@ -5,7 +5,6 @@ from trezor.crypto.curve import ed25519
 
 
 class TestCryptoEd25519Cosi(unittest.TestCase):
-
     def test_cosi(self):
 
         for N in range(1, 11):
@@ -43,5 +42,5 @@ class TestCryptoEd25519Cosi(unittest.TestCase):
             self.assertTrue(res)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -17,7 +17,6 @@ def get_mosaic(namespace: str, quantity: int, mosaic: str) -> NEMMosaic:
 
 @unittest.skipUnless(not utils.BITCOIN_ONLY, "altcoin")
 class TestNemMosaic(unittest.TestCase):
-
     def test_get_mosaic_definition(self):
         m = get_mosaic_definition("nem", "xem", 104)
         self.assertEqual(m.name, "NEM")

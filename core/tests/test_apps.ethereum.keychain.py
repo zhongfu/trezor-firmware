@@ -39,11 +39,19 @@ class TestEthereumKeychain(unittest.TestCase):
             [0 | HARDENED, slip44_id | HARDENED, 0 | HARDENED],
             [44 | HARDENED, slip44_id | HARDENED, 0 | HARDENED, 0],
             [44 | HARDENED, slip44_id | HARDENED, 0 | HARDENED, 0 | HARDENED, 0],
-            [44 | HARDENED, slip44_id | HARDENED, 0 | HARDENED, 0 | HARDENED, 0 | HARDENED],
+            [
+                44 | HARDENED,
+                slip44_id | HARDENED,
+                0 | HARDENED,
+                0 | HARDENED,
+                0 | HARDENED,
+            ],
         )
         for addr in invalid_addresses:
             self.assertRaises(
-                wire.DataError, keychain.derive, addr,
+                wire.DataError,
+                keychain.derive,
+                addr,
             )
 
     def setUp(self):
@@ -62,7 +70,11 @@ class TestEthereumKeychain(unittest.TestCase):
 
     def test_from_address_n_unknown(self):
         # try Bitcoin slip44 id m/44'/0'/0'
-        schemas = tuple(_schemas_from_address_n(PATTERNS_ADDRESS, [44 | HARDENED, 0 | HARDENED, 0 | HARDENED]))
+        schemas = tuple(
+            _schemas_from_address_n(
+                PATTERNS_ADDRESS, [44 | HARDENED, 0 | HARDENED, 0 | HARDENED]
+            )
+        )
         self.assertEqual(schemas, ())
 
     def test_bad_address_n(self):

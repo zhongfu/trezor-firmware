@@ -4,7 +4,6 @@ from trezor import strings
 
 
 class TestStrings(unittest.TestCase):
-
     def test_format_amount(self):
         VECTORS = [
             (123456, 3, "123.456"),
@@ -151,5 +150,5 @@ class TestStrings(unittest.TestCase):
         strings.format_timestamp(1616057224)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
