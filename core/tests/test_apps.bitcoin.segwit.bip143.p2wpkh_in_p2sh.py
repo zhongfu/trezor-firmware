@@ -54,7 +54,6 @@ class TestSegwitBip143(unittest.TestCase):
         self.assertEqual(hexlify(sequence_hash), b'18606b350cd8bf565266bc352f0caddcf01e8fa789dd8a15386327cf8cabe198')
 
     def test_bip143_outputs(self):
-        seed = bip39.seed('alcohol woman abuse must during monitor noble actual mixed trade anger aisle', '')
         coin = coins.by_name(self.tx.coin_name)
         sig_hasher = BitcoinSigHasher()
 
