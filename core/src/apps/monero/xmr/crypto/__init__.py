@@ -139,11 +139,8 @@ sc_get64 = tcry.get256_modm
 sc_check = tcry.check256_modm
 check_sc = tcry.check256_modm
 
-sc_add = tcry.add256_modm
 sc_add_into = tcry.add256_modm
-sc_sub = tcry.sub256_modm
 sc_sub_into = tcry.sub256_modm
-sc_mul = tcry.mul256_modm
 sc_mul_into = tcry.mul256_modm
 
 
@@ -307,7 +304,7 @@ def check_signature(data: bytes, c: Sc25519, r: Sc25519, pub: Ge25519) -> bool:
     tmp2 = point_add(scalarmult(pub, c), scalarmult_base(r))
     buff = data + encodepoint(pub) + encodepoint(tmp2)
     tmp_c = hash_to_scalar(buff)
-    res = sc_sub(tmp_c, c)
+    res = sc_sub_into(None, tmp_c, c)
     return not sc_isnonzero(res)
 
 

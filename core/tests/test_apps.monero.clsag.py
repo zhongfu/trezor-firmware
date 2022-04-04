@@ -82,7 +82,7 @@ class TestMoneroClsag(unittest.TestCase):
             chasher.update(crypto.encodepoint_into(tmp_bf, R))
             crypto.decodeint_into(c, chasher.digest())
             i += 1
-        res = crypto.sc_sub(c, sc1)
+        res = crypto.sc_sub_into(None, c, sc1)
         if not crypto.sc_eq(res, crypto.sc_0()):
             raise ValueError("Signature error")
 
@@ -121,7 +121,7 @@ class TestMoneroClsag(unittest.TestCase):
         )
         self.assertTrue(
             crypto.point_eq(
-                crypto.scalarmult_base(crypto.sc_sub(msk, alpha)),
+                crypto.scalarmult_base(crypto.sc_sub_into(None, msk, alpha)),
                 crypto.point_sub(crypto.decodepoint(ring[index].commitment), Cp),
             )
         )

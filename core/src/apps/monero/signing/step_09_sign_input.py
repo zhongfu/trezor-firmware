@@ -97,7 +97,7 @@ async def sign_input(
     if input_position + 1 == state.input_count:
         # Recompute the lash alpha so the sum holds
         state.mem_trace("Correcting alpha")
-        alpha_diff = crypto.sc_sub(state.sumout, state.sumpouts_alphas)
+        alpha_diff = crypto.sc_sub_into(None, state.sumout, state.sumpouts_alphas)
         crypto.sc_add_into(pseudo_out_alpha, pseudo_out_alpha, alpha_diff)
         pseudo_out_c = crypto.gen_commitment_into(None, pseudo_out_alpha, state.input_last_amount)
 

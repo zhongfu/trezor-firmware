@@ -25,7 +25,7 @@ def compute_tx_key(
 ) -> bytes:
     from apps.monero.xmr import crypto
 
-    rand_inp = crypto.sc_add(spend_key_private, rand_mult_num)
+    rand_inp = crypto.sc_add_into(None, spend_key_private, rand_mult_num)
     passwd = crypto.keccak_2hash(crypto.encodeint(rand_inp) + tx_prefix_hash)
     tx_key = crypto.compute_hmac(salt, passwd)
     return tx_key

@@ -92,7 +92,7 @@ def generate_mlsag_simple(
     M = _key_matrix(rows, cols)
 
     sk[0] = in_sk.dest
-    sk[1] = crypto.sc_sub(in_sk.mask, a)
+    sk[1] = crypto.sc_sub_into(None, in_sk.mask, a)
     tmp_pt = crypto.new_point()
 
     for i in range(cols):
@@ -326,7 +326,7 @@ def generate_clsag_simple(
     P = _key_vector(cols)
     C_nonzero = _key_vector(cols)
     p = in_sk.dest
-    z = crypto.sc_sub(in_sk.mask, a)
+    z = crypto.sc_sub_into(None, in_sk.mask, a)
 
     for i in range(cols):
         P[i] = pubs[i].dest

@@ -139,7 +139,7 @@ def _gen_commitment(state: State, in_amount: int) -> tuple[Sc25519, Ge25519]:
     Returns pseudo_out
     """
     alpha = crypto.random_scalar()
-    state.sumpouts_alphas = crypto.sc_add(state.sumpouts_alphas, alpha)
+    state.sumpouts_alphas = crypto.sc_add_into(None, state.sumpouts_alphas, alpha)
     return alpha, crypto.gen_commitment_into(None, alpha, in_amount)
 
 

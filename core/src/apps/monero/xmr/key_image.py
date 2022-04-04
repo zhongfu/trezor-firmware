@@ -150,9 +150,9 @@ def generate_ring_signature(
             crypto.encodepoint_into(mvbuff[buff_off : buff_off + 32], tmp2)
             buff_off += 32
 
-            sum = crypto.sc_add(sum, sig[i][0])
+            crypto.sc_add_into(sum, sum, sig[i][0])
 
     h = crypto.hash_to_scalar(buff)
-    sig[sec_idx][0] = crypto.sc_sub(h, sum)
+    sig[sec_idx][0] = crypto.sc_sub_into(None, h, sum)
     sig[sec_idx][1] = crypto.sc_mulsub_into(None, sig[sec_idx][0], sec, k)
     return sig

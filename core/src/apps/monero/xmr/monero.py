@@ -156,7 +156,7 @@ def generate_tx_spend_and_key_image(
         subaddr_sk = get_subaddress_secret_key(
             ack.view_key_private, major=received_index[0], minor=received_index[1]
         )
-        scalar_step2 = crypto.sc_add(scalar_step1, subaddr_sk)
+        scalar_step2 = crypto.sc_add_into(None, scalar_step1, subaddr_sk)
 
     # When not in multisig, we know the full spend secret key, so the output pubkey can be obtained by scalarmultBase
     pub_ver = crypto.scalarmult_base(scalar_step2)
