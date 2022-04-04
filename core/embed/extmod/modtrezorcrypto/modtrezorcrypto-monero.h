@@ -2540,6 +2540,10 @@ STATIC const mp_obj_str_t mod_trezorcrypto_monero_BP_TWO_N_obj = {{&mp_type_byte
 
 STATIC const mp_rom_map_elem_t mod_trezorcrypto_monero_globals_table[] = {
     {MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_monero)},
+    // types
+    {MP_ROM_QSTR(MP_QSTR_Ge25519), MP_ROM_PTR(&mod_trezorcrypto_monero_ge25519_type)},
+    {MP_ROM_QSTR(MP_QSTR_Sc25519), MP_ROM_PTR(&mod_trezorcrypto_monero_bignum256modm_type)},
+    // functions
     {MP_ROM_QSTR(MP_QSTR_init256_modm),
      MP_ROM_PTR(&mod_trezorcrypto_monero_init256_modm_obj)},
     {MP_ROM_QSTR(MP_QSTR_check256_modm),
