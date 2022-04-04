@@ -73,7 +73,7 @@ class TestMoneroClsag(unittest.TestCase):
             )
             crypto.point_add_into(L, L, crypto.scalarmult_into(tmp_pt, C_P, c_c))
 
-            HP = crypto.hash_to_point(pubs[i].dest)
+            HP = crypto.hash_to_point_into(None, pubs[i].dest)
             crypto.add_keys3_into(R, ss[i], HP, c_p, sI)
             crypto.point_add_into(R, R, crypto.scalarmult_into(tmp_pt, D_8, c_c))
 

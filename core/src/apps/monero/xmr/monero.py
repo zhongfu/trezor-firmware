@@ -60,7 +60,7 @@ def generate_key_image(public_key: bytes, secret_key: Sc25519) -> Ge25519:
     """
     Key image: secret_key * H_p(pub_key)
     """
-    point = crypto.hash_to_point(public_key)
+    point = crypto.hash_to_point_into(None, public_key)
     point2 = crypto.scalarmult(point, secret_key)
     return point2
 

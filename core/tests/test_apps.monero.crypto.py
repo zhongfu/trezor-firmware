@@ -93,7 +93,7 @@ class TestMoneroCrypto(unittest.TestCase):
         data = unhexlify(
             b"42f6835bf83114a1f5f6076fe79bdfa0bd67c74b88f127d54572d3910dd09201"
         )
-        res = crypto.hash_to_point(data)
+        res = crypto.hash_to_point_into(None, data)
         res_p = crypto.encodepoint(res)
         self.assertEqual(
             res_p,
