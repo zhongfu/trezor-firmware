@@ -99,7 +99,7 @@ async def sign_input(
         state.mem_trace("Correcting alpha")
         alpha_diff = crypto.sc_sub(state.sumout, state.sumpouts_alphas)
         crypto.sc_add_into(pseudo_out_alpha, pseudo_out_alpha, alpha_diff)
-        pseudo_out_c = crypto.gen_commitment(pseudo_out_alpha, state.input_last_amount)
+        pseudo_out_c = crypto.gen_commitment_into(None, pseudo_out_alpha, state.input_last_amount)
 
     else:
         if input_position + 1 == state.input_count:
@@ -156,7 +156,7 @@ async def sign_input(
     utils.ensure(
         crypto.point_eq(
             crypto.decodepoint(src_entr.outputs[src_entr.real_output].key.commitment),
-            crypto.gen_commitment(input_secret_key.mask, src_entr.amount),
+            crypto.gen_commitment_into(None, input_secret_key.mask, src_entr.amount),
         ),
         "Real source entry's mask does not equal spend key's",
     )

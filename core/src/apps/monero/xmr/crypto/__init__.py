@@ -139,6 +139,7 @@ sc_get64 = tcry.get256_modm
 sc_check = tcry.check256_modm
 check_sc = tcry.check256_modm
 
+sc_add = tcry.add256_modm
 sc_add_into = tcry.add256_modm
 sc_sub = tcry.sub256_modm
 sc_sub_into = tcry.sub256_modm
@@ -239,7 +240,7 @@ def scalarmult_h(i) -> Ge25519:
 
 add_keys2_into = tcry.xmr_add_keys2_vartime
 add_keys3_into = tcry.xmr_add_keys3_vartime
-gen_commitment = tcry.xmr_gen_c
+gen_commitment_into = tcry.xmr_gen_c
 
 
 def generate_key_derivation(pub: Ge25519, sec: Sc25519) -> Ge25519:

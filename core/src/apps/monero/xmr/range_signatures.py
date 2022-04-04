@@ -37,7 +37,7 @@ def verify_bp(bp_proof: Bulletproof, amounts: list[int], masks: list[Sc25519]) -
     if amounts:
         bp_proof.V = []
         for i in range(len(amounts)):
-            C = crypto.gen_commitment(masks[i], amounts[i])
+            C = crypto.gen_commitment_into(None, masks[i], amounts[i])
             crypto.scalarmult_into(C, C, crypto.sc_inv_eight())
             bp_proof.V.append(crypto.encodepoint(C))
 

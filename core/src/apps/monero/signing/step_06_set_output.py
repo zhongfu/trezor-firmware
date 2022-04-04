@@ -413,7 +413,7 @@ def _get_ecdh_info_and_out_pk(
     so the recipient is able to reconstruct the commitment.
     """
     out_pk_dest = crypto.encodepoint(tx_out_key)
-    out_pk_commitment = crypto.encodepoint(crypto.gen_commitment(mask, amount))
+    out_pk_commitment = crypto.encodepoint(crypto.gen_commitment_into(None, mask, amount))
     crypto.sc_add_into(state.sumout, state.sumout, mask)
     ecdh_info = _ecdh_encode(amount, crypto.encodeint(amount_key))
 
