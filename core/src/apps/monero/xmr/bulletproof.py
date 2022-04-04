@@ -735,9 +735,9 @@ class KeyR0(KeyVBase):
         self.N = N
         self.aR = aR
         self.raw = raw
-        self.y = crypto.decodeint_into_noreduce(y)
+        self.y = crypto.decodeint_into_noreduce(None, y)
         self.yp = crypto.new_scalar()  # y^{i}
-        self.z = crypto.decodeint_into_noreduce(z)
+        self.z = crypto.decodeint_into_noreduce(None, z)
         self.zt = crypto.new_scalar()  # z^{2 + \floor{i/N}}
         self.p2 = crypto.new_scalar()  # 2^{i \% N}
         self.res = crypto.new_scalar()  # tmp_sc_1
