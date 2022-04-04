@@ -61,11 +61,7 @@ async def sign_input(
     if pseudo_out_alpha_enc is None:
         raise ValueError("SimpleRCT requires pseudo_out's mask but none provided")
 
-    input_position = (
-        state.source_permutation[state.current_input_index]
-        if state.client_version <= 1
-        else orig_idx
-    )
+    input_position = orig_idx
     mods = utils.unimport_begin()
 
     # Check input's HMAC
@@ -205,10 +201,9 @@ async def sign_input(
     from trezor.messages import MoneroTransactionSignInputAck
 
     # Encrypt signature, reveal once protocol finishes OK
-    if state.client_version >= 3:
-        utils.unimport_end(mods)
-        state.mem_trace(7, True)
-        mg_buffer = _protect_signature(state, mg_buffer)
+    utils.unimport_end(mods)
+    state.mem_trace(7, True)
+    mg_buffer = _protect_signature(state, mg_buffer)
 
     state.mem_trace(8, True)
     state.last_step = state.STEP_SIGN

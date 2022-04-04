@@ -57,14 +57,6 @@ async def sign_tx_dispatch(state, msg, keychain):
             ),
         )
 
-    elif msg.MESSAGE_WIRE_TYPE == MessageType.MoneroTransactionInputsPermutationRequest:
-        from apps.monero.signing import step_03_inputs_permutation
-
-        return (
-            await step_03_inputs_permutation.tsx_inputs_permutation(state, msg.perm),
-            (MessageType.MoneroTransactionInputViniRequest,),
-        )
-
     elif msg.MESSAGE_WIRE_TYPE == MessageType.MoneroTransactionInputViniRequest:
         from apps.monero.signing import step_04_input_vini
 

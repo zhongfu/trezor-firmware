@@ -17,7 +17,6 @@ class State:
 
     STEP_INIT = const(0)
     STEP_INP = const(100)
-    STEP_PERM = const(200)
     STEP_VINI = const(300)
     STEP_ALL_IN = const(350)
     STEP_OUT = const(400)
@@ -112,10 +111,6 @@ class State:
 
         # TX_EXTRA_NONCE extra field for tx.extra, due to sort_tx_extra()
         self.extra_nonce = None
-
-        # contains an array where each item denotes the input's position
-        # (inputs are sorted by key images)
-        self.source_permutation: list[int] = []
 
         # Last key image seen. Used for input permutation correctness check
         self.last_ki: bytes | None = None

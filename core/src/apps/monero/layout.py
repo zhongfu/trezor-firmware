@@ -220,8 +220,6 @@ async def transaction_step(state: State, step: int, sub_step: int | None = None)
         info = ["Signing..."]
     elif step == state.STEP_INP:
         info = ["Processing inputs", f"{sub_step + 1}/{state.input_count}"]
-    elif step == state.STEP_PERM:
-        info = ["Sorting..."]
     elif step == state.STEP_VINI:
         info = ["Hashing inputs", f"{sub_step + 1}/{state.input_count}"]
     elif step == state.STEP_ALL_IN:

@@ -34,7 +34,7 @@ async def init_transaction(
 
     state.creds = misc.get_creds(keychain, address_n, network_type)
     state.client_version = tsx_data.client_version or 0
-    if state.client_version == 0:
+    if state.client_version < 3:
         raise ValueError("Client version not supported")
 
     state.fee = state.fee if state.fee > 0 else 0
@@ -316,7 +316,7 @@ def _process_payment_id(state: State, tsx_data: MoneroTransactionData):
 
     if not tsx_data.payment_id or len(tsx_data.payment_id) == 8:
         view_key_pub_enc = _get_key_for_payment_id_encryption(
-            tsx_data, state.change_address(), state.client_version > 0
+            tsx_data, state.change_address(), True
         )
 
     if not tsx_data.payment_id:

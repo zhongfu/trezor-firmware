@@ -211,17 +211,6 @@ def _add_keys2(dst, a, b, B):
     return dst
 
 
-def _add_keys3(dst, a, A, b, B):
-    dst = _ensure_dst_key(dst)
-    crypto.decodeint_into_noreduce(_tmp_sc_1, a)
-    crypto.decodeint_into_noreduce(_tmp_sc_2, b)
-    crypto.decodepoint_into(_tmp_pt_1, A)
-    crypto.decodepoint_into(_tmp_pt_2, B)
-    crypto.add_keys3_into(_tmp_pt_3, _tmp_sc_1, _tmp_pt_1, _tmp_sc_2, _tmp_pt_2)
-    crypto.encodepoint_into(dst, _tmp_pt_3)
-    return dst
-
-
 def _hash_to_scalar(dst, data):
     dst = _ensure_dst_key(dst)
     crypto.hash_to_scalar_into(_tmp_sc_1, data)
@@ -1052,13 +1041,13 @@ class MultiExpSequential:
         self.current_idx += 1
         self.size += 1
 
-    def eval(self, dst, GiHi=False):
+    def eval(self, dst):
         dst = _ensure_dst_key(dst)
         return crypto.encodepoint_into(dst, self.acc)
 
 
-def _multiexp(dst=None, data=None, GiHi=False):
-    return data.eval(dst, GiHi)
+def _multiexp(dst=None, data=None):
+    return data.eval(dst)
 
 
 class BulletProofBuilder:
@@ -1587,7 +1576,7 @@ class BulletProofBuilder:
 
             _sc_muladd(y1, tmp, weight_y, y1)
             weight_y8 = _init_key(weight_y)
-            weight_y8 = _sc_mul(None, weight_y, _EIGHT)
+            _sc_mul(weight_y8, weight_y, _EIGHT)
 
             muex = MultiExpSequential(points=[pt for pt in proof.V])
             for j in range(len(proof.V)):
@@ -1604,13 +1593,13 @@ class BulletProofBuilder:
             muex.add_pair(_init_key(tmp), proof.T2)
 
             weight_z8 = _init_key(weight_z)
-            weight_z8 = _sc_mul(None, weight_z, _EIGHT)
+            _sc_mul(weight_z8, weight_z, _EIGHT)
 
             muex.add_pair(weight_z8, proof.A)
             _sc_mul(tmp, x, weight_z8)
             muex.add_pair(_init_key(tmp), proof.S)
 
-            _multiexp(tmp, muex, False)
+            _multiexp(tmp, muex)
             _add_keys(muex_acc, muex_acc, tmp)
             del muex
 
@@ -1701,7 +1690,7 @@ class BulletProofBuilder:
                 _sc_mul(tmp, tmp, weight_z8)
                 muex.add_scalar(tmp)
 
-            acc = _multiexp(None, muex, False)
+            acc = _multiexp(None, muex)
             _add_keys(muex_acc, muex_acc, acc)
 
             _sc_mulsub(tmp, proof.a, proof.b, proof.t)
@@ -1727,7 +1716,7 @@ class BulletProofBuilder:
             for i in range(maxMN):
                 muex.add_scalar(m_z4[i])
                 muex.add_scalar(m_z5[i])
-            _add_keys(muex_acc, muex_acc, _multiexp(None, muex, True))
+            _add_keys(muex_acc, muex_acc, _multiexp(None, muex))
 
         if muex_acc != _ONE:
             raise ValueError("Verification failure at step 2")
