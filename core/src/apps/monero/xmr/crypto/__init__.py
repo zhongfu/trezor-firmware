@@ -94,9 +94,6 @@ scalarmult_into = tcry.ge25519_scalarmult
 point_add_into = tcry.ge25519_add
 point_sub_into = tcry.ge25519_sub
 point_eq = tcry.ge25519_eq
-point_double = tcry.ge25519_double
-point_double_into = tcry.ge25519_double
-point_mul8_into = tcry.ge25519_mul8
 
 INV_EIGHT = b"\x79\x2f\xdc\xe2\x29\xe5\x06\x61\xd0\xda\x1c\x7d\xb3\x9d\xd3\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06"
 INV_EIGHT_SC = decodeint(INV_EIGHT)
@@ -132,9 +129,7 @@ def sc_init_into(r: Sc25519, x: int) -> Sc25519:
 
 
 sc_copy = tcry.init256_modm
-sc_get64 = tcry.get256_modm
 sc_check = tcry.check256_modm
-check_sc = tcry.check256_modm
 
 sc_add_into = tcry.add256_modm
 sc_sub_into = tcry.sub256_modm

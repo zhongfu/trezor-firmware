@@ -3,14 +3,13 @@ import json
 import subprocess
 
 MAPPING_FILE = "monero_func_mapping.json"
+ALIAS_FILE = "core/src/apps/monero/xmr/crypto/__init__.py"
+MOCK_FILE = "core/mocks/generated/trezorcrypto/monero.pyi"
 
 
 def load_all_function_aliases() -> None:
-
-    file = "core/mocks/generated/trezorcrypto/monero.pyi"
-
     functions: Set[str] = set()
-    with open(file, "r") as f:
+    with open(MOCK_FILE, "r") as f:
         lines = f.readlines()
         for line in lines:
             if line.startswith("def"):
@@ -22,11 +21,10 @@ def load_all_function_aliases() -> None:
 
     print(len(functions))
 
-    alias_file = "core/src/apps/monero/xmr/crypto/__init__.py"
 
     function_aliases: Dict[str, List[str]] = {}
 
-    with open(alias_file, "r") as f:
+    with open(ALIAS_FILE, "r") as f:
         lines = f.readlines()
         for line in lines:
             for func_name in functions:
@@ -73,11 +71,21 @@ def check_definitions() -> None:
 
 
 def is_used(func_name: str) -> bool:
+    # Find definitions in the Monero app itself
     cmd = f'grep -r "crypto.{func_name}" core/src/apps/monero'
     grep_result = subprocess.run(
         cmd, stdout=subprocess.PIPE, text=True, shell=True
     )
     # print(grep_result.stdout)
+
+    if grep_result.returncode == 0:
+        return True
+
+    # Find usages in __init__.py - alias file
+    cmd = f'grep  "{func_name}(" {ALIAS_FILE}'
+    grep_result = subprocess.run(
+        cmd, stdout=subprocess.PIPE, text=True, shell=True
+    )
 
     return grep_result.returncode == 0
 

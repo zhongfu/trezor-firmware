@@ -77,14 +77,6 @@ def eq256_modm(a: Sc25519, b: Sc25519) -> int:
 
 
 # extmod/modtrezorcrypto/modtrezorcrypto-monero.h
-def get256_modm(a: Sc25519) -> int:
-    """
-    Extracts 64bit integer from the scalar. Raises exception if scalar is
-    bigger than 2^64
-    """
-
-
-# extmod/modtrezorcrypto/modtrezorcrypto-monero.h
 def add256_modm(r: Sc25519 | None, a: Sc25519, b: Sc25519) -> Sc25519:
     """
     Scalar addition
@@ -196,20 +188,6 @@ def ge25519_add(r: Ge25519 | None, a: Ge25519, b: Ge25519) -> Ge25519:
 def ge25519_sub(r: Ge25519 | None, a: Ge25519, b: Ge25519) -> Ge25519:
     """
     Subtracts EC points
-    """
-
-
-# extmod/modtrezorcrypto/modtrezorcrypto-monero.h
-def ge25519_double(r: Ge25519 | None, p: Ge25519) -> Ge25519:
-    """
-    EC point doubling
-    """
-
-
-# extmod/modtrezorcrypto/modtrezorcrypto-monero.h
-def ge25519_mul8(r: Ge25519 | None, p: Ge25519) -> Ge25519:
-    """
-    EC point * 8
     """
 
 

@@ -344,22 +344,6 @@ STATIC mp_obj_t mod_trezorcrypto_monero_eq256_modm(const mp_obj_t a,
 STATIC MP_DEFINE_CONST_FUN_OBJ_2(mod_trezorcrypto_monero_eq256_modm_obj,
                                  mod_trezorcrypto_monero_eq256_modm);
 
-/// def get256_modm(a: Sc25519) -> int:
-///     """
-///     Extracts 64bit integer from the scalar. Raises exception if scalar is
-///     bigger than 2^64
-///     """
-STATIC mp_obj_t mod_trezorcrypto_monero_get256_modm(const mp_obj_t arg) {
-  assert_scalar(arg);
-  uint64_t v = 0;
-  if (!get256_modm(&v, MP_OBJ_C_SCALAR(arg))) {
-    mp_raise_ValueError("Ed25519 scalar too big");
-  }
-  return mp_obj_new_int_from_ull(v);
-}
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(mod_trezorcrypto_monero_get256_modm_obj,
-                                 mod_trezorcrypto_monero_get256_modm);
-
 /// def add256_modm(r: Sc25519 | None, a: Sc25519, b: Sc25519) -> Sc25519:
 ///     """
 ///     Scalar addition
@@ -676,40 +660,6 @@ STATIC mp_obj_t mod_trezorcrypto_monero_ge25519_sub(size_t n_args,
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_ge25519_sub_obj, 2, 3,
     mod_trezorcrypto_monero_ge25519_sub);
-
-/// def ge25519_double(r: Ge25519 | None, p: Ge25519) -> Ge25519:
-///     """
-///     EC point doubling
-///     """
-STATIC mp_obj_t mod_trezorcrypto_monero_ge25519_double(size_t n_args,
-                                                       const mp_obj_t *args) {
-  const bool res_arg = n_args == 2;
-  mp_obj_t res = mp_obj_new_ge25519_r(res_arg ? args[0] : mp_const_none);
-  mp_obj_t src = res_arg ? args[1] : args[0];
-  assert_ge25519(src);
-  ge25519_double(&MP_OBJ_GE25519(res), &MP_OBJ_C_GE25519(src));
-  return res;
-}
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
-    mod_trezorcrypto_monero_ge25519_double_obj, 1, 2,
-    mod_trezorcrypto_monero_ge25519_double);
-
-/// def ge25519_mul8(r: Ge25519 | None, p: Ge25519) -> Ge25519:
-///     """
-///     EC point * 8
-///     """
-STATIC mp_obj_t mod_trezorcrypto_monero_ge25519_mul8(size_t n_args,
-                                                     const mp_obj_t *args) {
-  const bool res_arg = n_args == 2;
-  mp_obj_t res = mp_obj_new_ge25519_r(res_arg ? args[0] : mp_const_none);
-  mp_obj_t src = res_arg ? args[1] : args[0];
-  assert_ge25519(src);
-  ge25519_mul8(&MP_OBJ_GE25519(res), &MP_OBJ_C_GE25519(src));
-  return res;
-}
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
-    mod_trezorcrypto_monero_ge25519_mul8_obj, 1, 2,
-    mod_trezorcrypto_monero_ge25519_mul8);
 
 /// def ge25519_double_scalarmult_vartime(
 ///     r: Ge25519 | None, p1: Ge25519, s1: Sc25519, s2: Sc25519

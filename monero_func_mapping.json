@@ -62,17 +62,6 @@
     "ge25519_eq": [
         "point_eq"
     ],
-    "ge25519_double": [
-        "point_double",
-        "point_double_into"
-    ],
-    "ge25519_mul8": [
-        "point_mul8",
-        "point_mul8_into"
-    ],
-    "get256_modm": [
-        "sc_get64"
-    ],
     "check256_modm": [
         "sc_check",
         "check_sc"
