@@ -93,7 +93,7 @@ class MemoryReaderWriter:
 
         self.nwritten += nwritten
         self.ndata += nwritten
-        #return nwritten
+        # return nwritten
 
     def get_buffer(self) -> bytes:
         mv = memoryview(self.buffer)

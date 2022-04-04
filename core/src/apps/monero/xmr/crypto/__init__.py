@@ -23,7 +23,7 @@ random_bytes = random.bytes
 ct_equals = tcry.ct_equals
 
 
-def keccak_factory(data: bytes=None) -> sha3_256:
+def keccak_factory(data: bytes = None) -> sha3_256:
     return sha3_256(data=data, keccak=True)
 
 

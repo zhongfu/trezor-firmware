@@ -57,7 +57,7 @@ if TYPE_CHECKING:
 
     KeyM = list[list[bytes]]
 
-    T = TypeVar('T')
+    T = TypeVar("T")
 
     def list_of_type(lst: list[Any], typ: type[T]) -> TypeGuard[list[T]]:
         ...

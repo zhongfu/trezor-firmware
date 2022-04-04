@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ..crypto import Sc25519
 
+
 class CtKey:
     __slots__ = ("dest", "mask")
 
