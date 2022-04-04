@@ -239,7 +239,7 @@ def ge25519_scalarmult(
 
 
 # extmod/modtrezorcrypto/modtrezorcrypto-monero.h
-def ge25519_pack(r: bytes, p: Ge25519, offset: int = 0) -> bytes:
+def ge25519_pack(r: bytes | None, p: Ge25519, offset: int = 0) -> bytes:
     """
     Point compression
     """

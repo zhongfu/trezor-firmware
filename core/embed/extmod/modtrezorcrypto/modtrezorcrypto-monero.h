@@ -800,7 +800,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_ge25519_scalarmult_obj, 2, 3,
     mod_trezorcrypto_monero_ge25519_scalarmult);
 
-/// def ge25519_pack(r: bytes, p: Ge25519, offset: int = 0) -> bytes:
+/// def ge25519_pack(r: bytes | None, p: Ge25519, offset: int = 0) -> bytes:
 ///     """
 ///     Point compression
 ///     """

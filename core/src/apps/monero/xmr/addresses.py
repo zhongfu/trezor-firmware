@@ -18,7 +18,7 @@ def addr_to_hash(addr: MoneroAccountPublicAddress) -> bytes:
 
 
 def encode_addr(
-    version, spend_pub: Ge25519, view_pub: Ge25519, payment_id: bytes | None = None
+    version, spend_pub: bytes, view_pub: bytes, payment_id: bytes | None = None
 ) -> str:
     """
     Builds Monero address from public keys
