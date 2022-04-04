@@ -584,8 +584,6 @@ if not utils.BITCOIN_ONLY:
     import apps.monero.signing.step_01_init_transaction
     apps.monero.signing.step_02_set_input
     import apps.monero.signing.step_02_set_input
-    apps.monero.signing.step_03_inputs_permutation
-    import apps.monero.signing.step_03_inputs_permutation
     apps.monero.signing.step_04_input_vini
     import apps.monero.signing.step_04_input_vini
     apps.monero.signing.step_05_all_inputs_set
