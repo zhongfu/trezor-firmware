@@ -174,7 +174,7 @@ def generate_first_c_and_key_images(
         # Ri = alpha_i * H(P_i)
         crypto.scalarmult_into(aHPi, Hi, alpha[i])
         # key image
-        II[i] = crypto.scalarmult(Hi, xx[i])
+        II[i] = crypto.scalarmult_into(None, Hi, xx[i])
         _hash_point(hasher, aGi, tmp_buff)
         _hash_point(hasher, aHPi, tmp_buff)
 

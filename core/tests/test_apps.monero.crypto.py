@@ -59,7 +59,7 @@ class TestMoneroCrypto(unittest.TestCase):
             b"adcd1f5881f46f254900a03c654e71950a88a0236fa0a3a946c9b8daed6ef43d"
         )
 
-        res = crypto.scalarmult(crypto.decodepoint(pub), crypto.decodeint(priv))
+        res = crypto.scalarmult_into(None, crypto.decodepoint(pub), crypto.decodeint(priv))
         self.assertEqual(exp, crypto.encodepoint(res))
         self.assertTrue(crypto.point_eq(crypto.decodepoint(exp), res))
 

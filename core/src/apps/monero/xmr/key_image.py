@@ -130,7 +130,7 @@ def generate_ring_signature(
             buff_off += 32
 
             tmp3 = crypto.hash_to_point_into(None, crypto.encodepoint(pubs[i]))
-            tmp2 = crypto.scalarmult(tmp3, k)
+            tmp2 = crypto.scalarmult_into(None, tmp3, k)
             crypto.encodepoint_into(mvbuff[buff_off : buff_off + 32], tmp2)
             buff_off += 32
 

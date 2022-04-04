@@ -61,7 +61,7 @@ def generate_key_image(public_key: bytes, secret_key: Sc25519) -> Ge25519:
     Key image: secret_key * H_p(pub_key)
     """
     point = crypto.hash_to_point_into(None, public_key)
-    point2 = crypto.scalarmult(point, secret_key)
+    point2 = crypto.scalarmult_into(None, point, secret_key)
     return point2
 
 
@@ -295,7 +295,7 @@ def generate_sub_address_keys(
     m = get_subaddress_secret_key(view_sec, major=major, minor=minor)
     M = crypto.scalarmult_base_into(None, m)
     D = crypto.point_add_into(None, spend_pub, M)
-    C = crypto.scalarmult(D, view_sec)
+    C = crypto.scalarmult_into(None, D, view_sec)
     return D, C
 
 

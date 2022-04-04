@@ -87,9 +87,7 @@ encodeint_into = tcry.pack256_modm
 
 check_ed25519point = tcry.ge25519_check
 
-scalarmult_base = tcry.ge25519_scalarmult_base
 scalarmult_base_into = tcry.ge25519_scalarmult_base
-scalarmult = tcry.ge25519_scalarmult
 scalarmult_into = tcry.ge25519_scalarmult
 
 point_add_into = tcry.ge25519_add
@@ -290,7 +288,9 @@ def check_signature(data: bytes, c: Sc25519, r: Sc25519, pub: Ge25519) -> bool:
     if sc_check(c) != 0 or sc_check(r) != 0:
         raise ValueError("Signature error")
 
-    tmp2 = point_add_into(None, scalarmult(pub, c), scalarmult_base_into(None, r))
+    tmp2 = point_add_into(
+        None, scalarmult_into(None, pub, c), scalarmult_base_into(None, r)
+    )
     buff = data + encodepoint(pub) + encodepoint(tmp2)
     tmp_c = hash_to_scalar(buff)
     res = sc_sub_into(None, tmp_c, c)

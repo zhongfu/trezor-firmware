@@ -156,8 +156,10 @@ def _check_subaddresses(state: State, outputs: list[MoneroTransactionDestination
     # we set (override) the tx pubkey to R=r*D and no additional
     # tx keys are needed
     if num_stdaddresses == 0 and num_subaddresses == 1:
-        state.tx_pub = crypto.scalarmult(
-            crypto.decodepoint(single_dest_subaddress.spend_public_key), state.tx_priv
+        state.tx_pub = crypto.scalarmult_into(
+            None,
+            crypto.decodepoint(single_dest_subaddress.spend_public_key),
+            state.tx_priv,
         )
 
     # if a subaddress is used and either standard address is as well
