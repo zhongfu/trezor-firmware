@@ -192,6 +192,13 @@ def ge25519_sub(r: Ge25519 | None, a: Ge25519, b: Ge25519) -> Ge25519:
 
 
 # extmod/modtrezorcrypto/modtrezorcrypto-monero.h
+def ge25519_mul8(r: Ge25519 | None, p: Ge25519) -> Ge25519:
+    """
+    EC point * 8
+    """
+
+
+# extmod/modtrezorcrypto/modtrezorcrypto-monero.h
 def ge25519_double_scalarmult_vartime(
     r: Ge25519 | None, p1: Ge25519, s1: Sc25519, s2: Sc25519
 ) -> Ge25519:
