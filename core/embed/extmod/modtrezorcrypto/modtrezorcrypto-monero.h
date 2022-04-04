@@ -77,6 +77,12 @@ static inline void assert_scalar(const mp_obj_t o) {
   }
 }
 
+static inline void ensure_at_least_params(size_t n_args, size_t required) {
+  if (n_args < required) {
+    mp_raise_ValueError("Not enough parameters");
+  }
+}
+
 STATIC mp_obj_t mp_obj_new_scalar() {
   mp_obj_bignum256modm_t *o = m_new_obj_with_finaliser(mp_obj_bignum256modm_t);
   o->base.type = &mod_trezorcrypto_monero_bignum256modm_type;
@@ -494,10 +500,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
 ///     """
 STATIC mp_obj_t mod_trezorcrypto_monero_pack256_modm(size_t n_args,
                                                      const mp_obj_t *args) {
-  if (n_args <= 1) {
-    mp_raise_ValueError("Not enough parameters");
-  }
-
+  ensure_at_least_params(n_args, 2);
   if (args[0] == mp_const_none) {
     assert_scalar(args[1]);
     vstr_t out = {0};
@@ -803,10 +806,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
 ///     """
 STATIC mp_obj_t mod_trezorcrypto_monero_ge25519_pack(size_t n_args,
                                                      const mp_obj_t *args) {
-  if (n_args <= 1) {
-    mp_raise_ValueError("Not enough parameters");
-  }
-
+  ensure_at_least_params(n_args, 2);
   if (args[0] == mp_const_none) {
     assert_ge25519(args[1]);
     vstr_t out = {0};
