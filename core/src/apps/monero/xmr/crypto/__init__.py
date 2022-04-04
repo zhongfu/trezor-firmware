@@ -215,11 +215,7 @@ hash_to_point_into = tcry.xmr_hash_to_ec
 #
 
 
-xmr_H = tcry.ge25519_set_h
-
-
-def scalarmult_h(i) -> Ge25519:
-    return scalarmult(xmr_H(), sc_init(i) if isinstance(i, int) else i)
+xmr_H = tcry.ge25519_set_xmr_h
 
 
 add_keys2_into = tcry.xmr_add_keys2_vartime

@@ -2553,7 +2553,7 @@ STATIC const mp_rom_map_elem_t mod_trezorcrypto_monero_globals_table[] = {
      MP_ROM_PTR(&mod_trezorcrypto_monero_unpack256_modm_noreduce_obj)},
     {MP_ROM_QSTR(MP_QSTR_ge25519_set_neutral),
      MP_ROM_PTR(&mod_trezorcrypto_monero_ge25519_set_neutral_obj)},
-    {MP_ROM_QSTR(MP_QSTR_ge25519_set_h),
+    {MP_ROM_QSTR(MP_QSTR_ge25519_set_xmr_h),
      MP_ROM_PTR(&mod_trezorcrypto_monero_ge25519_set_xmr_h_obj)},
     {MP_ROM_QSTR(MP_QSTR_ge25519_pack),
      MP_ROM_PTR(&mod_trezorcrypto_monero_ge25519_pack_obj)},
