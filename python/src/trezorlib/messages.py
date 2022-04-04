@@ -5756,15 +5756,15 @@ class DebugMoneroDiagAck(protobuf.MessageType):
 class MoneroOutputEntry(protobuf.MessageType):
     MESSAGE_WIRE_TYPE = None
     FIELDS = {
-        1: protobuf.Field("idx", "uint64", repeated=False, required=True),
-        2: protobuf.Field("key", "MoneroRctKeyPublic", repeated=False, required=True),
+        1: protobuf.Field("idx", "uint64", repeated=False, required=False),
+        2: protobuf.Field("key", "MoneroRctKeyPublic", repeated=False, required=False),
     }
 
     def __init__(
         self,
         *,
-        idx: "int",
-        key: "MoneroRctKeyPublic",
+        idx: Optional["int"] = None,
+        key: Optional["MoneroRctKeyPublic"] = None,
     ) -> None:
         self.idx = idx
         self.key = key

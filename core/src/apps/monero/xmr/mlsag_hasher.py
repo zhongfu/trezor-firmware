@@ -3,10 +3,10 @@ from typing import TYPE_CHECKING
 from apps.monero.xmr import crypto
 from apps.monero.xmr.keccak_hasher import KeccakXmrArchive
 
+from .serialize_messages.tx_rsig_bulletproof import Bulletproof
+
 if TYPE_CHECKING:
     from trezor.utils import HashContext
-
-    from .serialize_messages.tx_rsig_bulletproof import Bulletproof
 
 
 class PreMlsagHasher:

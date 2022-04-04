@@ -28,8 +28,8 @@ message MoneroTransactionSourceEntry {
     optional MoneroMultisigKLRki multisig_kLRki = 9;
     optional uint32 subaddr_minor = 10;  // minor subaddr index UTXO was sent to
     message MoneroOutputEntry {
-        required uint64 idx = 1;
-        required MoneroRctKeyPublic key = 2;
+        optional uint64 idx = 1;
+        optional MoneroRctKeyPublic key = 2;
         message MoneroRctKeyPublic {
             required bytes dest = 1;
             required bytes commitment = 2;

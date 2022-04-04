@@ -4240,14 +4240,14 @@ if TYPE_CHECKING:
             return isinstance(msg, cls)
 
     class MoneroOutputEntry(protobuf.MessageType):
-        idx: "int"
-        key: "MoneroRctKeyPublic"
+        idx: "int | None"
+        key: "MoneroRctKeyPublic | None"
 
         def __init__(
             self,
             *,
-            idx: "int",
-            key: "MoneroRctKeyPublic",
+            idx: "int | None" = None,
+            key: "MoneroRctKeyPublic | None" = None,
         ) -> None:
             pass
 
