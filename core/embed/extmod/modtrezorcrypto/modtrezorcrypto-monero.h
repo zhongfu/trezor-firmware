@@ -960,7 +960,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
 /// def xmr_hash_to_ec(
 ///     r: Ge25519 | None,
 ///     buff: bytes,
-///     length: int | None = None,
+///     length: int | None = None,
 ///     offset: int = 0,
 /// ) -> Ge25519:
 ///     """

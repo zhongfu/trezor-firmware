@@ -292,7 +292,7 @@ def xmr_fast_hash(
 def xmr_hash_to_ec(
     r: Ge25519 | None,
     buff: bytes,
-    length: int | None = None,
+    length: int | None = None,
     offset: int = 0,
 ) -> Ge25519:
     """
@@ -304,7 +304,7 @@ def xmr_hash_to_ec(
 def xmr_hash_to_scalar(
    r: Sc25519 | None,
    buff: bytes,
-   length: int | None = None, 
+   length: int | None = None,
    offset: int = 0,
 ) -> Sc25519:
     """
