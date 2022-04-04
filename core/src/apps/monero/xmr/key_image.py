@@ -154,5 +154,5 @@ def generate_ring_signature(
 
     h = crypto.hash_to_scalar(buff)
     sig[sec_idx][0] = crypto.sc_sub(h, sum)
-    sig[sec_idx][1] = crypto.sc_mulsub(sig[sec_idx][0], sec, k)
+    sig[sec_idx][1] = crypto.sc_mulsub_into(None, sig[sec_idx][0], sec, k)
     return sig

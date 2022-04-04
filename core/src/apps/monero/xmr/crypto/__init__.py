@@ -155,9 +155,7 @@ def sc_isnonzero(c: Sc25519) -> bool:
 
 
 sc_eq = tcry.eq256_modm
-sc_mulsub = tcry.mulsub256_modm
 sc_mulsub_into = tcry.mulsub256_modm
-sc_muladd = tcry.muladd256_modm
 sc_muladd_into = tcry.muladd256_modm
 sc_inv_into = tcry.inv256_modm
 
@@ -298,7 +296,7 @@ def generate_signature(data: bytes, priv: Sc25519) -> tuple[Sc25519, Sc25519, Ge
 
     buff = data + encodepoint(pub) + encodepoint(comm)
     c = hash_to_scalar(buff)
-    r = sc_mulsub(priv, c, k)
+    r = sc_mulsub_into(None, priv, c, k)
     return c, r, pub
 
 
