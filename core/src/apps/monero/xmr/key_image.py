@@ -100,7 +100,7 @@ def generate_ring_signature(
     from trezor.utils import memcpy
 
     if test:
-        t = crypto.scalarmult_base(sec)
+        t = crypto.scalarmult_base_into(None, sec)
         if not crypto.point_eq(t, pubs[sec_idx]):
             raise ValueError("Invalid sec key")
 
@@ -125,7 +125,7 @@ def generate_ring_signature(
     for i in range(len(pubs)):
         if i == sec_idx:
             k = crypto.random_scalar()
-            tmp3 = crypto.scalarmult_base(k)
+            tmp3 = crypto.scalarmult_base_into(None, k)
             crypto.encodepoint_into(mvbuff[buff_off : buff_off + 32], tmp3)
             buff_off += 32
 
@@ -144,9 +144,7 @@ def generate_ring_signature(
             buff_off += 32
 
             tmp3 = crypto.hash_to_point_into(None, crypto.encodepoint(tmp3))
-            tmp2 = crypto.add_keys3_into(
-                None, sig[i][1], tmp3, sig[i][0], image
-            )
+            tmp2 = crypto.add_keys3_into(None, sig[i][1], tmp3, sig[i][0], image)
             crypto.encodepoint_into(mvbuff[buff_off : buff_off + 32], tmp2)
             buff_off += 32
 

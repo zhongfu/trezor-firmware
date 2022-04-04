@@ -274,10 +274,10 @@ def generate_signature(data: bytes, priv: Sc25519) -> tuple[Sc25519, Sc25519, Ge
     Generate EC signature
     crypto_ops::generate_signature(const hash &prefix_hash, const public_key &pub, const secret_key &sec, signature &sig)
     """
-    pub = scalarmult_base(priv)
+    pub = scalarmult_base_into(None, priv)
 
     k = random_scalar()
-    comm = scalarmult_base(k)
+    comm = scalarmult_base_into(None, k)
 
     buff = data + encodepoint(pub) + encodepoint(comm)
     c = hash_to_scalar(buff)
@@ -293,7 +293,7 @@ def check_signature(data: bytes, c: Sc25519, r: Sc25519, pub: Ge25519) -> bool:
     if sc_check(c) != 0 or sc_check(r) != 0:
         raise ValueError("Signature error")
 
-    tmp2 = point_add_into(None, scalarmult(pub, c), scalarmult_base(r))
+    tmp2 = point_add_into(None, scalarmult(pub, c), scalarmult_base_into(None, r))
     buff = data + encodepoint(pub) + encodepoint(tmp2)
     tmp_c = hash_to_scalar(buff)
     res = sc_sub_into(None, tmp_c, c)

@@ -10,9 +10,7 @@ if not utils.BITCOIN_ONLY:
     )
     from apps.monero.xmr.serialize.readwriter import MemoryReaderWriter
     from apps.monero.xmr.serialize_messages.base import ECPoint
-    from apps.monero.xmr.serialize_messages.tx_prefix import (
-        TxinToKey,
-    )
+    from apps.monero.xmr.serialize_messages.tx_prefix import TxinToKey
 
 
 @unittest.skipUnless(not utils.BITCOIN_ONLY, "altcoin")

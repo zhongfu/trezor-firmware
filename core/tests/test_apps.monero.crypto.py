@@ -32,7 +32,7 @@ class TestMoneroCrypto(unittest.TestCase):
             b"16bb4a3c44e2ced511fc0d4cd86b13b3af21efc99fb0356199fac489f2544c09"
         )
 
-        res = crypto.scalarmult_base(scalar)
+        res = crypto.scalarmult_base_into(None, scalar)
         self.assertEqual(exp, crypto.encodepoint(res))
         self.assertTrue(crypto.point_eq(crypto.decodepoint(exp), res))
 
@@ -45,7 +45,7 @@ class TestMoneroCrypto(unittest.TestCase):
             b"123daf90fc26f13c6529e6b49bfed498995ac383ef19c0db6771143f24ba8dd5"
         )
 
-        res = crypto.scalarmult_base(scalar)
+        res = crypto.scalarmult_base_into(None, scalar)
         self.assertEqual(exp, crypto.encodepoint(res))
         self.assertTrue(crypto.point_eq(crypto.decodepoint(exp), res))
 

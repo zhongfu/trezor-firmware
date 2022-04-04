@@ -11,14 +11,34 @@ if not utils.BITCOIN_ONLY:
 @unittest.skipUnless(not utils.BITCOIN_ONLY, "altcoin")
 class TestMoneroProto(unittest.TestCase):
     def test_sign_keys(self):
-        mst = ubinascii.unhexlify(b"ca3bbe08a178a4508c3992a47ba775799e7626a365ed136e803fe5f2df2ce01c")
-        self.assertEqual(offloading_keys.key_signature(mst, 0, True)[:12], ubinascii.unhexlify(b'bb665d97ac7c77995578e352'))
-        self.assertEqual(offloading_keys.key_signature(mst, 0, False), ubinascii.unhexlify(b'87bb70af81bb7325f73e8b962167579454d126ff8ee51472922d7c103fc60f5f'))
-        self.assertEqual(offloading_keys.key_signature(mst, 3, True)[:12], ubinascii.unhexlify(b'b2ef8e4e4eec72ce3096622a'))
-        self.assertEqual(offloading_keys.key_signature(mst, 3, False), ubinascii.unhexlify(b'e4331602a83a68c892a83693a1b961564048d9349111b85b8b4b52a1adcf36da'))
+        mst = ubinascii.unhexlify(
+            b"ca3bbe08a178a4508c3992a47ba775799e7626a365ed136e803fe5f2df2ce01c"
+        )
+        self.assertEqual(
+            offloading_keys.key_signature(mst, 0, True)[:12],
+            ubinascii.unhexlify(b"bb665d97ac7c77995578e352"),
+        )
+        self.assertEqual(
+            offloading_keys.key_signature(mst, 0, False),
+            ubinascii.unhexlify(
+                b"87bb70af81bb7325f73e8b962167579454d126ff8ee51472922d7c103fc60f5f"
+            ),
+        )
+        self.assertEqual(
+            offloading_keys.key_signature(mst, 3, True)[:12],
+            ubinascii.unhexlify(b"b2ef8e4e4eec72ce3096622a"),
+        )
+        self.assertEqual(
+            offloading_keys.key_signature(mst, 3, False),
+            ubinascii.unhexlify(
+                b"e4331602a83a68c892a83693a1b961564048d9349111b85b8b4b52a1adcf36da"
+            ),
+        )
 
     def test_sig_seal(self):
-        mst = ubinascii.unhexlify(b"ca3bbe08a178a4508c3992a47ba775799e7626a365ed136e803fe5f2df2ce01c")
+        mst = ubinascii.unhexlify(
+            b"ca3bbe08a178a4508c3992a47ba775799e7626a365ed136e803fe5f2df2ce01c"
+        )
         st = State(None)
         st.last_step = st.STEP_SIGN
         st.opening_key = mst

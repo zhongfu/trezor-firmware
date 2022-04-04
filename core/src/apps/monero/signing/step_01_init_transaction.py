@@ -39,7 +39,7 @@ async def init_transaction(
 
     state.fee = state.fee if state.fee > 0 else 0
     state.tx_priv = crypto.random_scalar()
-    state.tx_pub = crypto.scalarmult_base(state.tx_priv)
+    state.tx_pub = crypto.scalarmult_base_into(None, state.tx_priv)
     state.mem_trace(1)
 
     state.input_count = tsx_data.num_inputs

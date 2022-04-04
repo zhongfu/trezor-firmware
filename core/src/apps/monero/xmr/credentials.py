@@ -36,8 +36,8 @@ class AccountCreds:
         priv_spend_key: Sc25519,
         network_type=NetworkTypes.MAINNET,
     ):
-        pub_view_key = crypto.scalarmult_base(priv_view_key)
-        pub_spend_key = crypto.scalarmult_base(priv_spend_key)
+        pub_view_key = crypto.scalarmult_base_into(None, priv_view_key)
+        pub_spend_key = crypto.scalarmult_base_into(None, priv_spend_key)
         addr = encode_addr(
             net_version(network_type),
             crypto.encodepoint(pub_spend_key),

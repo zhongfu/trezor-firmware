@@ -413,7 +413,9 @@ def _get_ecdh_info_and_out_pk(
     so the recipient is able to reconstruct the commitment.
     """
     out_pk_dest = crypto.encodepoint(tx_out_key)
-    out_pk_commitment = crypto.encodepoint(crypto.gen_commitment_into(None, mask, amount))
+    out_pk_commitment = crypto.encodepoint(
+        crypto.gen_commitment_into(None, mask, amount)
+    )
     crypto.sc_add_into(state.sumout, state.sumout, mask)
     ecdh_info = _ecdh_encode(amount, crypto.encodeint(amount_key))
 
@@ -478,7 +480,7 @@ def _set_out_additional_keys(
         )
     else:
         # R=r*G
-        additional_txkey = crypto.scalarmult_base(additional_txkey_priv)
+        additional_txkey = crypto.scalarmult_base_into(None, additional_txkey_priv)
 
     state.additional_tx_public_keys.append(crypto.encodepoint(additional_txkey))
     state.additional_tx_private_keys.append(additional_txkey_priv)

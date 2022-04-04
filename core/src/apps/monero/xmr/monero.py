@@ -38,7 +38,7 @@ def get_subaddress_spend_public_key(
         return spend_public
 
     m = get_subaddress_secret_key(view_private, major=major, minor=minor)
-    M = crypto.scalarmult_base(m)
+    M = crypto.scalarmult_base_into(None, m)
     D = crypto.point_add_into(None, spend_public, M)
     return D
 
@@ -51,7 +51,7 @@ def derive_subaddress_public_key(
     """
     crypto.check_ed25519point(out_key)
     scalar = crypto.derivation_to_scalar(derivation, output_index)
-    point2 = crypto.scalarmult_base(scalar)
+    point2 = crypto.scalarmult_base_into(None, scalar)
     point4 = crypto.point_sub_into(None, out_key, point2)
     return point4
 
@@ -159,7 +159,7 @@ def generate_tx_spend_and_key_image(
         scalar_step2 = crypto.sc_add_into(None, scalar_step1, subaddr_sk)
 
     # When not in multisig, we know the full spend secret key, so the output pubkey can be obtained by scalarmultBase
-    pub_ver = crypto.scalarmult_base(scalar_step2)
+    pub_ver = crypto.scalarmult_base_into(None, scalar_step2)
 
     # <Multisig>, branch deactivated until implemented
     # # When in multisig, we only know the partial spend secret key. But we do know the full spend public key,
@@ -269,7 +269,7 @@ def compute_subaddresses(
 
 
 def generate_keys(recovery_key: Sc25519) -> tuple[Sc25519, Ge25519]:
-    pub = crypto.scalarmult_base(recovery_key)
+    pub = crypto.scalarmult_base_into(None, recovery_key)
     return recovery_key, pub
 
 
@@ -290,10 +290,10 @@ def generate_sub_address_keys(
     view_sec: Sc25519, spend_pub: Ge25519, major: int, minor: int
 ) -> tuple[Ge25519, Ge25519]:
     if major == 0 and minor == 0:  # special case, Monero-defined
-        return spend_pub, crypto.scalarmult_base(view_sec)
+        return spend_pub, crypto.scalarmult_base_into(None, view_sec)
 
     m = get_subaddress_secret_key(view_sec, major=major, minor=minor)
-    M = crypto.scalarmult_base(m)
+    M = crypto.scalarmult_base_into(None, m)
     D = crypto.point_add_into(None, spend_pub, M)
     C = crypto.scalarmult(D, view_sec)
     return D, C
