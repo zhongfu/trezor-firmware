@@ -21,7 +21,7 @@ else:
     T = 0  # type: ignore
 
 # Constants
-
+TBYTES = (bytes, bytearray, memoryview)
 _BP_LOG_N = const(6)
 _BP_N = const(64)  # 1 << _BP_LOG_N
 _BP_M = const(16)  # maximal number of bulletproofs
@@ -391,7 +391,7 @@ class KeyV(KeyVBase):
 
     def _set_mv(self) -> None:
         if not self.chunked:
-            assert isinstance(self.d, bytes)
+            assert isinstance(self.d, TBYTES)
             self.mv = memoryview(self.d)
 
     def __getitem__(self, item):
