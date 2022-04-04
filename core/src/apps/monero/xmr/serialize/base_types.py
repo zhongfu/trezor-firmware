@@ -23,18 +23,18 @@ if TYPE_CHECKING:
     XmrFspec = tuple[XmrFieldType, ...]
 
     class Writer(Protocol):
-        def write(self, data: bytes, /) -> None:
+        def write(self, __data: bytes) -> None:
             ...
 
     class Reader(Protocol):
-        def readinto(self, buffer: bytearray | memoryview, /) -> int:
+        def readinto(self, __buffer: bytearray | memoryview) -> int:
             ...
 
     class XmrType(Protocol[T]):
-        def load(self, reader: Reader, /) -> T:
+        def load(self, __reader: Reader) -> T:
             ...
 
-        def dump(self, writer: Writer, value: T, /) -> None:
+        def dump(self, __writer: Writer, __value: T) -> None:
             ...
 
     class XmrStructuredType(XmrType):
