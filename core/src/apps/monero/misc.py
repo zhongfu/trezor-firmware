@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.types import Sc25519
+    from apps.monero.xmr.crypto import Sc25519
 
 
 def get_creds(keychain, address_n=None, network_type=None):

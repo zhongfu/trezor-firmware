@@ -14,7 +14,7 @@ from apps.monero.xmr import crypto, serialize
 from .state import State
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.types import Sc25519, Ge25519
+    from apps.monero.xmr.crypto import Sc25519, Ge25519
     from apps.monero.xmr.serialize_messages.tx_ecdh import EcdhTuple
     from apps.monero.xmr.serialize_messages.tx_rsig_bulletproof import Bulletproof
     from trezor.messages import (

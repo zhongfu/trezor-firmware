@@ -6,7 +6,7 @@ from trezor import utils
 from apps.monero.xmr import crypto
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.types import Sc25519
+    from apps.monero.xmr.crypto import Sc25519
     from trezor.messages import (
         MoneroTransactionDestinationEntry,
         MoneroTransactionSourceEntry,

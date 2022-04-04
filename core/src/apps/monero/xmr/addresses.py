@@ -5,7 +5,7 @@ from trezor.crypto import monero as tcry
 from apps.monero.xmr.networks import NetworkTypes, net_version
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.types import Ge25519
+    from apps.monero.xmr.crypto import Ge25519
     from trezor.messages import MoneroAccountPublicAddress
     from trezor.messages import MoneroTransactionDestinationEntry
 

@@ -19,7 +19,7 @@ from apps.monero.xmr import crypto, monero, serialize
 from .state import State
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.types import Sc25519, Ge25519
+    from apps.monero.xmr.crypto import Sc25519, Ge25519
     from trezor.messages import MoneroTransactionSourceEntry
     from trezor.messages import MoneroTransactionSetInputAck
 

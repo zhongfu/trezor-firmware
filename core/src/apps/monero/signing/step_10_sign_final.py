@@ -19,7 +19,7 @@ from apps.monero.xmr.crypto import chacha_poly
 from .state import State
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.types import Sc25519
+    from apps.monero.xmr.crypto import Sc25519
 
 
 def final_msg(state: State) -> MoneroTransactionFinalAck:

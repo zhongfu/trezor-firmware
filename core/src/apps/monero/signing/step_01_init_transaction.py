@@ -10,7 +10,7 @@ from apps.monero.signing.state import State
 from apps.monero.xmr import crypto, monero
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.types import Sc25519, Ge25519
+    from apps.monero.xmr.crypto import Sc25519, Ge25519
     from trezor.messages import (
         MoneroAccountPublicAddress,
         MoneroTransactionData,
