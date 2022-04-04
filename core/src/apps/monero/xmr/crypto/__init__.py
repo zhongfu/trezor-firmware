@@ -178,9 +178,6 @@ def ge25519_double_scalarmult_base_vartime(a, A, b) -> Ge25519:
     return R
 
 
-ge25519_double_scalarmult_vartime2 = tcry.xmr_add_keys3
-
-
 def identity(byte_enc=False) -> Ge25519 | bytes:
     idd = tcry.ge25519_set_neutral()
     return idd if not byte_enc else encodepoint(idd)

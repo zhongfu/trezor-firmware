@@ -144,8 +144,8 @@ def generate_ring_signature(
             buff_off += 32
 
             tmp3 = crypto.hash_to_point_into(None, crypto.encodepoint(tmp3))
-            tmp2 = crypto.ge25519_double_scalarmult_vartime2(
-                sig[i][1], tmp3, sig[i][0], image
+            tmp2 = crypto.add_keys3_into(
+                None, sig[i][1], tmp3, sig[i][0], image
             )
             crypto.encodepoint_into(mvbuff[buff_off : buff_off + 32], tmp2)
             buff_off += 32
