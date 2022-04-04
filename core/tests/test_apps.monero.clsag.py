@@ -65,8 +65,8 @@ class TestMoneroClsag(unittest.TestCase):
             crypto.sc_mul_into(c_p, mu_P, c)
             crypto.sc_mul_into(c_c, mu_C, c)
 
-            C_P = crypto.point_sub(
-                crypto.decodepoint_into(tmp_pt, pubs[i].commitment), C_offset
+            C_P = crypto.point_sub_into(
+                None, crypto.decodepoint_into(tmp_pt, pubs[i].commitment), C_offset
             )
             crypto.add_keys2_into(
                 L, ss[i], c_p, crypto.decodepoint_into(tmp_pt, pubs[i].dest)
@@ -122,7 +122,7 @@ class TestMoneroClsag(unittest.TestCase):
         self.assertTrue(
             crypto.point_eq(
                 crypto.scalarmult_base(crypto.sc_sub_into(None, msk, alpha)),
-                crypto.point_sub(crypto.decodepoint(ring[index].commitment), Cp),
+                crypto.point_sub_into(None, crypto.decodepoint(ring[index].commitment), Cp),
             )
         )
 
@@ -261,7 +261,7 @@ class TestMoneroClsag(unittest.TestCase):
         res = self.gen_clsag_sig(ring_size=11, index=5)
         msg, scalars, sc1, sI, sD, ring2, Cp = res
         with self.assertRaises(ValueError):
-            sI = crypto.point_mul8(sI)
+            sI = crypto.point_mul8_into(None, sI)
             self.verify_clsag(msg, scalars, sc1, sI, sD, ring2, Cp)
 
     def test_clsag_invalid_sD(self):
@@ -276,7 +276,7 @@ class TestMoneroClsag(unittest.TestCase):
         msg, scalars, sc1, sI, sD, ring2, Cp = res
         with self.assertRaises(ValueError):
             ring2[5].dest = crypto.encodepoint(
-                crypto.point_mul8(crypto.decodepoint(ring2[5].dest))
+                crypto.point_mul8_into(None, crypto.decodepoint(ring2[5].dest))
             )
             self.verify_clsag(msg, scalars, sc1, sI, sD, ring2, Cp)
 
@@ -285,7 +285,7 @@ class TestMoneroClsag(unittest.TestCase):
         msg, scalars, sc1, sI, sD, ring2, Cp = res
         with self.assertRaises(ValueError):
             ring2[5].commitment = crypto.encodepoint(
-                crypto.point_mul8(crypto.decodepoint(ring2[5].dest))
+                crypto.point_mul8_into(None, crypto.decodepoint(ring2[5].dest))
             )
             self.verify_clsag(msg, scalars, sc1, sI, sD, ring2, Cp)
 
@@ -293,7 +293,7 @@ class TestMoneroClsag(unittest.TestCase):
         res = self.gen_clsag_sig(ring_size=11, index=5)
         msg, scalars, sc1, sI, sD, ring2, Cp = res
         with self.assertRaises(ValueError):
-            Cp = crypto.point_add(Cp, crypto.scalarmult_base(crypto.sc_init(1)))
+            Cp = crypto.point_add_into(None, Cp, crypto.scalarmult_base(crypto.sc_init(1)))
             self.verify_clsag(msg, scalars, sc1, sI, sD, ring2, Cp)
 
     def test_clsag_invalid_index(self):

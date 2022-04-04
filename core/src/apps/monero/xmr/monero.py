@@ -39,7 +39,7 @@ def get_subaddress_spend_public_key(
 
     m = get_subaddress_secret_key(view_private, major=major, minor=minor)
     M = crypto.scalarmult_base(m)
-    D = crypto.point_add(spend_public, M)
+    D = crypto.point_add_into(None, spend_public, M)
     return D
 
 
@@ -52,7 +52,7 @@ def derive_subaddress_public_key(
     crypto.check_ed25519point(out_key)
     scalar = crypto.derivation_to_scalar(derivation, output_index)
     point2 = crypto.scalarmult_base(scalar)
-    point4 = crypto.point_sub(out_key, point2)
+    point4 = crypto.point_sub_into(None, out_key, point2)
     return point4
 
 
@@ -294,7 +294,7 @@ def generate_sub_address_keys(
 
     m = get_subaddress_secret_key(view_sec, major=major, minor=minor)
     M = crypto.scalarmult_base(m)
-    D = crypto.point_add(spend_pub, M)
+    D = crypto.point_add_into(None, spend_pub, M)
     C = crypto.scalarmult(D, view_sec)
     return D, C
 
