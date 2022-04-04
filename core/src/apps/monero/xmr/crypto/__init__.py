@@ -92,12 +92,12 @@ def decodepoint(x: bytes) -> Ge25519:
     return decodepoint_into(None, x)
 
 
-def encodepoint(x: Ge25519) -> bytes:
-    return encodepoint_into(None, x)
+def encodepoint(x: Ge25519, offset: int = 0) -> bytes:
+    return encodepoint_into(None, x, offset)
 
 
-def encodeint(x: Sc25519) -> bytes:
-    return encodeint_into(None, x)
+def encodeint(x: Sc25519, offset: int = 0) -> bytes:
+    return encodeint_into(None, x, offset)
 
 
 def decodeint(x: bytes) -> Sc25519:

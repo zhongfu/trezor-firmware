@@ -485,7 +485,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
 ///     """
 STATIC mp_obj_t mod_trezorcrypto_monero_pack256_modm(size_t n_args,
                                                      const mp_obj_t *args) {
-  mp_arg_check_num(n_args, 0, 2, 2, false);
+  mp_arg_check_num(n_args, 0, 2, 3, false);
   if (args[0] == mp_const_none) {
     assert_scalar(args[1]);
     vstr_t out = {0};
@@ -505,7 +505,7 @@ STATIC mp_obj_t mod_trezorcrypto_monero_pack256_modm(size_t n_args,
   }
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
-    mod_trezorcrypto_monero_pack256_modm_obj, 1, 3,
+    mod_trezorcrypto_monero_pack256_modm_obj, 2, 3,
     mod_trezorcrypto_monero_pack256_modm);
 
 /// def unpack256_modm(
@@ -523,7 +523,7 @@ STATIC mp_obj_t mod_trezorcrypto_monero_unpack256_modm(size_t n_args,
   return res;
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
-    mod_trezorcrypto_monero_unpack256_modm_obj, 1, 3,
+    mod_trezorcrypto_monero_unpack256_modm_obj, 2, 3,
     mod_trezorcrypto_monero_unpack256_modm);
 
 /// def unpack256_modm_noreduce(
@@ -548,7 +548,7 @@ STATIC mp_obj_t mod_trezorcrypto_monero_unpack256_modm_noreduce(
   return res;
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
-    mod_trezorcrypto_monero_unpack256_modm_noreduce_obj, 1, 3,
+    mod_trezorcrypto_monero_unpack256_modm_noreduce_obj, 2, 3,
     mod_trezorcrypto_monero_unpack256_modm_noreduce);
 
 //
@@ -783,7 +783,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
 ///     """
 STATIC mp_obj_t mod_trezorcrypto_monero_ge25519_pack(size_t n_args,
                                                      const mp_obj_t *args) {
-  mp_arg_check_num(n_args, 0, 2, 2, false);
+  mp_arg_check_num(n_args, 0, 2, 3, false);
   if (args[0] == mp_const_none) {
     assert_ge25519(args[1]);
     vstr_t out = {0};
@@ -803,7 +803,7 @@ STATIC mp_obj_t mod_trezorcrypto_monero_ge25519_pack(size_t n_args,
   }
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
-    mod_trezorcrypto_monero_ge25519_pack_obj, 1, 3,
+    mod_trezorcrypto_monero_ge25519_pack_obj, 2, 3,
     mod_trezorcrypto_monero_ge25519_pack);
 
 /// def ge25519_unpack_vartime(
@@ -821,7 +821,7 @@ STATIC mp_obj_t mod_trezorcrypto_monero_ge25519_unpack_vartime(
   return res;
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
-    mod_trezorcrypto_monero_ge25519_unpack_vartime_obj, 1, 3,
+    mod_trezorcrypto_monero_ge25519_unpack_vartime_obj, 2, 3,
     mod_trezorcrypto_monero_ge25519_unpack_vartime);
 
 //
