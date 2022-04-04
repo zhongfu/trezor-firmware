@@ -150,7 +150,7 @@ def unpack256_modm_noreduce(
 
 
 # extmod/modtrezorcrypto/modtrezorcrypto-monero.h
-def ge25519_set_neutral(r: Ge25519 | None) -> Ge25519:
+def ge25519_set_neutral(r: Ge25519 | None = None) -> Ge25519:
     """
     Sets neutral point
     """

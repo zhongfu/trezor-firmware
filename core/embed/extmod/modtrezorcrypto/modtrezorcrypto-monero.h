@@ -572,7 +572,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
 // GE25519 Defs
 //
 
-/// def ge25519_set_neutral(r: Ge25519 | None) -> Ge25519:
+/// def ge25519_set_neutral(r: Ge25519 | None = None) -> Ge25519:
 ///     """
 ///     Sets neutral point
 ///     """
