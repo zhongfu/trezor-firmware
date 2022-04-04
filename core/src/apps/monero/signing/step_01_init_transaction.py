@@ -409,6 +409,6 @@ def _encrypt_payment_id(
     derivation = bytearray(33)
     derivation = crypto.encodepoint_into(derivation, derivation_p)
     derivation[32] = 0x8D  # ENCRYPTED_PAYMENT_ID_TAIL
-    hash = crypto.cn_fast_hash(derivation)
+    hash = crypto.cn_fast_hash_into(None, derivation)
     pm_copy = bytearray(payment_id)
     return crypto.xor8(pm_copy, hash)

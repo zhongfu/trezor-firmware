@@ -444,7 +444,7 @@ def _ecdh_hash(shared_sec: bytes) -> bytes:
     data = bytearray(38)
     data[0:6] = b"amount"
     data[6:] = shared_sec
-    return crypto.cn_fast_hash(data)
+    return crypto.cn_fast_hash_into(None, data)
 
 
 def _ecdh_encode(amount: int, amount_key: bytes) -> EcdhTuple:

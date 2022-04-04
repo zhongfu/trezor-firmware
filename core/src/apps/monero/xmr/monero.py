@@ -283,7 +283,7 @@ def generate_monero_keys(seed: bytes) -> tuple[Sc25519, Ge25519, Sc25519, Ge2551
     crypto::secret_key account_base::generate(const crypto::secret_key& recovery_key, bool recover, bool two_random).
     """
     spend_sec, spend_pub = generate_keys(crypto.decodeint(seed))
-    hash = crypto.cn_fast_hash(crypto.encodeint(spend_sec))
+    hash = crypto.cn_fast_hash_into(None, crypto.encodeint(spend_sec))
     view_sec, view_pub = generate_keys(crypto.decodeint(hash))
     return spend_sec, spend_pub, view_sec, view_pub
 

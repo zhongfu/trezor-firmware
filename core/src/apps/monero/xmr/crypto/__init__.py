@@ -25,8 +25,8 @@ def keccak_factory(data: bytes | None = None) -> sha3_256:
 
 
 get_keccak = keccak_factory
-keccak_hash = tcry.xmr_fast_hash
 keccak_hash_into = tcry.xmr_fast_hash
+cn_fast_hash_into = tcry.xmr_fast_hash
 
 
 def keccak_2hash(inp, buff=None):
@@ -192,9 +192,6 @@ http://elligator.cr.yp.to/elligator-20130828.pdf
 #
 # Monero specific
 #
-
-
-cn_fast_hash = keccak_hash
 
 
 def hash_to_scalar(data: bytes, length: int | None = None):

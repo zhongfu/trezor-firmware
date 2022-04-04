@@ -67,7 +67,7 @@ class TestMoneroCrypto(unittest.TestCase):
         inp = unhexlify(
             b"259ef2aba8feb473cf39058a0fe30b9ff6d245b42b6826687ebd6b63128aff6405"
         )
-        res = crypto.cn_fast_hash(inp)
+        res = crypto.cn_fast_hash_into(None, inp)
         self.assertEqual(
             res,
             unhexlify(

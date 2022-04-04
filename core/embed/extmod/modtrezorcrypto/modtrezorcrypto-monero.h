@@ -909,10 +909,10 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
 ///     """
 STATIC mp_obj_t mod_trezorcrypto_monero_xmr_fast_hash(size_t n_args,
                                                       const mp_obj_t *args) {
-  //const int off = n_args >= 2 ? 0 : -1;
+  mp_arg_check_num(n_args, 0, 2, 4, false);
   vstr_t out = {0};
   uint8_t *buff_use = NULL;
-  if (n_args >= 2) {
+  if (args[0] != mp_const_none) {
     mp_buffer_info_t odata = {0};
     mp_get_buffer_raise(args[0], &odata, MP_BUFFER_WRITE);
     if (odata.len < HASHER_DIGEST_LENGTH) {
@@ -935,7 +935,7 @@ STATIC mp_obj_t mod_trezorcrypto_monero_xmr_fast_hash(size_t n_args,
     mp_raise_ValueError("Illegal offset/length");
   }
   xmr_fast_hash(buff_use, (const char *)data.buf + offset, length);
-  return n_args >= 2 ? args[0] : mp_obj_new_str_from_vstr(&mp_type_bytes, &out);
+  return args[0] != mp_const_none ? args[0] : mp_obj_new_str_from_vstr(&mp_type_bytes, &out);
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_fast_hash_obj, 1, 4,
