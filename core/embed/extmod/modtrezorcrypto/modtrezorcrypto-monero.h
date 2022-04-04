@@ -914,9 +914,12 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_random_scalar_obj, 0, 1,
     mod_trezorcrypto_monero_xmr_random_scalar);
 
-// clang-format off
-/// def xmr_fast_hash(r: bytes | None, buff: bytes, length: int, offset: int) -> bytes:
-// clang-format on
+/// def xmr_fast_hash(
+///    r: bytes | None,
+///    buff: bytes,
+///    length: int | None = None,
+///    offset: int = 0,
+/// ) -> bytes:
 ///     """
 ///     XMR fast hash
 ///     """
@@ -954,10 +957,12 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_fast_hash_obj, 1, 4,
     mod_trezorcrypto_monero_xmr_fast_hash);
 
-// clang-format off
-/// def xmr_hash_to_ec(r: Ge25519 | None, buff: bytes, length: int, offset:
-/// int) -> Ge25519:
-// clang-format on
+/// def xmr_hash_to_ec(
+///     r: Ge25519 | None,
+///     buff: bytes,
+///     length: int | None = None,
+///     offset: int = 0,
+/// ) -> Ge25519:
 ///     """
 ///     XMR hashing to EC point
 ///     """
@@ -983,10 +988,12 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_hash_to_ec_obj, 1, 4,
     mod_trezorcrypto_monero_xmr_hash_to_ec);
 
-// clang-format off
-/// def xmr_hash_to_scalar(r: Sc25519 | None, buff: bytes, length: int,
-/// offset: int) -> Sc25519:
-// clang-format on
+/// def xmr_hash_to_scalar(
+///    r: Sc25519 | None,
+///    buff: bytes,
+///    length: int | None = None,
+///    offset: int = 0,
+/// ) -> Sc25519:
 ///     """
 ///     XMR hashing to EC scalar
 ///     """
