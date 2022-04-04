@@ -1,7 +1,7 @@
 import gc
 from micropython import const
 from typing import TYPE_CHECKING
-
+from .crypto import Sc25519, Ge25519
 from trezor import utils
 from trezor.utils import memcpy as tmemcpy
 
@@ -11,7 +11,6 @@ from apps.monero.xmr.serialize.int_serialize import dump_uvarint_b_into, uvarint
 if TYPE_CHECKING:
     from typing import Iterator, TypeVar, Generic
 
-    from .crypto import Sc25519, Ge25519
     from .serialize_messages.tx_rsig_bulletproof import Bulletproof
 
     T = TypeVar("T")
@@ -1321,7 +1320,7 @@ class BulletProofBuilder:
         # l0 = aL - z           r0   = ((aR + z) . ypow) + zt
         # l1 = sL               r1   =   sR      . ypow
         l0 = KeyVEval(
-            MN, lambda i, d: _sc_sub(d, aL.to(i), None, None, zc)  # noqa: F821
+            MN, lambda i, d: _sc_sub(d, aL.to(i), zc)  # noqa: F821
         )
         l1 = sL
         self.gc(13)

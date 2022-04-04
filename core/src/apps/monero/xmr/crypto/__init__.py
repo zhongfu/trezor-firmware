@@ -12,11 +12,8 @@ from typing import TYPE_CHECKING
 from trezor.crypto import monero as tcry, random
 from trezor.crypto.hashlib import sha3_256
 
-if TYPE_CHECKING:
-    Sc25519 = tcry.Sc25519
-    Ge25519 = tcry.Ge25519
-
-
+Sc25519 = tcry.Sc25519
+Ge25519 = tcry.Ge25519
 NULL_KEY_ENC = b"\x00" * 32
 
 random_bytes = random.bytes
