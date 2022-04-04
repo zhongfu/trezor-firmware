@@ -98,8 +98,8 @@ class TestMoneroClsag(unittest.TestCase):
         msk = crypto.random_scalar()
         alpha = crypto.random_scalar()
         P = crypto.scalarmult_base(priv)
-        C = crypto.add_keys2(msk, amnt, crypto.xmr_H())
-        Cp = crypto.add_keys2(alpha, amnt, crypto.xmr_H())
+        C = crypto.add_keys2_into(None, msk, amnt, crypto.xmr_H())
+        Cp = crypto.add_keys2_into(None, alpha, amnt, crypto.xmr_H())
 
         ring = []
         for i in range(ring_size - 1):
