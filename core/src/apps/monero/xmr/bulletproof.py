@@ -1,12 +1,14 @@
 import gc
 from micropython import const
 from typing import TYPE_CHECKING
-from .crypto import Sc25519, Ge25519
+
 from trezor import utils
 from trezor.utils import memcpy as tmemcpy
 
 from apps.monero.xmr import crypto
 from apps.monero.xmr.serialize.int_serialize import dump_uvarint_b_into, uvarint_size
+
+from .crypto import Ge25519, Sc25519
 
 if TYPE_CHECKING:
     from typing import Iterator, TypeVar, Generic
@@ -1319,9 +1321,7 @@ class BulletProofBuilder:
         # Polynomial construction by coefficients
         # l0 = aL - z           r0   = ((aR + z) . ypow) + zt
         # l1 = sL               r1   =   sR      . ypow
-        l0 = KeyVEval(
-            MN, lambda i, d: _sc_sub(d, aL.to(i), zc)  # noqa: F821
-        )
+        l0 = KeyVEval(MN, lambda i, d: _sc_sub(d, aL.to(i), zc))  # noqa: F821
         l1 = sL
         self.gc(13)
 
