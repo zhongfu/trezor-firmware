@@ -494,11 +494,15 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
 ///     """
 STATIC mp_obj_t mod_trezorcrypto_monero_pack256_modm(size_t n_args,
                                                      const mp_obj_t *args) {
-  if (n_args == 1 || args[0] == mp_const_none) {
-    assert_scalar(args[0]);
+  if (n_args <= 1) {
+    mp_raise_ValueError("Not enough parameters");
+  }
+
+  if (args[0] == mp_const_none) {
+    assert_scalar(args[1]);
     vstr_t out = {0};
     vstr_init_len(&out, 32);
-    contract256_modm((uint8_t *)out.buf, MP_OBJ_C_SCALAR(args[0]));
+    contract256_modm((uint8_t *)out.buf, MP_OBJ_C_SCALAR(args[1]));
     return mp_obj_new_str_from_vstr(&mp_type_bytes, &out);
   } else {
     mp_buffer_info_t bufm = {0};
@@ -799,11 +803,15 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
 ///     """
 STATIC mp_obj_t mod_trezorcrypto_monero_ge25519_pack(size_t n_args,
                                                      const mp_obj_t *args) {
-  if (n_args == 1 || args[0] == mp_const_none) {
-    assert_ge25519(args[0]);
+  if (n_args <= 1) {
+    mp_raise_ValueError("Not enough parameters");
+  }
+
+  if (args[0] == mp_const_none) {
+    assert_ge25519(args[1]);
     vstr_t out = {0};
     vstr_init_len(&out, 32);
-    ge25519_pack((uint8_t *)out.buf, &MP_OBJ_C_GE25519(args[0]));
+    ge25519_pack((uint8_t *)out.buf, &MP_OBJ_C_GE25519(args[1]));
     return mp_obj_new_str_from_vstr(&mp_type_bytes, &out);
   } else {
     mp_buffer_info_t bufm = {0};

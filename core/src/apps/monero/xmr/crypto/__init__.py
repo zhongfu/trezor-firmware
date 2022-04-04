@@ -74,15 +74,11 @@ def new_scalar() -> Sc25519:
     return tcry.init256_modm(0)
 
 
-decodepoint = tcry.ge25519_unpack_vartime
 decodepoint_into = tcry.ge25519_unpack_vartime
-encodepoint = tcry.ge25519_pack
 encodepoint_into = tcry.ge25519_pack
 
-decodeint = tcry.unpack256_modm
 decodeint_into_noreduce = tcry.unpack256_modm_noreduce
 decodeint_into = tcry.unpack256_modm
-encodeint = tcry.pack256_modm
 encodeint_into = tcry.pack256_modm
 
 check_ed25519point = tcry.ge25519_check
@@ -93,6 +89,23 @@ scalarmult_into = tcry.ge25519_scalarmult
 point_add_into = tcry.ge25519_add
 point_sub_into = tcry.ge25519_sub
 point_eq = tcry.ge25519_eq
+
+
+def decodepoint(x):
+    return decodepoint_into(None, x)
+
+
+def encodepoint(x):
+    return encodepoint_into(None, x)
+
+
+def encodeint(x):
+    return encodeint_into(None, x)
+
+
+def decodeint(x):
+    return decodeint_into(None, x)
+
 
 INV_EIGHT = b"\x79\x2f\xdc\xe2\x29\xe5\x06\x61\xd0\xda\x1c\x7d\xb3\x9d\xd3\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06"
 INV_EIGHT_SC = decodeint(INV_EIGHT)
