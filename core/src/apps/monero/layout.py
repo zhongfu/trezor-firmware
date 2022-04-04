@@ -40,7 +40,7 @@ async def require_confirm_watchkey(ctx: Context) -> None:
     )
 
 
-async def require_confirm_keyimage_sync(ctx):
+async def require_confirm_keyimage_sync(ctx: Context) -> None:
     await confirm_action(
         ctx,
         "key_image_sync",

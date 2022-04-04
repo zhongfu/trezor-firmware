@@ -36,19 +36,19 @@ class PreMlsagHasher:
         self.rtcsig_hasher.uint(rv_type, 1)  # UInt8
         self.rtcsig_hasher.uvarint(fee)  # UVarintType
 
-    def set_ecdh(self, ecdh: bytes):
+    def set_ecdh(self, ecdh: bytes) -> None:
         if self.state not in (2, 3, 4):
             raise ValueError("State error")
         self.state = 4
         self.rtcsig_hasher.buffer(ecdh)
 
-    def set_out_pk_commitment(self, out_pk_commitment: bytes):
+    def set_out_pk_commitment(self, out_pk_commitment: bytes) -> None:
         if self.state not in (4, 5):
             raise ValueError("State error")
         self.state = 5
         self.rtcsig_hasher.buffer(out_pk_commitment)  # ECKey
 
-    def rctsig_base_done(self):
+    def rctsig_base_done(self) -> None:
         if self.state != 5:
             raise ValueError("State error")
         self.state = 6
@@ -57,7 +57,7 @@ class PreMlsagHasher:
         self.kc_master.update(c_hash)
         self.rtcsig_hasher = None  # type: ignore
 
-    def rsig_val(self, p: bytes | list[bytes] | Bulletproof, raw: bool = False):
+    def rsig_val(self, p: bytes | list[bytes] | Bulletproof, raw: bool = False) -> None:
         if self.state == 8:
             raise ValueError("State error")
 

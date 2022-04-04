@@ -7,8 +7,6 @@
 # https://tools.ietf.org/html/draft-josefsson-eddsa-ed25519-00#section-4
 # https://github.com/monero-project/research-lab
 
-from typing import TYPE_CHECKING
-
 from trezor.crypto import monero as tcry, random
 from trezor.crypto.hashlib import sha3_256
 
@@ -29,7 +27,7 @@ keccak_hash_into = tcry.xmr_fast_hash
 cn_fast_hash_into = tcry.xmr_fast_hash
 
 
-def keccak_2hash(inp, buff=None):
+def keccak_2hash(inp: bytes, buff: bytes | None = None) -> bytes:
     buff = buff if buff else bytearray(32)
     keccak_hash_into(buff, inp)
     keccak_hash_into(buff, buff)
@@ -176,7 +174,7 @@ def ge25519_double_scalarmult_base_vartime(a, A, b) -> Ge25519:
     return R
 
 
-def identity(byte_enc=False) -> Ge25519 | bytes:
+def identity(byte_enc: bool = False) -> Ge25519 | bytes:
     idd = tcry.ge25519_set_neutral()
     return idd if not byte_enc else encodepoint(idd)
 

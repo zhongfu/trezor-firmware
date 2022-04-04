@@ -47,7 +47,7 @@ async def live_refresh(
 
 
 class LiveRefreshState:
-    def __init__(self):
+    def __init__(self) -> None:
         self.current_output = 0
         self.creds: AccountCreds | None = None
 

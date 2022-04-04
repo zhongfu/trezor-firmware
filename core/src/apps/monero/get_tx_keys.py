@@ -25,7 +25,6 @@ from apps.monero import layout, misc
 from apps.monero.xmr import crypto
 from apps.monero.xmr.crypto import chacha_poly
 
-_GET_TX_KEY_REASON_TX_KEY = 0
 _GET_TX_KEY_REASON_TX_DERIVATION = 1
 
 if TYPE_CHECKING:

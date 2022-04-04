@@ -17,7 +17,7 @@ class Bulletproof(MessageType):
     __slots__ = ("A", "S", "T1", "T2", "taux", "mu", "L", "R", "a", "b", "t", "V")
 
     @classmethod
-    def f_specs(cls):
+    def f_specs(cls) -> tuple:
         return (
             ("A", ECKey),
             ("S", ECKey),

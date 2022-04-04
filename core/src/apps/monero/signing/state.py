@@ -7,6 +7,7 @@ from trezor import log
 from apps.monero.xmr import crypto
 
 if TYPE_CHECKING:
+    from trezor.wire import Context
     from apps.monero.xmr.crypto import Ge25519, Sc25519
     from apps.monero.xmr.credentials import AccountCreds
 
@@ -23,7 +24,7 @@ class State:
     STEP_ALL_OUT = const(500)
     STEP_SIGN = const(600)
 
-    def __init__(self, ctx):
+    def __init__(self, ctx: Context) -> None:
         from apps.monero.xmr.keccak_hasher import KeccakXmrArchive
         from apps.monero.xmr.mlsag_hasher import PreMlsagHasher
 
@@ -69,7 +70,7 @@ class State:
         self.progress_cur = 0
 
         self.output_change = None
-        self.fee = 0
+        self.fee: int | None = 0
         self.tx_type = 0
 
         # wallet sub-address major index
@@ -87,11 +88,11 @@ class State:
         # for pseudo_out recomputation from new mask
         self.input_last_amount = 0
 
-        self.summary_inputs_money = 0
-        self.summary_outs_money = 0
+        self.summary_inputs_money: int | None = 0
+        self.summary_outs_money: int | None = 0
 
         # output commitments
-        self.output_pk_commitments: list[bytes] = []
+        self.output_pk_commitments: list[bytes] | None = []
 
         self.output_amounts: list[int] = []
         # output *range proof* masks. HP10+ makes them deterministic.
@@ -126,7 +127,7 @@ class State:
         store the final hash in tx_prefix_hash.
         See Monero-Trezor documentation section 3.3 for more details.
         """
-        self.tx_prefix_hasher = KeccakXmrArchive()
+        self.tx_prefix_hasher: KeccakXmrArchive | None = KeccakXmrArchive()
         self.tx_prefix_hash: bytes | None = None
 
         """
@@ -134,10 +135,10 @@ class State:
         Contains tx_prefix_hash.
         See Monero-Trezor documentation section 3.3 for more details.
         """
-        self.full_message_hasher = PreMlsagHasher()
+        self.full_message_hasher: PreMlsagHasher | None = PreMlsagHasher()
         self.full_message: bytes | None = None
 
-    def mem_trace(self, x=None, collect=False):
+    def mem_trace(self, x=None, collect: bool = False) -> None:
         if __debug__:
             log.debug(
                 __name__,

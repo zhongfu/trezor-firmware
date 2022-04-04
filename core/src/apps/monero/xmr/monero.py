@@ -17,7 +17,9 @@ class XmrNoSuchAddressException(XmrException):
     pass
 
 
-def get_subaddress_secret_key(secret_key: Sc25519, major: int = 0, minor: int = 0):
+def get_subaddress_secret_key(
+    secret_key: Sc25519, major: int = 0, minor: int = 0
+) -> Sc25519:
     """
     Builds subaddress secret key from the subaddress index
     Hs(SubAddr || a || index_major || index_minor)

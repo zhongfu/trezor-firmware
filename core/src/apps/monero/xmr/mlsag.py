@@ -121,7 +121,9 @@ def generate_mlsag_simple(
     return generate_mlsag(message, M, sk, index, dsRows, mg_buff)
 
 
-def gen_mlsag_assert(pk: KeyM, xx: list[Sc25519], index: int, dsRows: int):
+def gen_mlsag_assert(
+    pk: KeyM, xx: list[Sc25519], index: int, dsRows: int
+) -> tuple[int, int]:
     """
     Conditions check
     """
@@ -162,7 +164,6 @@ def generate_first_c_and_key_images(
     :param index: specifies corresponding public key to the `xx`'s private key in the `pk` array
     :param dsRows: row number where the pubkeys "end" (and commitments follow)
     :param rows: total number of rows
-    :param cols: size of ring
     """
     II = _key_vector(dsRows)
     alpha = _key_vector(rows)
@@ -500,7 +501,7 @@ def _key_matrix(rows: int, cols: int) -> list[list[Any]]:
     return rv
 
 
-def _hasher_message(message):
+def _hasher_message(message: bytes):
     """
     Returns incremental hasher for MLSAG
     """
@@ -509,6 +510,6 @@ def _hasher_message(message):
     return ctx
 
 
-def _hash_point(hasher, point, tmp_buff):
+def _hash_point(hasher, point, tmp_buff) -> None:
     crypto.encodepoint_into(tmp_buff, point)
     hasher.update(tmp_buff)
