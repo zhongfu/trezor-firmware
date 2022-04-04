@@ -93,8 +93,6 @@ async def require_confirm_transaction(
 
     outputs = tsx_data.outputs
     change_idx = get_change_addr_idx(outputs, tsx_data.change_dts)
-    has_integrated = bool(tsx_data.integrated_indices)
-    has_payment = bool(tsx_data.payment_id)
 
     if tsx_data.unlock_time != 0:
         await _require_confirm_unlock_time(ctx, tsx_data.unlock_time)
@@ -106,13 +104,17 @@ async def require_confirm_transaction(
         is_dummy = change_idx is None and dst.amount == 0 and len(outputs) == 2
         if is_dummy:
             continue  # Dummy output does not need confirmation
-        if has_integrated and idx in tsx_data.integrated_indices:
+        if tsx_data.integrated_indices and idx in tsx_data.integrated_indices:
             cur_payment = tsx_data.payment_id
         else:
             cur_payment = None
         await _require_confirm_output(ctx, dst, network_type, cur_payment)
 
-    if has_payment and not has_integrated and tsx_data.payment_id != DUMMY_PAYMENT_ID:
+    if (
+        tsx_data.payment_id
+        and not tsx_data.integrated_indices
+        and tsx_data.payment_id != DUMMY_PAYMENT_ID
+    ):
         await _require_confirm_payment_id(ctx, tsx_data.payment_id)
 
     await _require_confirm_fee(ctx, tsx_data.fee)
@@ -123,7 +125,7 @@ async def _require_confirm_output(
     ctx: Context,
     dst: MoneroTransactionDestinationEntry,
     network_type: MoneroNetworkType,
-    payment_id: bytes,
+    payment_id: bytes | None,
 ) -> None:
     """
     Single transaction destination confirmation

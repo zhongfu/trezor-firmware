@@ -191,7 +191,7 @@ def generate_tx_spend_and_key_image_and_derivation(
     out_key: Ge25519,
     tx_public_key: Ge25519,
     additional_tx_public_key: Ge25519 | None,
-    real_output_index: int,
+    real_output_index: int | None,
     sub_addr_major: int | None,
     sub_addr_minor: int | None,
 ) -> tuple[Sc25519, Ge25519, Ge25519]:

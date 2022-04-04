@@ -20,7 +20,7 @@ random_bytes = random.bytes
 ct_equals = tcry.ct_equals
 
 
-def keccak_factory(data: bytes = None) -> sha3_256:
+def keccak_factory(data: bytes | None = None) -> sha3_256:
     return sha3_256(data=data, keccak=True)
 
 
@@ -68,7 +68,7 @@ new_point = tcry.ge25519_set_neutral
 
 
 def new_scalar() -> Sc25519:
-    return tcry.init256_modm(0)
+    return tcry.init256_modm(None, 0)
 
 
 decodepoint_into = tcry.ge25519_unpack_vartime
@@ -118,7 +118,7 @@ def sc_inv_eight() -> Sc25519:
 
 
 def sc_0() -> Sc25519:
-    return tcry.init256_modm(0)
+    return tcry.init256_modm(None, 0)
 
 
 def sc_0_into(r: Sc25519) -> Sc25519:
@@ -128,7 +128,7 @@ def sc_0_into(r: Sc25519) -> Sc25519:
 def sc_init(x: int) -> Sc25519:
     if x >= (1 << 64):
         raise ValueError("Initialization works up to 64-bit only")
-    return tcry.init256_modm(x)
+    return tcry.init256_modm(None, x)
 
 
 def sc_init_into(r: Sc25519, x: int) -> Sc25519:
@@ -172,7 +172,7 @@ def ge25519_double_scalarmult_base_vartime(a, A, b) -> Ge25519:
     void ge25519_double_scalarmult_vartime(ge25519 *r, const ge25519 *p1, const bignum256modm s1, const bignum256modm s2);
     r = a * A + b * B
     """
-    R = tcry.ge25519_double_scalarmult_vartime(A, a, b)
+    R = tcry.ge25519_double_scalarmult_vartime(None, A, a, b)
     return R
 
 
@@ -202,7 +202,7 @@ def hash_to_scalar(data: bytes, length: int | None = None):
     H_s(P)
     """
     dt = data[:length] if length else data
-    return tcry.xmr_hash_to_scalar(dt)
+    return tcry.xmr_hash_to_scalar(None, dt)
 
 
 def hash_to_scalar_into(r: Sc25519, data: bytes, length: int | None = None):
@@ -237,7 +237,7 @@ def generate_key_derivation(pub: Ge25519, sec: Sc25519) -> Ge25519:
     """
     sc_check(sec)  # checks that the secret key is uniform enough...
     check_ed25519point(pub)
-    return tcry.xmr_generate_key_derivation(pub, sec)
+    return tcry.xmr_generate_key_derivation(None, pub, sec)
 
 
 def derivation_to_scalar(derivation: Ge25519, output_index: int) -> Sc25519:
@@ -245,7 +245,7 @@ def derivation_to_scalar(derivation: Ge25519, output_index: int) -> Sc25519:
     H_s(derivation || varint(output_index))
     """
     check_ed25519point(derivation)
-    return tcry.xmr_derivation_to_scalar(derivation, output_index)
+    return tcry.xmr_derivation_to_scalar(None, derivation, output_index)
 
 
 def derive_public_key(derivation: Ge25519, output_index: int, B: Ge25519) -> Ge25519:
@@ -253,7 +253,7 @@ def derive_public_key(derivation: Ge25519, output_index: int, B: Ge25519) -> Ge2
     H_s(derivation || varint(output_index))G + B
     """
     check_ed25519point(B)
-    return tcry.xmr_derive_public_key(derivation, output_index, B)
+    return tcry.xmr_derive_public_key(None, derivation, output_index, B)
 
 
 def derive_secret_key(derivation: Ge25519, output_index: int, base: Sc25519) -> Sc25519:
@@ -261,7 +261,7 @@ def derive_secret_key(derivation: Ge25519, output_index: int, base: Sc25519) -> 
     base + H_s(derivation || varint(output_index))
     """
     sc_check(base)
-    return tcry.xmr_derive_private_key(derivation, output_index, base)
+    return tcry.xmr_derive_private_key(None, derivation, output_index, base)
 
 
 def get_subaddress_secret_key(
@@ -271,7 +271,7 @@ def get_subaddress_secret_key(
     Builds subaddress secret key from the subaddress index
     Hs(SubAddr || a || index_major || index_minor)
     """
-    return tcry.xmr_get_subaddress_secret_key(major, minor, secret_key)
+    return tcry.xmr_get_subaddress_secret_key(None, major, minor, secret_key)
 
 
 def generate_signature(data: bytes, priv: Sc25519) -> tuple[Sc25519, Sc25519, Ge25519]:

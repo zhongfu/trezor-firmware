@@ -85,7 +85,7 @@ def addr_eq(a: MoneroAccountPublicAddress, b: MoneroAccountPublicAddress):
 
 def get_change_addr_idx(
     outputs: list[MoneroTransactionDestinationEntry],
-    change_dts: MoneroTransactionDestinationEntry,
+    change_dts: MoneroTransactionDestinationEntry | None,
 ) -> int | None:
     """
     Returns ID of the change output from the change_dts and outputs
