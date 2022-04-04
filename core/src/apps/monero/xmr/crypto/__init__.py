@@ -91,19 +91,19 @@ point_sub_into = tcry.ge25519_sub
 point_eq = tcry.ge25519_eq
 
 
-def decodepoint(x):
+def decodepoint(x: bytes) -> Ge25519:
     return decodepoint_into(None, x)
 
 
-def encodepoint(x):
+def encodepoint(x: Ge25519) -> bytes:
     return encodepoint_into(None, x)
 
 
-def encodeint(x):
+def encodeint(x: Sc25519) -> bytes:
     return encodeint_into(None, x)
 
 
-def decodeint(x):
+def decodeint(x: bytes) -> Sc25519:
     return decodeint_into(None, x)
 
 
