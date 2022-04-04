@@ -255,14 +255,14 @@ def ge25519_unpack_vartime(
 
 
 # extmod/modtrezorcrypto/modtrezorcrypto-monero.h
-def base58_addr_encode_check(tag: int, buff: bytes) -> bytes:
+def xmr_base58_addr_encode_check(tag: int, buff: bytes) -> str:
     """
     Monero block base 58 encoding
     """
 
 
 # extmod/modtrezorcrypto/modtrezorcrypto-monero.h
-def base58_addr_decode_check(buff: bytes) -> tuple[bytes, int]:
+def xmr_base58_addr_decode_check(buff: bytes) -> tuple[bytes, int]:
     """
     Monero block base 58 decoding, returning (decoded, tag) or raising on
     error.

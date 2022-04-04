@@ -1,8 +1,9 @@
 from typing import TYPE_CHECKING
 
 from trezor.crypto import monero as tcry
+from trezor.enums import MoneroNetworkType
 
-from apps.monero.xmr.networks import NetworkTypes, net_version
+from apps.monero.xmr.networks import net_version
 
 if TYPE_CHECKING:
     from apps.monero.xmr.crypto import Ge25519
@@ -40,7 +41,7 @@ def decode_addr(addr: bytes) -> tuple[int, bytes, bytes]:
 
 
 def public_addr_encode(
-    pub_addr: MoneroAccountPublicAddress, is_sub=False, net=NetworkTypes.MAINNET
+    pub_addr: MoneroAccountPublicAddress, is_sub=False, net=MoneroNetworkType.MAINNET
 ):
     """
     Encodes public address to Monero address
@@ -52,13 +53,13 @@ def public_addr_encode(
 def classify_subaddresses(
     tx_dests: list[MoneroTransactionDestinationEntry],
     change_addr: MoneroAccountPublicAddress,
-) -> tuple[int, int, int]:
+) -> tuple[int, int, MoneroAccountPublicAddress | None]:
     """
     Classify destination subaddresses
     """
     num_stdaddresses = 0
     num_subaddresses = 0
-    single_dest_subaddress = None
+    single_dest_subaddress: MoneroAccountPublicAddress | None = None
     addr_set = set()
     for tx in tx_dests:
         if change_addr and addr_eq(change_addr, tx.addr):
@@ -85,7 +86,7 @@ def addr_eq(a: MoneroAccountPublicAddress, b: MoneroAccountPublicAddress):
 def get_change_addr_idx(
     outputs: list[MoneroTransactionDestinationEntry],
     change_dts: MoneroTransactionDestinationEntry,
-) -> int:
+) -> int | None:
     """
     Returns ID of the change output from the change_dts and outputs
     """

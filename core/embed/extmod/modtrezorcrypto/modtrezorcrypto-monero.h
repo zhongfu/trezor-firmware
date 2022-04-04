@@ -852,7 +852,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
 // XMR defs
 //
 
-/// def base58_addr_encode_check(tag: int, buff: bytes) -> bytes:
+/// def xmr_base58_addr_encode_check(tag: int, buff: bytes) -> str:
 ///     """
 ///     Monero block base 58 encoding
 ///     """
@@ -871,13 +871,13 @@ STATIC mp_obj_t mod_trezorcrypto_monero_xmr_base58_addr_encode_check(
   }
   out.len = sz;
 
-  return mp_obj_new_str_from_vstr(&mp_type_bytes, &out);
+  return mp_obj_new_str_from_vstr(&mp_type_str, &out);
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_base58_addr_encode_check_obj, 2, 2,
     mod_trezorcrypto_monero_xmr_base58_addr_encode_check);
 
-/// def base58_addr_decode_check(buff: bytes) -> tuple[bytes, int]:
+/// def xmr_base58_addr_decode_check(buff: bytes) -> tuple[bytes, int]:
 ///     """
 ///     Monero block base 58 decoding, returning (decoded, tag) or raising on
 ///     error.
