@@ -28,8 +28,8 @@ class AccountCreds:
         self.view_key_public = view_key_public
         self.spend_key_private = spend_key_private
         self.spend_key_public = spend_key_public
-        self.address = address
-        self.network_type = network_type
+        self.address: str | None = address
+        self.network_type: MoneroNetworkType | None = network_type
 
     @classmethod
     def new_wallet(

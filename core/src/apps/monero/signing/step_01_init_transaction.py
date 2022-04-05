@@ -44,6 +44,7 @@ async def init_transaction(
 
     state.input_count = tsx_data.num_inputs
     state.output_count = len(tsx_data.outputs)
+    assert state.input_count is not None
     state.progress_total = 4 + 3 * state.input_count + state.output_count
     state.progress_cur = 0
 
@@ -58,7 +59,6 @@ async def init_transaction(
 
     # Basic transaction parameters
     state.output_change = tsx_data.change_dts
-    state.mixin = tsx_data.mixin
     state.fee = tsx_data.fee
     state.account_idx = tsx_data.account
     state.last_step = state.STEP_INIT
