@@ -14,11 +14,11 @@ from typing import TYPE_CHECKING
 from apps.monero.xmr import crypto
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.crypto import Sc25519
+    from apps.monero.xmr.crypto import Scalar
     from apps.monero.xmr.serialize_messages.tx_rsig_bulletproof import Bulletproof
 
 
-def prove_range_bp_batch(amounts: list[int], masks: list[Sc25519]) -> Bulletproof:
+def prove_range_bp_batch(amounts: list[int], masks: list[Scalar]) -> Bulletproof:
     """Calculates Bulletproof in batches"""
     from apps.monero.xmr import bulletproof as bp
 
@@ -30,7 +30,7 @@ def prove_range_bp_batch(amounts: list[int], masks: list[Sc25519]) -> Bulletproo
     return bp_proof
 
 
-def verify_bp(bp_proof: Bulletproof, amounts: list[int], masks: list[Sc25519]) -> bool:
+def verify_bp(bp_proof: Bulletproof, amounts: list[int], masks: list[Scalar]) -> bool:
     """Verifies Bulletproof"""
     from apps.monero.xmr import bulletproof as bp
 

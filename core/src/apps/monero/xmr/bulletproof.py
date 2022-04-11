@@ -8,7 +8,7 @@ from trezor.utils import memcpy as tmemcpy
 from apps.monero.xmr import crypto
 from apps.monero.xmr.serialize.int_serialize import dump_uvarint_b_into, uvarint_size
 
-from .crypto import Ge25519, Sc25519
+from .crypto import Point, Scalar
 
 if TYPE_CHECKING:
     from typing import Iterator, TypeVar, Generic
@@ -79,7 +79,7 @@ def memcpy(
     return dst
 
 
-def _alloc_scalars(num: int = 1) -> Iterator[Sc25519]:
+def _alloc_scalars(num: int = 1) -> Iterator[Scalar]:
     return (crypto.new_scalar() for _ in range(num))
 
 
@@ -108,7 +108,7 @@ def _invert(dst: bytearray, x: bytes) -> bytearray:
 
 
 def _scalarmult_key(
-    dst: bytearray, P, s: bytes, s_raw: int | None = None, tmp_pt: Ge25519 = _tmp_pt_1
+    dst: bytearray, P, s: bytes, s_raw: int | None = None, tmp_pt: Point = _tmp_pt_1
 ):
     # TODO: two functions based on s/s_raw ?
     dst = _ensure_dst_key(dst)
@@ -157,14 +157,14 @@ def _sc_add(dst: bytearray, a: bytes, b: bytes) -> bytearray:
 
 def _sc_sub(
     dst: bytearray | None,
-    a: bytes | Sc25519,
-    b: bytes | Sc25519,
+    a: bytes | Scalar,
+    b: bytes | Scalar,
 ):
     dst = _ensure_dst_key(dst)
-    if not isinstance(a, Sc25519):
+    if not isinstance(a, Scalar):
         crypto.decodeint_into_noreduce(_tmp_sc_1, a)
         a = _tmp_sc_1
-    if not isinstance(b, Sc25519):
+    if not isinstance(b, Scalar):
         crypto.decodeint_into_noreduce(_tmp_sc_2, b)
         b = _tmp_sc_2
     crypto.sc_sub_into(_tmp_sc_3, a, b)

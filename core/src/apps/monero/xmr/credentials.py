@@ -7,7 +7,7 @@ from apps.monero.xmr.addresses import encode_addr
 from apps.monero.xmr.networks import net_version
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.crypto import Sc25519, Ge25519
+    from apps.monero.xmr.crypto import Scalar, Point
 
 
 class AccountCreds:
@@ -17,10 +17,10 @@ class AccountCreds:
 
     def __init__(
         self,
-        view_key_private: Sc25519,
-        spend_key_private: Sc25519,
-        view_key_public: Ge25519,
-        spend_key_public: Ge25519,
+        view_key_private: Scalar,
+        spend_key_private: Scalar,
+        view_key_public: Point,
+        spend_key_public: Point,
         address: str,
         network_type: MoneroNetworkType,
     ) -> None:
@@ -34,8 +34,8 @@ class AccountCreds:
     @classmethod
     def new_wallet(
         cls,
-        priv_view_key: Sc25519,
-        priv_spend_key: Sc25519,
+        priv_view_key: Scalar,
+        priv_spend_key: Scalar,
         network_type: MoneroNetworkType = MoneroNetworkType.MAINNET,
     ) -> "AccountCreds":
         pub_view_key = crypto.scalarmult_base_into(None, priv_view_key)

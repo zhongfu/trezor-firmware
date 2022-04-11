@@ -4,12 +4,12 @@ from apps.monero.xmr import crypto, monero
 from apps.monero.xmr.serialize.int_serialize import dump_uvarint_b
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.crypto import Ge25519, Sc25519
+    from apps.monero.xmr.crypto import Point, Scalar
     from apps.monero.xmr.credentials import AccountCreds
     from trezor.messages import MoneroTransferDetails
 
     Subaddresses = dict[bytes, tuple[int, int]]
-    Sig = list[list[Sc25519]]
+    Sig = list[list[Scalar]]
 
 
 def compute_hash(rr: MoneroTransferDetails) -> bytes:
@@ -25,7 +25,7 @@ def compute_hash(rr: MoneroTransferDetails) -> bytes:
 
 def export_key_image(
     creds: AccountCreds, subaddresses: Subaddresses, td: MoneroTransferDetails
-) -> tuple[Ge25519, Sig]:
+) -> tuple[Point, Sig]:
     out_key = crypto.decodepoint(td.out_key)
     tx_pub_key = crypto.decodepoint(td.tx_pub_key)
 
@@ -56,14 +56,14 @@ def export_key_image(
 def _export_key_image(
     creds: AccountCreds,
     subaddresses: Subaddresses,
-    pkey: Ge25519,
-    tx_pub_key: Ge25519,
-    additional_tx_pub_key: Ge25519 | None,
+    pkey: Point,
+    tx_pub_key: Point,
+    additional_tx_pub_key: Point | None,
     out_idx: int,
     test: bool = True,
     sub_addr_major: int | None = None,
     sub_addr_minor: int | None = None,
-) -> tuple[Ge25519, Sig]:
+) -> tuple[Point, Sig]:
     """
     Generates key image for the TXO + signature for the key image
     """
@@ -87,9 +87,9 @@ def _export_key_image(
 
 def generate_ring_signature(
     prefix_hash: bytes,
-    image: Ge25519,
-    pubs: list[Ge25519],
-    sec: Sc25519,
+    image: Point,
+    pubs: list[Point],
+    sec: Scalar,
     sec_idx: int,
     test: bool = False,
 ) -> Sig:

@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 
     from trezor.enums import MoneroNetworkType
 
-    from .xmr.crypto import Sc25519
+    from .xmr.crypto import Scalar
     from .xmr.credentials import AccountCreds
 
 
@@ -26,10 +26,10 @@ def get_creds(
 
 
 def compute_tx_key(
-    spend_key_private: Sc25519,
+    spend_key_private: Scalar,
     tx_prefix_hash: bytes,
     salt: bytes,
-    rand_mult_num: Sc25519,
+    rand_mult_num: Scalar,
 ) -> bytes:
     from apps.monero.xmr import crypto
 
@@ -40,7 +40,7 @@ def compute_tx_key(
 
 
 def compute_enc_key_host(
-    view_key_private: Sc25519, tx_prefix_hash: bytes
+    view_key_private: Scalar, tx_prefix_hash: bytes
 ) -> tuple[bytes, bytes]:
     from apps.monero.xmr import crypto
 

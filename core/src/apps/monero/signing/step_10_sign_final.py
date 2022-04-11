@@ -19,7 +19,7 @@ from apps.monero.xmr.crypto import chacha_poly
 from .state import State
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.crypto import Sc25519
+    from apps.monero.xmr.crypto import Scalar
 
 
 def final_msg(state: State) -> MoneroTransactionFinalAck:
@@ -48,7 +48,7 @@ def final_msg(state: State) -> MoneroTransactionFinalAck:
 
 
 def _compute_tx_key(
-    spend_key_private: Sc25519, tx_prefix_hash: bytes
+    spend_key_private: Scalar, tx_prefix_hash: bytes
 ) -> tuple[bytes, bytes, bytes]:
     salt = crypto.random_bytes(32)
 

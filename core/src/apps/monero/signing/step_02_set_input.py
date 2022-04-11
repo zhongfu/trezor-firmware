@@ -19,7 +19,7 @@ from apps.monero.xmr import crypto, monero, serialize
 from .state import State
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.crypto import Sc25519, Ge25519
+    from apps.monero.xmr.crypto import Scalar, Point
     from trezor.messages import MoneroTransactionSourceEntry
     from trezor.messages import MoneroTransactionSetInputAck
 
@@ -127,7 +127,7 @@ async def set_input(
     )
 
 
-def _gen_commitment(state: State, in_amount: int) -> tuple[Sc25519, Ge25519]:
+def _gen_commitment(state: State, in_amount: int) -> tuple[Scalar, Point]:
     """
     Computes Pedersen commitment - pseudo outs
     Here is slight deviation from the original protocol.
@@ -161,7 +161,7 @@ def _absolute_output_offsets_to_relative(off: list[int]) -> list[int]:
 
 def _get_additional_public_key(
     src_entr: MoneroTransactionSourceEntry,
-) -> Ge25519 | None:
+) -> Point | None:
     additional_tx_pub_key = None
     if len(src_entr.real_out_additional_tx_keys) == 1:  # compression
         additional_tx_pub_key = crypto.decodepoint(

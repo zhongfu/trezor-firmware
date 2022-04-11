@@ -51,7 +51,7 @@ from apps.monero.xmr.serialize import int_serialize
 if TYPE_CHECKING:
     from typing import Any, TypeGuard, TypeVar
 
-    from .crypto import Ge25519, Sc25519
+    from .crypto import Point, Scalar
     from .serialize_messages.tx_ct_key import CtKey
     from trezor.messages import MoneroRctKeyPublic
 
@@ -72,8 +72,8 @@ def generate_mlsag_simple(
     message: bytes,
     pubs: list[MoneroRctKeyPublic],
     in_sk: CtKey,
-    a: Sc25519,
-    cout: Ge25519,
+    a: Scalar,
+    cout: Point,
     index: int,
     mg_buff: list[bytearray],
 ) -> list[bytes]:
@@ -99,7 +99,7 @@ def generate_mlsag_simple(
     M = _key_matrix(rows, cols)
 
     if TYPE_CHECKING:
-        assert list_of_type(sk, Sc25519)
+        assert list_of_type(sk, Scalar)
         assert list_of_type(M, list[bytes])
 
     sk[0] = in_sk.dest
@@ -122,7 +122,7 @@ def generate_mlsag_simple(
 
 
 def gen_mlsag_assert(
-    pk: KeyM, xx: list[Sc25519], index: int, dsRows: int
+    pk: KeyM, xx: list[Scalar], index: int, dsRows: int
 ) -> tuple[int, int]:
     """
     Conditions check
@@ -150,12 +150,12 @@ def gen_mlsag_assert(
 def generate_first_c_and_key_images(
     message: bytes,
     pk: KeyM,
-    xx: list[Sc25519],
+    xx: list[Scalar],
     index: int,
     dsRows: int,
     rows: int,
     cols: int,
-) -> tuple[Sc25519, list[Ge25519], list[Sc25519]]:
+) -> tuple[Scalar, list[Point], list[Scalar]]:
     """
     MLSAG computation - the part with secret keys
     :param message: the full message to be signed (actually its hash)
@@ -169,8 +169,8 @@ def generate_first_c_and_key_images(
     alpha = _key_vector(rows)
 
     if TYPE_CHECKING:
-        assert list_of_type(II, Ge25519)
-        assert list_of_type(alpha, Sc25519)
+        assert list_of_type(II, Point)
+        assert list_of_type(alpha, Scalar)
 
     tmp_buff = bytearray(32)
     Hi = crypto.new_point()
@@ -213,7 +213,7 @@ def generate_first_c_and_key_images(
 def generate_mlsag(
     message: bytes,
     pk: KeyM,
-    xx: list[Sc25519],
+    xx: list[Scalar],
     index: int,
     dsRows: int,
     mg_buff: list[bytearray],
@@ -319,8 +319,8 @@ def generate_clsag_simple(
     message: bytes,
     pubs: list[MoneroRctKeyPublic],
     in_sk: CtKey,
-    a: Sc25519,
-    cout: Ge25519,
+    a: Scalar,
+    cout: Point,
     index: int,
     mg_buff: list[bytearray],
 ) -> list[bytes]:
@@ -361,10 +361,10 @@ def generate_clsag_simple(
 def _generate_clsag(
     message: bytes,
     P: list[bytes],
-    p: Sc25519,
+    p: Scalar,
     C_nonzero: list[bytes],
-    z: Sc25519,
-    Cout: Ge25519,
+    z: Scalar,
+    Cout: Point,
     index: int,
     mg_buff: list[bytearray],
 ) -> list[bytes]:

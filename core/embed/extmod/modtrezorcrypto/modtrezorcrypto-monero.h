@@ -136,12 +136,12 @@ STATIC void mp_unpack_scalar(bignum256modm r, const mp_obj_t arg,
 // Constructors
 //
 
-/// class Ge25519:
+/// class Point:
 ///     """
 ///     EC point on ED25519
 ///     """
 ///
-///     def __init__(self, x: Ge25519 | bytes | None = None):
+///     def __init__(self, x: Point | bytes | None = None):
 ///         """
 ///         Constructor
 ///         """
@@ -174,12 +174,12 @@ STATIC mp_obj_t mod_trezorcrypto_monero_ge25519___del__(mp_obj_t self) {
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mod_trezorcrypto_monero_ge25519___del___obj,
                                  mod_trezorcrypto_monero_ge25519___del__);
 
-/// class Sc25519:
+/// class Scalar:
 ///     """
 ///     EC scalar on SC25519
 ///     """
 ///
-///     def __init__(self, x: Sc25519 | bytes | int | None = None):
+///     def __init__(self, x: Scalar | bytes | int | None = None):
 ///         """
 ///         Constructor
 ///         """
@@ -275,10 +275,10 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_1(mod_trezorcrypto_monero_hasher___del___obj,
 /// mock:global
 
 /// def init256_modm(
-///     dst: Sc25519 | None, val: int | bytes | Sc25519
-/// ) -> Sc25519:
+///     dst: Scalar | None, val: int | bytes | Scalar
+/// ) -> Scalar:
 ///     """
-///     Initializes Sc25519 scalar
+///     Initializes a scalar
 ///     """
 STATIC mp_obj_t mod_trezorcrypto_monero_init256_modm(size_t n_args,
                                                      const mp_obj_t *args) {
@@ -301,7 +301,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_init256_modm_obj, 2, 2,
     mod_trezorcrypto_monero_init256_modm);
 
-/// def check256_modm(val: Sc25519) -> None:
+/// def check256_modm(val: Scalar) -> None:
 ///     """
 ///     Throws exception if scalar is invalid
 ///     """
@@ -315,7 +315,7 @@ STATIC mp_obj_t mod_trezorcrypto_monero_check256_modm(const mp_obj_t arg) {
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mod_trezorcrypto_monero_check256_modm_obj,
                                  mod_trezorcrypto_monero_check256_modm);
 
-/// def iszero256_modm(val: Sc25519) -> bool:
+/// def iszero256_modm(val: Scalar) -> bool:
 ///     """
 ///     Returns False if the scalar is zero
 ///     """
@@ -327,7 +327,7 @@ STATIC mp_obj_t mod_trezorcrypto_monero_iszero256_modm(const mp_obj_t arg) {
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mod_trezorcrypto_monero_iszero256_modm_obj,
                                  mod_trezorcrypto_monero_iszero256_modm);
 
-/// def eq256_modm(a: Sc25519, b: Sc25519) -> int:
+/// def eq256_modm(a: Scalar, b: Scalar) -> int:
 ///     """
 ///     Compares scalars, returns 1 on the same value
 ///     """
@@ -341,7 +341,7 @@ STATIC mp_obj_t mod_trezorcrypto_monero_eq256_modm(const mp_obj_t a,
 STATIC MP_DEFINE_CONST_FUN_OBJ_2(mod_trezorcrypto_monero_eq256_modm_obj,
                                  mod_trezorcrypto_monero_eq256_modm);
 
-/// def add256_modm(r: Sc25519 | None, a: Sc25519, b: Sc25519) -> Sc25519:
+/// def add256_modm(r: Scalar | None, a: Scalar, b: Scalar) -> Scalar:
 ///     """
 ///     Scalar addition
 ///     """
@@ -360,7 +360,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_add256_modm_obj, 3, 3,
     mod_trezorcrypto_monero_add256_modm);
 
-/// def sub256_modm(r: Sc25519 | None, a: Sc25519, b: Sc25519) -> Sc25519:
+/// def sub256_modm(r: Scalar | None, a: Scalar, b: Scalar) -> Scalar:
 ///     """
 ///     Scalar subtraction
 ///     """
@@ -379,7 +379,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_sub256_modm_obj, 3, 3,
     mod_trezorcrypto_monero_sub256_modm);
 
-/// def mul256_modm(r: Sc25519 | None, a: Sc25519, b: Sc25519) -> Sc25519:
+/// def mul256_modm(r: Scalar | None, a: Scalar, b: Scalar) -> Scalar:
 ///     """
 ///     Scalar multiplication
 ///     """
@@ -399,8 +399,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_mul256_modm);
 
 /// def mulsub256_modm(
-///     r: Sc25519 | None, a: Sc25519, b: Sc25519, c: Sc25519
-/// ) -> Sc25519:
+///     r: Scalar | None, a: Scalar, b: Scalar, c: Scalar
+/// ) -> Scalar:
 ///     """
 ///     c - a*b
 ///     """
@@ -422,8 +422,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_mulsub256_modm);
 
 /// def muladd256_modm(
-///     r: Sc25519 | None, a: Sc25519, b: Sc25519, c: Sc25519
-/// ) -> Sc25519:
+///     r: Scalar | None, a: Scalar, b: Scalar, c: Scalar
+/// ) -> Scalar:
 ///     """
 ///     c + a*b
 ///     """
@@ -444,7 +444,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_muladd256_modm_obj, 4, 4,
     mod_trezorcrypto_monero_muladd256_modm);
 
-/// def inv256_modm(r: Sc25519 | None, a: Sc25519) -> Sc25519:
+/// def inv256_modm(r: Scalar | None, a: Scalar) -> Scalar:
 ///     """
 ///     Scalar modular inversion
 ///     """
@@ -478,7 +478,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_inv256_modm);
 
 /// def pack256_modm(
-///     r: bytes | None, a: Sc25519, offset: int | None = 0
+///     r: bytes | None, a: Scalar, offset: int | None = 0
 /// ) -> bytes:
 ///     """
 ///     Scalar compression
@@ -509,8 +509,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_pack256_modm);
 
 /// def unpack256_modm(
-///     r: Sc25519 | None, a: bytes, offset: int = 0
-/// ) -> Sc25519:
+///     r: Scalar | None, a: bytes, offset: int = 0
+/// ) -> Scalar:
 ///     """
 ///     Scalar decompression
 ///     """
@@ -527,8 +527,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_unpack256_modm);
 
 /// def unpack256_modm_noreduce(
-///     r: Sc25519 | None, a: bytes, offset: int = 0
-/// ) -> Sc25519:
+///     r: Scalar | None, a: bytes, offset: int = 0
+/// ) -> Scalar:
 ///     """
 ///     Scalar decompression, raw, without modular reduction
 ///     """
@@ -555,7 +555,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
 // GE25519 Defs
 //
 
-/// def ge25519_set_neutral(r: Ge25519 | None = None) -> Ge25519:
+/// def ge25519_set_neutral(r: Point | None = None) -> Point:
 ///     """
 ///     Sets neutral point
 ///     """
@@ -569,7 +569,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_ge25519_set_neutral_obj, 0, 1,
     mod_trezorcrypto_monero_ge25519_set_neutral);
 
-/// def ge25519_set_xmr_h(r: Ge25519 | None) -> Ge25519:
+/// def ge25519_set_xmr_h(r: Point | None) -> Point:
 ///     """
 ///     Sets H point
 ///     """
@@ -583,7 +583,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_ge25519_set_xmr_h_obj, 0, 1,
     mod_trezorcrypto_monero_ge25519_set_xmr_h);
 
-/// def ge25519_check(r: Ge25519) -> None:
+/// def ge25519_check(r: Point) -> None:
 ///     """
 ///     Checks point, throws if not on curve
 ///     """
@@ -597,7 +597,7 @@ STATIC mp_obj_t mod_trezorcrypto_monero_ge25519_check(const mp_obj_t arg) {
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mod_trezorcrypto_monero_ge25519_check_obj,
                                  mod_trezorcrypto_monero_ge25519_check);
 
-/// def ge25519_eq(a: Ge25519, b: Ge25519) -> bool:
+/// def ge25519_eq(a: Point, b: Point) -> bool:
 ///     """
 ///     Compares EC points
 ///     """
@@ -611,7 +611,7 @@ STATIC mp_obj_t mod_trezorcrypto_monero_ge25519_eq(const mp_obj_t a,
 STATIC MP_DEFINE_CONST_FUN_OBJ_2(mod_trezorcrypto_monero_ge25519_eq_obj,
                                  mod_trezorcrypto_monero_ge25519_eq);
 
-/// def ge25519_add(r: Ge25519 | None, a: Ge25519, b: Ge25519) -> Ge25519:
+/// def ge25519_add(r: Point | None, a: Point, b: Point) -> Point:
 ///     """
 ///     Adds EC points
 ///     """
@@ -630,7 +630,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_ge25519_add_obj, 3, 3,
     mod_trezorcrypto_monero_ge25519_add);
 
-/// def ge25519_sub(r: Ge25519 | None, a: Ge25519, b: Ge25519) -> Ge25519:
+/// def ge25519_sub(r: Point | None, a: Point, b: Point) -> Point:
 ///     """
 ///     Subtracts EC points
 ///     """
@@ -649,7 +649,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_ge25519_sub_obj, 3, 3,
     mod_trezorcrypto_monero_ge25519_sub);
 
-/// def ge25519_mul8(r: Ge25519 | None, p: Ge25519) -> Ge25519:
+/// def ge25519_mul8(r: Point | None, p: Point) -> Point:
 ///     """
 ///     EC point * 8
 ///     """
@@ -667,8 +667,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_ge25519_mul8);
 
 /// def ge25519_double_scalarmult_vartime(
-///     r: Ge25519 | None, p1: Ge25519, s1: Sc25519, s2: Sc25519
-/// ) -> Ge25519:
+///     r: Point | None, p1: Point, s1: Scalar, s2: Scalar
+/// ) -> Point:
 ///     """
 ///     s1 * G + s2 * p1
 ///     """
@@ -690,12 +690,12 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_ge25519_double_scalarmult_vartime);
 
 /// def ge25519_double_scalarmult_vartime2(
-///     r: Ge25519 | None,
-///     p1: Ge25519,
-///     s1: Sc25519,
-///     p2: Ge25519,
-///     s2: Sc25519,
-/// ) -> Ge25519:
+///     r: Point | None,
+///     p1: Point,
+///     s1: Scalar,
+///     p2: Point,
+///     s2: Scalar,
+/// ) -> Point:
 ///     """
 ///     s1 * p1 + s2 * p2
 ///     """
@@ -720,8 +720,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_ge25519_double_scalarmult_vartime2);
 
 /// def ge25519_scalarmult_base(
-///     r: Ge25519 | None, s: Sc25519 | int
-/// ) -> Ge25519:
+///     r: Point | None, s: Scalar | int
+/// ) -> Point:
 ///     """
 ///     s * G
 ///     """
@@ -748,8 +748,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_ge25519_scalarmult_base);
 
 /// def ge25519_scalarmult(
-///     r: Ge25519 | None, p: Ge25519, s: Sc25519 | int
-/// ) -> Ge25519:
+///     r: Point | None, p: Point, s: Scalar | int
+/// ) -> Point:
 ///     """
 ///     s * p
 ///     """
@@ -777,7 +777,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_ge25519_scalarmult_obj, 2, 3,
     mod_trezorcrypto_monero_ge25519_scalarmult);
 
-/// def ge25519_pack(r: bytes | None, p: Ge25519, offset: int = 0) -> bytes:
+/// def ge25519_pack(r: bytes | None, p: Point, offset: int = 0) -> bytes:
 ///     """
 ///     Point compression
 ///     """
@@ -807,8 +807,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_ge25519_pack);
 
 /// def ge25519_unpack_vartime(
-///     r: Ge25519 | None, buff: bytes, offset: int = 0
-/// ) -> Ge25519:
+///     r: Point | None, buff: bytes, offset: int = 0
+/// ) -> Point:
 ///     """
 ///     Point decompression
 ///     """
@@ -884,7 +884,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_base58_addr_decode_check_obj, 1, 1,
     mod_trezorcrypto_monero_xmr_base58_addr_decode_check);
 
-/// def xmr_random_scalar(r: Sc25519 | None = None) -> Sc25519:
+/// def xmr_random_scalar(r: Scalar | None = None) -> Scalar:
 ///     """
 ///     Generates a random scalar
 ///     """
@@ -942,11 +942,11 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_fast_hash);
 
 /// def xmr_hash_to_ec(
-///     r: Ge25519 | None,
+///     r: Point | None,
 ///     buff: bytes,
 ///     length: int | None = None,
 ///     offset: int = 0,
-/// ) -> Ge25519:
+/// ) -> Point:
 ///     """
 ///     XMR hashing to EC point
 ///     """
@@ -972,11 +972,11 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_hash_to_ec);
 
 /// def xmr_hash_to_scalar(
-///    r: Sc25519 | None,
+///    r: Scalar | None,
 ///    buff: bytes,
 ///    length: int | None = None,
 ///    offset: int = 0,
-/// ) -> Sc25519:
+/// ) -> Scalar:
 ///     """
 ///     XMR hashing to EC scalar
 ///     """
@@ -1002,8 +1002,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_hash_to_scalar);
 
 /// def xmr_derivation_to_scalar(
-///     r: Sc25519 | None, p: Ge25519, output_index: int
-/// ) -> Sc25519:
+///     r: Scalar | None, p: Point, output_index: int
+/// ) -> Scalar:
 ///     """
 ///     H_s(derivation || varint(output_index))
 ///     """
@@ -1021,8 +1021,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_derivation_to_scalar);
 
 /// def xmr_generate_key_derivation(
-///     r: Ge25519 | None, A: Ge25519, b: Sc25519
-/// ) -> Ge25519:
+///     r: Point | None, A: Point, b: Scalar
+/// ) -> Point:
 ///     """
 ///     8*(key2*key1)
 ///     """
@@ -1042,8 +1042,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_generate_key_derivation);
 
 /// def xmr_derive_private_key(
-///     r: Sc25519 | None, deriv: Ge25519, idx: int, base: Sc25519
-/// ) -> Sc25519:
+///     r: Scalar | None, deriv: Point, idx: int, base: Scalar
+/// ) -> Scalar:
 ///     """
 ///     base + H_s(derivation || varint(output_index))
 ///     """
@@ -1063,8 +1063,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_derive_private_key);
 
 /// def xmr_derive_public_key(
-///     r: Ge25519 | None, deriv: Ge25519, idx: int, base: Ge25519
-/// ) -> Ge25519:
+///     r: Point | None, deriv: Point, idx: int, base: Point
+/// ) -> Point:
 ///     """
 ///     H_s(derivation || varint(output_index))G + base
 ///     """
@@ -1084,8 +1084,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_derive_public_key);
 
 /// def xmr_add_keys2(
-///     r: Ge25519 | None, a: Sc25519, b: Sc25519, B: Ge25519
-/// ) -> Ge25519:
+///     r: Point | None, a: Scalar, b: Scalar, B: Point
+/// ) -> Point:
 ///     """
 ///     aG + bB, G is basepoint
 ///     """
@@ -1105,8 +1105,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_add_keys2);
 
 /// def xmr_add_keys2_vartime(
-///     r: Ge25519 | None, a: Sc25519, b: Sc25519, B: Ge25519
-/// ) -> Ge25519:
+///     r: Point | None, a: Scalar, b: Scalar, B: Point
+/// ) -> Point:
 ///     """
 ///     aG + bB, G is basepoint
 ///     """
@@ -1127,8 +1127,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_add_keys2_vartime);
 
 /// def xmr_add_keys3(
-///     r: Ge25519 | None, a: Sc25519, A: Ge25519, b: Sc25519, B: Ge25519
-/// ) -> Ge25519:
+///     r: Point | None, a: Scalar, A: Point, b: Scalar, B: Point
+/// ) -> Point:
 ///     """
 ///     aA + bB
 ///     """
@@ -1150,8 +1150,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_add_keys3);
 
 /// def xmr_add_keys3_vartime(
-///     r: Ge25519 | None, a: Sc25519, A: Ge25519, b: Sc25519, B: Ge25519
-/// ) -> Ge25519:
+///     r: Point | None, a: Scalar, A: Point, b: Scalar, B: Point
+/// ) -> Point:
 ///     """
 ///     aA + bB
 ///     """
@@ -1174,8 +1174,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_add_keys3_vartime);
 
 /// def xmr_get_subaddress_secret_key(
-///     r: Sc25519 | None, major: int, minor: int, m: Sc25519
-/// ) -> Sc25519:
+///     r: Scalar | None, major: int, minor: int, m: Scalar
+/// ) -> Scalar:
 ///     """
 ///     Hs(SubAddr || a || index_major || index_minor)
 ///     """
@@ -1193,7 +1193,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(
     mod_trezorcrypto_monero_xmr_get_subaddress_secret_key_obj, 4, 4,
     mod_trezorcrypto_monero_xmr_get_subaddress_secret_key);
 
-/// def xmr_gen_c(r: Ge25519 | None, a: Sc25519, amount: int) -> Ge25519:
+/// def xmr_gen_c(r: Point | None, a: Scalar, amount: int) -> Point:
 ///     """
 ///     aG + amount * H
 ///     """
@@ -1297,7 +1297,7 @@ STATIC MP_DEFINE_CONST_DICT(mod_trezorcrypto_monero_ge25519_locals_dict,
 
 STATIC const mp_obj_type_t mod_trezorcrypto_monero_ge25519_type = {
     {&mp_type_type},
-    .name = MP_QSTR_Ge25519,
+    .name = MP_QSTR_Point,
     .make_new = mod_trezorcrypto_monero_ge25519_make_new,
     .locals_dict = (void *)&mod_trezorcrypto_monero_ge25519_locals_dict,
 };
@@ -1313,7 +1313,7 @@ STATIC MP_DEFINE_CONST_DICT(
 
 STATIC const mp_obj_type_t mod_trezorcrypto_monero_bignum256modm_type = {
     {&mp_type_type},
-    .name = MP_QSTR_Sc25519,
+    .name = MP_QSTR_Scalar,
     .make_new = mod_trezorcrypto_monero_bignum256modm_make_new,
     .locals_dict = (void *)&mod_trezorcrypto_monero_bignum256modm_locals_dict,
 };
@@ -2505,8 +2505,8 @@ STATIC const mp_obj_str_t mod_trezorcrypto_monero_BP_TWO_N_obj = {{&mp_type_byte
 STATIC const mp_rom_map_elem_t mod_trezorcrypto_monero_globals_table[] = {
     {MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_monero)},
     // types
-    {MP_ROM_QSTR(MP_QSTR_Ge25519), MP_ROM_PTR(&mod_trezorcrypto_monero_ge25519_type)},
-    {MP_ROM_QSTR(MP_QSTR_Sc25519), MP_ROM_PTR(&mod_trezorcrypto_monero_bignum256modm_type)},
+    {MP_ROM_QSTR(MP_QSTR_Point), MP_ROM_PTR(&mod_trezorcrypto_monero_ge25519_type)},
+    {MP_ROM_QSTR(MP_QSTR_Scalar), MP_ROM_PTR(&mod_trezorcrypto_monero_bignum256modm_type)},
     // functions
     {MP_ROM_QSTR(MP_QSTR_init256_modm),
      MP_ROM_PTR(&mod_trezorcrypto_monero_init256_modm_obj)},

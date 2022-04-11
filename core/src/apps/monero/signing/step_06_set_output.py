@@ -14,7 +14,7 @@ from apps.monero.xmr import crypto, serialize
 from .state import State
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.crypto import Sc25519, Ge25519
+    from apps.monero.xmr.crypto import Scalar, Point
     from apps.monero.xmr.serialize_messages.tx_ecdh import EcdhTuple
     from apps.monero.xmr.serialize_messages.tx_rsig_bulletproof import Bulletproof
     from trezor.messages import (
@@ -170,7 +170,7 @@ def _validate(
 
 def _compute_tx_keys(
     state: State, dst_entr: MoneroTransactionDestinationEntry
-) -> tuple[Ge25519, Sc25519]:
+) -> tuple[Point, Scalar]:
     """Computes tx_out_key, amount_key"""
 
     if state.is_processing_offloaded:
@@ -198,7 +198,7 @@ def _compute_tx_keys(
 
 
 def _set_out_tx_out(
-    state: State, dst_entr: MoneroTransactionDestinationEntry, tx_out_key: Ge25519
+    state: State, dst_entr: MoneroTransactionDestinationEntry, tx_out_key: Point
 ) -> tuple[bytes, bytes]:
     """
     Manually serializes TxOut(0, TxoutToKey(key)) and calculates hmac.
@@ -223,7 +223,7 @@ def _set_out_tx_out(
 
 def _range_proof(
     state: State, rsig_data: MoneroTransactionRsigData
-) -> tuple[MoneroTransactionRsigData, Sc25519]:
+) -> tuple[MoneroTransactionRsigData, Scalar]:
     """
     Computes rangeproof and handles range proof offloading logic.
 
@@ -405,7 +405,7 @@ def _return_rsig_data(
 
 
 def _get_ecdh_info_and_out_pk(
-    state: State, tx_out_key: Ge25519, amount: int, mask: Sc25519, amount_key: Sc25519
+    state: State, tx_out_key: Point, amount: int, mask: Scalar, amount_key: Scalar
 ) -> tuple[bytes, bytes, bytes]:
     """
     Calculates the Pedersen commitment C = aG + bH and returns it as CtKey.
@@ -462,7 +462,7 @@ def _ecdh_encode(amount: int, amount_key: bytes) -> EcdhTuple:
 
 def _set_out_additional_keys(
     state: State, dst_entr: MoneroTransactionDestinationEntry
-) -> Sc25519:
+) -> Scalar:
     """
     If needed (decided in step 1), additional tx keys are calculated
     for this particular output.
@@ -490,8 +490,8 @@ def _set_out_additional_keys(
 def _set_out_derivation(
     state: State,
     dst_entr: MoneroTransactionDestinationEntry,
-    additional_txkey_priv: Sc25519,
-) -> Ge25519:
+    additional_txkey_priv: Scalar,
+) -> Point:
     """
     Calculates derivation which is then used in the one-time address as
     `P = H(derivation)*G + B`.

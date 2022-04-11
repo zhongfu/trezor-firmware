@@ -6,7 +6,7 @@ from trezor import utils
 from apps.monero.xmr import crypto
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.crypto import Sc25519
+    from apps.monero.xmr.crypto import Scalar
     from trezor.messages import (
         MoneroTransactionDestinationEntry,
         MoneroTransactionSourceEntry,
@@ -117,7 +117,7 @@ def key_signature(master: bytes, idx: int, is_iv: bool = False) -> bytes:
     return _build_key(master, b"sig-iv" if is_iv else b"sig-key", idx)
 
 
-def det_comm_masks(key_enc: bytes, idx: int) -> Sc25519:
+def det_comm_masks(key_enc: bytes, idx: int) -> Scalar:
     """
     Deterministic output commitment masks
     """

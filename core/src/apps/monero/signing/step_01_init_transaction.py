@@ -10,7 +10,7 @@ from apps.monero.signing.state import State
 from apps.monero.xmr import crypto, monero
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.crypto import Sc25519, Ge25519
+    from apps.monero.xmr.crypto import Scalar, Point
     from trezor.messages import (
         MoneroAccountPublicAddress,
         MoneroTransactionData,
@@ -403,7 +403,7 @@ def _get_key_for_payment_id_encryption(
 
 
 def _encrypt_payment_id(
-    payment_id: bytes, public_key: Ge25519, secret_key: Sc25519
+    payment_id: bytes, public_key: Point, secret_key: Scalar
 ) -> bytes:
     """
     Encrypts payment_id hex.

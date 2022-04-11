@@ -10,8 +10,8 @@
 from trezor.crypto import monero as tcry, random
 from trezor.crypto.hashlib import sha3_256
 
-Sc25519 = tcry.Sc25519
-Ge25519 = tcry.Ge25519
+Scalar = tcry.Scalar
+Point = tcry.Point
 NULL_KEY_ENC = b"\x00" * 32
 
 random_bytes = random.bytes
@@ -65,7 +65,7 @@ def compute_hmac(key: bytes, msg: bytes) -> bytes:
 new_point = tcry.ge25519_set_neutral
 
 
-def new_scalar() -> Sc25519:
+def new_scalar() -> Scalar:
     return tcry.init256_modm(None, 0)
 
 
@@ -86,19 +86,19 @@ point_sub_into = tcry.ge25519_sub
 point_eq = tcry.ge25519_eq
 
 
-def decodepoint(x: bytes) -> Ge25519:
+def decodepoint(x: bytes) -> Point:
     return decodepoint_into(None, x)
 
 
-def encodepoint(x: Ge25519, offset: int = 0) -> bytes:
+def encodepoint(x: Point, offset: int = 0) -> bytes:
     return encodepoint_into(None, x, offset)
 
 
-def encodeint(x: Sc25519, offset: int = 0) -> bytes:
+def encodeint(x: Scalar, offset: int = 0) -> bytes:
     return encodeint_into(None, x, offset)
 
 
-def decodeint(x: bytes) -> Sc25519:
+def decodeint(x: bytes) -> Scalar:
     return decodeint_into(None, x)
 
 
@@ -106,7 +106,7 @@ INV_EIGHT = b"\x79\x2f\xdc\xe2\x29\xe5\x06\x61\xd0\xda\x1c\x7d\xb3\x9d\xd3\x07\x
 INV_EIGHT_SC = decodeint(INV_EIGHT)
 
 
-def sc_inv_eight() -> Sc25519:
+def sc_inv_eight() -> Scalar:
     return INV_EIGHT_SC
 
 
@@ -115,21 +115,21 @@ def sc_inv_eight() -> Sc25519:
 #
 
 
-def sc_0() -> Sc25519:
+def sc_0() -> Scalar:
     return tcry.init256_modm(None, 0)
 
 
-def sc_0_into(r: Sc25519) -> Sc25519:
+def sc_0_into(r: Scalar) -> Scalar:
     return tcry.init256_modm(r, 0)
 
 
-def sc_init(x: int) -> Sc25519:
+def sc_init(x: int) -> Scalar:
     if x >= (1 << 64):
         raise ValueError("Initialization works up to 64-bit only")
     return tcry.init256_modm(None, x)
 
 
-def sc_init_into(r: Sc25519, x: int) -> Sc25519:
+def sc_init_into(r: Scalar, x: int) -> Scalar:
     if x >= (1 << 64):
         raise ValueError("Initialization works up to 64-bit only")
     return tcry.init256_modm(r, x)
@@ -143,7 +143,7 @@ sc_sub_into = tcry.sub256_modm
 sc_mul_into = tcry.mul256_modm
 
 
-def sc_isnonzero(c: Sc25519) -> bool:
+def sc_isnonzero(c: Scalar) -> bool:
     """
     Returns true if scalar is non-zero
     """
@@ -156,7 +156,7 @@ sc_muladd_into = tcry.muladd256_modm
 sc_inv_into = tcry.inv256_modm
 
 
-def random_scalar(r=None) -> Sc25519:
+def random_scalar(r=None) -> Scalar:
     return tcry.xmr_random_scalar(r if r is not None else new_scalar())
 
 
@@ -165,7 +165,7 @@ def random_scalar(r=None) -> Sc25519:
 #
 
 
-def ge25519_double_scalarmult_base_vartime(a, A, b) -> Ge25519:
+def ge25519_double_scalarmult_base_vartime(a, A, b) -> Point:
     """
     void ge25519_double_scalarmult_vartime(ge25519 *r, const ge25519 *p1, const bignum256modm s1, const bignum256modm s2);
     r = a * A + b * B
@@ -174,7 +174,7 @@ def ge25519_double_scalarmult_base_vartime(a, A, b) -> Ge25519:
     return R
 
 
-def identity(byte_enc: bool = False) -> Ge25519 | bytes:
+def identity(byte_enc: bool = False) -> Point | bytes:
     idd = tcry.ge25519_set_neutral()
     return idd if not byte_enc else encodepoint(idd)
 
@@ -200,7 +200,7 @@ def hash_to_scalar(data: bytes, length: int | None = None):
     return tcry.xmr_hash_to_scalar(None, dt)
 
 
-def hash_to_scalar_into(r: Sc25519, data: bytes, length: int | None = None):
+def hash_to_scalar_into(r: Scalar, data: bytes, length: int | None = None):
     dt = data[:length] if length else data
     return tcry.xmr_hash_to_scalar(r, dt)
 
@@ -226,7 +226,7 @@ add_keys3_into = tcry.xmr_add_keys3_vartime
 gen_commitment_into = tcry.xmr_gen_c
 
 
-def generate_key_derivation(pub: Ge25519, sec: Sc25519) -> Ge25519:
+def generate_key_derivation(pub: Point, sec: Scalar) -> Point:
     """
     Key derivation: 8*(key2*key1)
     """
@@ -235,7 +235,7 @@ def generate_key_derivation(pub: Ge25519, sec: Sc25519) -> Ge25519:
     return tcry.xmr_generate_key_derivation(None, pub, sec)
 
 
-def derivation_to_scalar(derivation: Ge25519, output_index: int) -> Sc25519:
+def derivation_to_scalar(derivation: Point, output_index: int) -> Scalar:
     """
     H_s(derivation || varint(output_index))
     """
@@ -243,7 +243,7 @@ def derivation_to_scalar(derivation: Ge25519, output_index: int) -> Sc25519:
     return tcry.xmr_derivation_to_scalar(None, derivation, output_index)
 
 
-def derive_public_key(derivation: Ge25519, output_index: int, B: Ge25519) -> Ge25519:
+def derive_public_key(derivation: Point, output_index: int, B: Point) -> Point:
     """
     H_s(derivation || varint(output_index))G + B
     """
@@ -251,7 +251,7 @@ def derive_public_key(derivation: Ge25519, output_index: int, B: Ge25519) -> Ge2
     return tcry.xmr_derive_public_key(None, derivation, output_index, B)
 
 
-def derive_secret_key(derivation: Ge25519, output_index: int, base: Sc25519) -> Sc25519:
+def derive_secret_key(derivation: Point, output_index: int, base: Scalar) -> Scalar:
     """
     base + H_s(derivation || varint(output_index))
     """
@@ -260,8 +260,8 @@ def derive_secret_key(derivation: Ge25519, output_index: int, base: Sc25519) -> 
 
 
 def get_subaddress_secret_key(
-    secret_key: Sc25519, major: int = 0, minor: int = 0
-) -> Sc25519:
+    secret_key: Scalar, major: int = 0, minor: int = 0
+) -> Scalar:
     """
     Builds subaddress secret key from the subaddress index
     Hs(SubAddr || a || index_major || index_minor)
@@ -269,7 +269,7 @@ def get_subaddress_secret_key(
     return tcry.xmr_get_subaddress_secret_key(None, major, minor, secret_key)
 
 
-def generate_signature(data: bytes, priv: Sc25519) -> tuple[Sc25519, Sc25519, Ge25519]:
+def generate_signature(data: bytes, priv: Scalar) -> tuple[Scalar, Scalar, Point]:
     """
     Generate EC signature
     crypto_ops::generate_signature(const hash &prefix_hash, const public_key &pub, const secret_key &sec, signature &sig)
@@ -285,7 +285,7 @@ def generate_signature(data: bytes, priv: Sc25519) -> tuple[Sc25519, Sc25519, Ge
     return c, r, pub
 
 
-def check_signature(data: bytes, c: Sc25519, r: Sc25519, pub: Ge25519) -> bool:
+def check_signature(data: bytes, c: Scalar, r: Scalar, pub: Point) -> bool:
     """
     EC signature verification
     """
