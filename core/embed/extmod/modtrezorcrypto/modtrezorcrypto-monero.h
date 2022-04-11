@@ -1271,6 +1271,7 @@ STATIC const mp_obj_type_t mod_trezorcrypto_monero_hasher_type = {
     .locals_dict = (void *)&mod_trezorcrypto_monero_hasher_locals_dict,
 };
 
+/// BP_GI_PRE: bytes
 STATIC const mp_obj_str_t mod_trezorcrypto_monero_BP_GI_PRE_obj = {{&mp_type_bytes}, 0, 8192, (const byte*)""
 "\x0b\x48\xbe\x50\xe4\x9c\xad\x13\xfb\x3e\x01\x4f\x3f\xa7\xd6\x8b"
 "\xac\xa7\xc8\xa9\x10\x83\xdc\x9c\x59\xb3\x79\xaa\xab\x21\x8f\x15"
@@ -1786,6 +1787,7 @@ STATIC const mp_obj_str_t mod_trezorcrypto_monero_BP_GI_PRE_obj = {{&mp_type_byt
 "\x3f\x7e\x8f\x1e\x61\x54\x4d\x51\x89\xc9\xdc\x1e\xc1\x3c\x25\x65"
 };
 
+/// BP_HI_PRE: bytes
 STATIC const mp_obj_str_t mod_trezorcrypto_monero_BP_HI_PRE_obj = {{&mp_type_bytes}, 0, 8192, (const byte*)""
 "\x42\xba\x66\x8a\x00\x7d\x0f\xcd\x6f\xea\x40\x09\xde\x8a\x64\x37"
 "\x24\x8f\x2d\x44\x52\x30\xaf\x00\x4a\x89\xfd\x04\x27\x9b\xc2\x97"
@@ -2301,6 +2303,7 @@ STATIC const mp_obj_str_t mod_trezorcrypto_monero_BP_HI_PRE_obj = {{&mp_type_byt
 "\x21\xd1\x91\xe1\x87\x48\x43\xc1\xbe\x60\xd4\xf3\x57\x06\x9a\xda"
 };
 
+/// BP_TWO_N: bytes
 STATIC const mp_obj_str_t mod_trezorcrypto_monero_BP_TWO_N_obj = {{&mp_type_bytes}, 0, 2048, (const byte*)""
 "\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
 "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
