@@ -197,7 +197,8 @@ void SVC_C_Handler(uint32_t *stack) {
       break;
 #endif
     case SVC_SHUTDOWN:
-  mpu_config_off();
+  //mpu_config_off();
+  mpu_config_jump_to_bootloader();
   __asm__ volatile("msr control, %0" ::"r"(0x0));
   __asm__ volatile("isb");
   return;
