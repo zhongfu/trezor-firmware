@@ -72,6 +72,22 @@ int main(void) {
 
   collect_hw_entropy();
 
+  display_backlight(255);
+  display_text_center(DISPLAY_RESX / 2, DISPLAY_RESY - 30, "TESTINK", -1,
+                      FONT_BOLD, COLOR_WHITE, COLOR_BLACK);
+  char dom[32];
+  // format: TREZOR2-YYMMDD
+  uint32_t otp_result = flash_otp_read(FLASH_OTP_BLOCK_BATCH, 0, (uint8_t *)dom, 32);
+  hal_delay(2000);
+  if (otp_result != sectrue) {
+    display_text_center(DISPLAY_RESX / 2, DISPLAY_RESY - 30, "FAILED", -1,
+                        FONT_BOLD, COLOR_WHITE, COLOR_BLACK);
+  } else {
+    display_text_center(DISPLAY_RESX / 2, DISPLAY_RESY - 30, dom, -1,
+                        FONT_BOLD, COLOR_WHITE, COLOR_BLACK);
+  }
+  hal_delay(2000);
+
 #ifdef SYSTEM_VIEW
   enable_systemview();
 #endif
