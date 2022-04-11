@@ -45,13 +45,12 @@ Author: Dusan Klinec, ph4r05, 2018
 import gc
 from typing import TYPE_CHECKING
 
-from apps.monero.xmr import crypto
+from apps.monero.xmr import crypto, crypto_helpers
 from apps.monero.xmr.serialize import int_serialize
 
 if TYPE_CHECKING:
     from typing import Any, TypeGuard, TypeVar
 
-    from .crypto import Point, Scalar
     from .serialize_messages.tx_ct_key import CtKey
     from trezor.messages import MoneroRctKeyPublic
 
@@ -72,8 +71,8 @@ def generate_mlsag_simple(
     message: bytes,
     pubs: list[MoneroRctKeyPublic],
     in_sk: CtKey,
-    a: Scalar,
-    cout: Point,
+    a: crypto.Scalar,
+    cout: crypto.Point,
     index: int,
     mg_buff: list[bytearray],
 ) -> list[bytes]:
@@ -99,7 +98,7 @@ def generate_mlsag_simple(
     M = _key_matrix(rows, cols)
 
     if TYPE_CHECKING:
-        assert list_of_type(sk, Scalar)
+        assert list_of_type(sk, crypto.Scalar)
         assert list_of_type(M, list[bytes])
 
     sk[0] = in_sk.dest
@@ -112,7 +111,7 @@ def generate_mlsag_simple(
         )
 
         M[i][0] = pubs[i].dest
-        M[i][1] = crypto.encodepoint(tmp_pt)
+        M[i][1] = crypto_helpers.encodepoint(tmp_pt)
         pubs[i] = None  # type: ignore
 
     del pubs
@@ -122,7 +121,7 @@ def generate_mlsag_simple(
 
 
 def gen_mlsag_assert(
-    pk: KeyM, xx: list[Scalar], index: int, dsRows: int
+    pk: KeyM, xx: list[crypto.Scalar], index: int, dsRows: int
 ) -> tuple[int, int]:
     """
     Conditions check
@@ -150,12 +149,12 @@ def gen_mlsag_assert(
 def generate_first_c_and_key_images(
     message: bytes,
     pk: KeyM,
-    xx: list[Scalar],
+    xx: list[crypto.Scalar],
     index: int,
     dsRows: int,
     rows: int,
     cols: int,
-) -> tuple[Scalar, list[Point], list[Scalar]]:
+) -> tuple[crypto.Scalar, list[crypto.Point], list[crypto.Scalar]]:
     """
     MLSAG computation - the part with secret keys
     :param message: the full message to be signed (actually its hash)
@@ -169,8 +168,8 @@ def generate_first_c_and_key_images(
     alpha = _key_vector(rows)
 
     if TYPE_CHECKING:
-        assert list_of_type(II, Point)
-        assert list_of_type(alpha, Scalar)
+        assert list_of_type(II, crypto.Point)
+        assert list_of_type(alpha, crypto.Scalar)
 
     tmp_buff = bytearray(32)
     Hi = crypto.Point()
@@ -206,14 +205,14 @@ def generate_first_c_and_key_images(
 
     # the first c
     c_old = hasher.digest()
-    c_old = crypto.decodeint(c_old)
+    c_old = crypto_helpers.decodeint(c_old)
     return c_old, II, alpha
 
 
 def generate_mlsag(
     message: bytes,
     pk: KeyM,
-    xx: list[Scalar],
+    xx: list[crypto.Scalar],
     index: int,
     dsRows: int,
     mg_buff: list[bytearray],
@@ -311,7 +310,7 @@ def generate_mlsag(
         assert list_of_type(mg_buff, bytes)
 
     # rv.cc
-    mg_buff[-1] = crypto.encodeint(cc)
+    mg_buff[-1] = crypto_helpers.encodeint(cc)
     return mg_buff
 
 
@@ -319,8 +318,8 @@ def generate_clsag_simple(
     message: bytes,
     pubs: list[MoneroRctKeyPublic],
     in_sk: CtKey,
-    a: Scalar,
-    cout: Point,
+    a: crypto.Scalar,
+    cout: crypto.Point,
     index: int,
     mg_buff: list[bytearray],
 ) -> list[bytes]:
@@ -361,10 +360,10 @@ def generate_clsag_simple(
 def _generate_clsag(
     message: bytes,
     P: list[bytes],
-    p: Scalar,
+    p: crypto.Scalar,
     C_nonzero: list[bytes],
-    z: Scalar,
-    Cout: Point,
+    z: crypto.Scalar,
+    Cout: crypto.Point,
     index: int,
     mg_buff: list[bytearray],
 ) -> list[bytes]:
@@ -374,7 +373,7 @@ def _generate_clsag(
     a = crypto.random_scalar()
     H = crypto.Point()
     D = crypto.Point()
-    Cout_bf = crypto.encodepoint(Cout)
+    Cout_bf = crypto_helpers.encodepoint(Cout)
 
     tmp_sc = crypto.Scalar()
     tmp = crypto.Point()
@@ -383,12 +382,12 @@ def _generate_clsag(
     crypto.hash_to_point_into(H, P[index])
     crypto.scalarmult_into(sI, H, p)  # I = p*H
     crypto.scalarmult_into(D, H, z)  # D = z*H
-    crypto.sc_mul_into(tmp_sc, z, crypto.INV_EIGHT_SC)  # 1/8*z
+    crypto.sc_mul_into(tmp_sc, z, crypto_helpers.INV_EIGHT_SC)  # 1/8*z
     crypto.scalarmult_into(sD, H, tmp_sc)  # sig.D = 1/8*z*H
-    sD = crypto.encodepoint(sD)
+    sD = crypto_helpers.encodepoint(sD)
 
-    hsh_P = crypto.get_keccak()  # domain, I, D, P, C, C_offset
-    hsh_C = crypto.get_keccak()  # domain, I, D, P, C, C_offset
+    hsh_P = crypto_helpers.get_keccak()  # domain, I, D, P, C, C_offset
+    hsh_C = crypto_helpers.get_keccak()  # domain, I, D, P, C, C_offset
     hsh_P.update(_HASH_KEY_CLSAG_AGG_0)
     hsh_C.update(_HASH_KEY_CLSAG_AGG_1)
 
@@ -406,11 +405,11 @@ def _generate_clsag(
     hsh_PC(crypto.encodepoint_into(tmp_bf, sI))
     hsh_PC(sD)
     hsh_PC(Cout_bf)
-    mu_P = crypto.decodeint(hsh_P.digest())
-    mu_C = crypto.decodeint(hsh_C.digest())
+    mu_P = crypto_helpers.decodeint(hsh_P.digest())
+    mu_C = crypto_helpers.decodeint(hsh_C.digest())
 
     del (hsh_PC, hsh_P, hsh_C)
-    c_to_hash = crypto.get_keccak()  # domain, P, C, C_offset, message, aG, aH
+    c_to_hash = crypto_helpers.get_keccak()  # domain, P, C, C_offset, message, aG, aH
     c_to_hash.update(_HASH_KEY_CLSAG_ROUND)
     for i in range(len(P)):
         c_to_hash.update(P[i])
@@ -424,7 +423,7 @@ def _generate_clsag(
     chasher.update(crypto.encodepoint_into(tmp_bf, tmp))  # aG
     crypto.scalarmult_into(tmp, H, a)
     chasher.update(crypto.encodepoint_into(tmp_bf, tmp))  # aH
-    c = crypto.decodeint(chasher.digest())
+    c = crypto_helpers.decodeint(chasher.digest())
     del (chasher, H)
 
     L = crypto.Point()
@@ -482,7 +481,7 @@ def _generate_clsag(
     if TYPE_CHECKING:
         assert list_of_type(mg_buff, bytes)
 
-    mg_buff.append(crypto.encodeint(sc1))
+    mg_buff.append(crypto_helpers.encodeint(sc1))
     mg_buff.append(sD)
     return mg_buff
 
@@ -505,7 +504,7 @@ def _hasher_message(message: bytes):
     """
     Returns incremental hasher for MLSAG
     """
-    ctx = crypto.get_keccak()
+    ctx = crypto_helpers.get_keccak()
     ctx.update(message)
     return ctx
 

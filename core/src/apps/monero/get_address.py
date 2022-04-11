@@ -7,7 +7,7 @@ from trezor.ui.layouts import show_address
 from apps.common import paths
 from apps.common.keychain import auto_keychain
 from apps.monero import misc
-from apps.monero.xmr import addresses, crypto, monero
+from apps.monero.xmr import addresses, crypto_helpers, monero
 from apps.monero.xmr.networks import net_version
 
 if TYPE_CHECKING:
@@ -40,8 +40,8 @@ async def get_address(
             raise ValueError("Invalid payment ID length")
         addr = addresses.encode_addr(
             net_version(msg.network_type, False, True),
-            crypto.encodepoint(creds.spend_key_public),
-            crypto.encodepoint(creds.view_key_public),
+            crypto_helpers.encodepoint(creds.spend_key_public),
+            crypto_helpers.encodepoint(creds.view_key_public),
             msg.payment_id,
         )
 
@@ -55,8 +55,8 @@ async def get_address(
 
         addr = addresses.encode_addr(
             net_version(msg.network_type, True, False),
-            crypto.encodepoint(pub_spend),
-            crypto.encodepoint(pub_view),
+            crypto_helpers.encodepoint(pub_spend),
+            crypto_helpers.encodepoint(pub_view),
         )
 
     if msg.show_display:

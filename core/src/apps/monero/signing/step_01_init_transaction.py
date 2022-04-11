@@ -7,10 +7,9 @@ from typing import TYPE_CHECKING
 
 from apps.monero import layout, misc, signing
 from apps.monero.signing.state import State
-from apps.monero.xmr import crypto, monero
+from apps.monero.xmr import crypto, crypto_helpers, monero
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.crypto import Scalar, Point
     from trezor.messages import (
         MoneroAccountPublicAddress,
         MoneroTransactionData,
@@ -160,7 +159,7 @@ def _check_subaddresses(
     if num_stdaddresses == 0 and num_subaddresses == 1:
         state.tx_pub = crypto.scalarmult_into(
             None,
-            crypto.decodepoint(single_dest_subaddress.spend_public_key),
+            crypto_helpers.decodepoint(single_dest_subaddress.spend_public_key),
             state.tx_priv,
         )
 
@@ -182,7 +181,7 @@ def _get_primary_change_address(state: State) -> MoneroAccountPublicAddress:
         state.creds.view_key_private, state.creds.spend_key_public, state.account_idx, 0
     )
     return MoneroAccountPublicAddress(
-        view_public_key=crypto.encodepoint(C), spend_public_key=crypto.encodepoint(D)
+        view_public_key=crypto_helpers.encodepoint(C), spend_public_key=crypto_helpers.encodepoint(D)
     )
 
 
@@ -284,13 +283,13 @@ def _compute_sec_keys(state: State, tsx_data: MoneroTransactionData) -> None:
 
     writer = get_keccak_writer()
     writer.write(protobuf.dump_message_buffer(tsx_data))
-    writer.write(crypto.encodeint(state.tx_priv))
+    writer.write(crypto_helpers.encodeint(state.tx_priv))
 
-    master_key = crypto.keccak_2hash(
-        writer.get_digest() + crypto.encodeint(crypto.random_scalar())
+    master_key = crypto_helpers.keccak_2hash(
+        writer.get_digest() + crypto_helpers.encodeint(crypto.random_scalar())
     )
-    state.key_hmac = crypto.keccak_2hash(b"hmac" + master_key)
-    state.key_enc = crypto.keccak_2hash(b"enc" + master_key)
+    state.key_hmac = crypto_helpers.keccak_2hash(b"hmac" + master_key)
+    state.key_enc = crypto_helpers.keccak_2hash(b"enc" + master_key)
 
 
 def _precompute_subaddr(state: State, account: int, indices: list[int]) -> None:
@@ -329,7 +328,7 @@ def _process_payment_id(state: State, tsx_data: MoneroTransactionData) -> None:
         return
 
     elif len(tsx_data.payment_id) == 8:
-        view_key_pub = crypto.decodepoint(view_key_pub_enc)
+        view_key_pub = crypto_helpers.decodepoint(view_key_pub_enc)
         payment_id_encr = _encrypt_payment_id(
             tsx_data.payment_id, view_key_pub, state.tx_priv
         )
@@ -372,7 +371,7 @@ def _get_key_for_payment_id_encryption(
     from trezor.messages import MoneroAccountPublicAddress
 
     addr = MoneroAccountPublicAddress(
-        spend_public_key=crypto.NULL_KEY_ENC, view_public_key=crypto.NULL_KEY_ENC
+        spend_public_key=crypto_helpers.NULL_KEY_ENC, view_public_key=crypto_helpers.NULL_KEY_ENC
     )
     count = 0
     for dest in tsx_data.outputs:
@@ -396,20 +395,20 @@ def _get_key_for_payment_id_encryption(
     if count == 0 and change_addr:
         return change_addr.view_public_key
 
-    if addr.view_public_key == crypto.NULL_KEY_ENC:
+    if addr.view_public_key == crypto_helpers.NULL_KEY_ENC:
         raise ValueError("Invalid key")
 
     return addr.view_public_key
 
 
 def _encrypt_payment_id(
-    payment_id: bytes, public_key: Point, secret_key: Scalar
+    payment_id: bytes, public_key: crypto.Point, secret_key: crypto.Scalar
 ) -> bytes:
     """
     Encrypts payment_id hex.
     Used in the transaction extra. Only recipient is able to decrypt.
     """
-    derivation_p = crypto.generate_key_derivation(public_key, secret_key)
+    derivation_p = crypto_helpers.generate_key_derivation(public_key, secret_key)
     derivation = bytearray(33)
     derivation = crypto.encodepoint_into(derivation, derivation_p)
     derivation[32] = 0x8D  # ENCRYPTED_PAYMENT_ID_TAIL

@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from apps.monero.xmr import crypto
+from apps.monero.xmr import crypto_helpers
 from apps.monero.xmr.keccak_hasher import KeccakXmrArchive
 
 from .serialize_messages.tx_rsig_bulletproof import Bulletproof
@@ -16,8 +16,8 @@ class PreMlsagHasher:
 
     def __init__(self) -> None:
         self.state = 0
-        self.kc_master: HashContext = crypto.get_keccak()
-        self.rsig_hasher: HashContext = crypto.get_keccak()
+        self.kc_master: HashContext = crypto_helpers.get_keccak()
+        self.rsig_hasher: HashContext = crypto_helpers.get_keccak()
         self.rtcsig_hasher: KeccakXmrArchive = KeccakXmrArchive()
 
     def init(self) -> None:

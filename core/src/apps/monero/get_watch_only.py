@@ -5,7 +5,7 @@ from trezor.messages import MoneroWatchKey
 from apps.common import paths
 from apps.common.keychain import auto_keychain
 from apps.monero import layout, misc
-from apps.monero.xmr import crypto
+from apps.monero.xmr import crypto_helpers
 
 if TYPE_CHECKING:
     from trezor.wire import Context
@@ -24,6 +24,6 @@ async def get_watch_only(
 
     creds = misc.get_creds(keychain, msg.address_n, msg.network_type)
     address = creds.address
-    watch_key = crypto.encodeint(creds.view_key_private)
+    watch_key = crypto_helpers.encodeint(creds.view_key_private)
 
     return MoneroWatchKey(watch_key=watch_key, address=address.encode())

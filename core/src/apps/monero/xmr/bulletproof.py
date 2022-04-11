@@ -3,12 +3,11 @@ from micropython import const
 from typing import TYPE_CHECKING
 
 from trezor import utils
+from trezor.crypto import random
 from trezor.utils import memcpy as tmemcpy
 
-from apps.monero.xmr import crypto
+from apps.monero.xmr import crypto, crypto_helpers
 from apps.monero.xmr.serialize.int_serialize import dump_uvarint_b_into, uvarint_size
-
-from .crypto import Point, Scalar
 
 if TYPE_CHECKING:
     from typing import Iterator, TypeVar, Generic
@@ -31,7 +30,7 @@ _ZERO = b"\x00" * 32
 _ONE = b"\x01" + b"\x00" * 31
 _TWO = b"\x02" + b"\x00" * 31
 _EIGHT = b"\x08" + b"\x00" * 31
-_INV_EIGHT = crypto.INV_EIGHT
+_INV_EIGHT = crypto_helpers.INV_EIGHT
 _MINUS_ONE = b"\xec\xd3\xf5\x5c\x1a\x63\x12\x58\xd6\x9c\xf7\xa2\xde\xf9\xde\x14\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10"
 # _MINUS_INV_EIGHT = b"\x74\xa4\x19\x7a\xf0\x7d\x0b\xf7\x05\xc2\xda\x25\x2b\x5c\x0b\x0d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0a"
 
@@ -79,7 +78,7 @@ def memcpy(
     return dst
 
 
-def _alloc_scalars(num: int = 1) -> Iterator[Scalar]:
+def _alloc_scalars(num: int = 1) -> Iterator[crypto.Scalar]:
     return (crypto.Scalar() for _ in range(num))
 
 
@@ -157,14 +156,14 @@ def _sc_add(dst: bytearray, a: bytes, b: bytes) -> bytearray:
 
 def _sc_sub(
     dst: bytearray | None,
-    a: bytes | Scalar,
-    b: bytes | Scalar,
+    a: bytes | crypto.Scalar,
+    b: bytes | crypto.Scalar,
 ):
     dst = _ensure_dst_key(dst)
-    if not isinstance(a, Scalar):
+    if not isinstance(a, crypto.Scalar):
         crypto.decodeint_into_noreduce(_tmp_sc_1, a)
         a = _tmp_sc_1
-    if not isinstance(b, Scalar):
+    if not isinstance(b, crypto.Scalar):
         crypto.decodeint_into_noreduce(_tmp_sc_2, b)
         b = _tmp_sc_2
     crypto.sc_sub_into(_tmp_sc_3, a, b)
@@ -252,7 +251,7 @@ def _hash_to_scalar(dst, data):
 
 def _hash_vct_to_scalar(dst, data):
     dst = _ensure_dst_key(dst)
-    ctx = crypto.get_keccak()
+    ctx = crypto_helpers.get_keccak()
     for x in data:
         ctx.update(x)
     hsh = ctx.digest()
@@ -1006,7 +1005,7 @@ def _cross_inner_product(l0, r0, l1, r1):
 
         _gc_iter(i)
 
-    return crypto.encodeint(sc_t1), crypto.encodeint(sc_t2)
+    return crypto_helpers.encodeint(sc_t1), crypto_helpers.encodeint(sc_t2)
 
 
 def _vector_gen(dst, size, op):
@@ -1029,7 +1028,7 @@ def _vector_dup(x, n, dst=None):
 
 def _hash_cache_mash(dst, hash_cache, *args):
     dst = _ensure_dst_key(dst)
-    ctx = crypto.get_keccak()
+    ctx = crypto_helpers.get_keccak()
     ctx.update(hash_cache)
 
     for x in args:
@@ -1110,11 +1109,11 @@ class BulletProofBuilder:
         self.proof_sec = None
 
         # BP_GI_PRE = get_exponent(Gi[i], _XMR_H, i * 2 + 1)
-        self.Gprec = KeyV(buffer=crypto.tcry.BP_GI_PRE, const=True)
+        self.Gprec = KeyV(buffer=crypto.BP_GI_PRE, const=True)
         # BP_HI_PRE = get_exponent(Hi[i], _XMR_H, i * 2)
-        self.Hprec = KeyV(buffer=crypto.tcry.BP_HI_PRE, const=True)
+        self.Hprec = KeyV(buffer=crypto.BP_HI_PRE, const=True)
         # BP_TWO_N = vector_powers(_TWO, _BP_N);
-        self.twoN = KeyV(buffer=crypto.tcry.BP_TWO_N, const=True)
+        self.twoN = KeyV(buffer=crypto.BP_TWO_N, const=True)
         self.fnc_det_mask = None
 
         self.tmp_sc_1 = crypto.Scalar()
@@ -1225,11 +1224,11 @@ class BulletProofBuilder:
         utils.ensure(len(sv) == len(gamma), "|sv| != |gamma|")
         utils.ensure(len(sv) > 0, "sv empty")
 
-        self.proof_sec = crypto.random_bytes(64)
+        self.proof_sec = random.bytes(64)
         self._det_mask_init()
         gc.collect()
-        sv = [crypto.encodeint(x) for x in sv]
-        gamma = [crypto.encodeint(x) for x in gamma]
+        sv = [crypto_helpers.encodeint(x) for x in sv]
+        gamma = [crypto_helpers.encodeint(x) for x in gamma]
 
         M, logM = 1, 0
         while M <= _BP_M and M < len(sv):
@@ -1386,7 +1385,7 @@ class BulletProofBuilder:
 
             _sc_muladd(ts, _tmp_bf_0, _tmp_bf_1, None, c_raw=ts, raw=True)
 
-        t = crypto.encodeint(ts)
+        t = crypto_helpers.encodeint(ts)
         del (l0, l1, sL, sR, r0, r1, ypow, ts)
         self.gc(17)
 
@@ -1599,8 +1598,8 @@ class BulletProofBuilder:
 
             utils.ensure(len(proof.L) == 6 + logM, "Proof is not the expected size")
             MN = M * N
-            weight_y = crypto.encodeint(crypto.random_scalar())
-            weight_z = crypto.encodeint(crypto.random_scalar())
+            weight_y = crypto_helpers.encodeint(crypto.random_scalar())
+            weight_z = crypto_helpers.encodeint(crypto.random_scalar())
 
             # Reconstruct the challenges
             hash_cache = _hash_vct_to_scalar(None, proof.V)
@@ -1757,9 +1756,9 @@ class BulletProofBuilder:
         _sc_sub(tmp, m_y0, z1)
         z3p = _sc_sub(None, z3, y1)
 
-        check2 = crypto.encodepoint(
+        check2 = crypto_helpers.encodepoint(
             crypto.ge25519_double_scalarmult_vartime_into(
-                None, crypto.xmr_H(), crypto.decodeint(z3p), crypto.decodeint(tmp)
+                None, crypto.xmr_H(), crypto_helpers.decodeint(z3p), crypto_helpers.decodeint(tmp)
             )
         )
         _add_keys(muex_acc, muex_acc, check2)

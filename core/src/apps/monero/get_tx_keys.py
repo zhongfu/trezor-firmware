@@ -22,8 +22,8 @@ from trezor.messages import MoneroGetTxKeyAck, MoneroGetTxKeyRequest
 from apps.common import paths
 from apps.common.keychain import auto_keychain
 from apps.monero import layout, misc
-from apps.monero.xmr import crypto
-from apps.monero.xmr.crypto import chacha_poly
+from apps.monero.xmr import crypto, crypto_helpers
+from apps.monero.xmr import chacha_poly
 
 _GET_TX_KEY_REASON_TX_DERIVATION = 1
 
@@ -46,7 +46,7 @@ async def get_tx_keys(
         creds.spend_key_private,
         msg.tx_prefix_hash,
         msg.salt1,
-        crypto.decodeint(msg.salt2),
+        crypto_helpers.decodeint(msg.salt2),
     )
 
     # the plain_buff first stores the tx_priv_keys as decrypted here
@@ -61,7 +61,7 @@ async def get_tx_keys(
             raise wire.DataError("Missing view public key")
 
         plain_buff = bytearray(plain_buff)
-        view_pub = crypto.decodepoint(msg.view_public_key)
+        view_pub = crypto_helpers.decodepoint(msg.view_public_key)
         tx_priv = crypto.Scalar()
         derivation = crypto.Point()
         n_keys = len(plain_buff) // 32

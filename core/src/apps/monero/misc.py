@@ -31,20 +31,21 @@ def compute_tx_key(
     salt: bytes,
     rand_mult_num: Scalar,
 ) -> bytes:
-    from apps.monero.xmr import crypto
+    from apps.monero.xmr import crypto, crypto_helpers
 
     rand_inp = crypto.sc_add_into(None, spend_key_private, rand_mult_num)
-    passwd = crypto.keccak_2hash(crypto.encodeint(rand_inp) + tx_prefix_hash)
-    tx_key = crypto.compute_hmac(salt, passwd)
+    passwd = crypto_helpers.keccak_2hash(crypto_helpers.encodeint(rand_inp) + tx_prefix_hash)
+    tx_key = crypto_helpers.compute_hmac(salt, passwd)
     return tx_key
 
 
 def compute_enc_key_host(
     view_key_private: Scalar, tx_prefix_hash: bytes
 ) -> tuple[bytes, bytes]:
-    from apps.monero.xmr import crypto
+    from trezor.crypto import random
+    from apps.monero.xmr import crypto, crypto_helpers
 
-    salt = crypto.random_bytes(32)
-    passwd = crypto.keccak_2hash(crypto.encodeint(view_key_private) + tx_prefix_hash)
-    tx_key = crypto.compute_hmac(salt, passwd)
+    salt = random.bytes(32)
+    passwd = crypto_helpers.keccak_2hash(crypto_helpers.encodeint(view_key_private) + tx_prefix_hash)
+    tx_key = crypto_helpers.compute_hmac(salt, passwd)
     return tx_key, salt

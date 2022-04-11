@@ -14,8 +14,8 @@ from trezor.messages import (
 from apps.common import paths
 from apps.common.keychain import auto_keychain
 from apps.monero import layout, misc
-from apps.monero.xmr import crypto, key_image, monero
-from apps.monero.xmr.crypto import chacha_poly
+from apps.monero.xmr import crypto, crypto_helpers, key_image, monero
+from apps.monero.xmr import chacha_poly
 
 if TYPE_CHECKING:
     from trezor.messages import MoneroLiveRefreshStartRequest
@@ -88,14 +88,14 @@ async def _refresh_step(
     # If subaddr:
     #   spend_priv += Hs("SubAddr" || view_key_private || major || minor)
     # out_key = spend_priv * G, KI: spend_priv * Hp(out_key)
-    out_key = crypto.decodepoint(msg.out_key)
-    recv_deriv = crypto.decodepoint(msg.recv_deriv)
+    out_key = crypto_helpers.decodepoint(msg.out_key)
+    recv_deriv = crypto_helpers.decodepoint(msg.recv_deriv)
     received_index = msg.sub_addr_major, msg.sub_addr_minor
     spend_priv, ki = monero.generate_tx_spend_and_key_image(
         s.creds, out_key, recv_deriv, msg.real_out_idx, received_index
     )
 
-    ki_enc = crypto.encodepoint(ki)
+    ki_enc = crypto_helpers.encodepoint(ki)
     sig = key_image.generate_ring_signature(ki_enc, ki, [out_key], spend_priv, 0, False)
     del spend_priv  # spend_priv never leaves the device
 

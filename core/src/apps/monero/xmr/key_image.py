@@ -1,19 +1,18 @@
 from typing import TYPE_CHECKING
 
-from apps.monero.xmr import crypto, monero
+from apps.monero.xmr import crypto, crypto_helpers, monero
 from apps.monero.xmr.serialize.int_serialize import dump_uvarint_b
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.crypto import Point, Scalar
     from apps.monero.xmr.credentials import AccountCreds
     from trezor.messages import MoneroTransferDetails
 
     Subaddresses = dict[bytes, tuple[int, int]]
-    Sig = list[list[Scalar]]
+    Sig = list[list[crypto.Scalar]]
 
 
 def compute_hash(rr: MoneroTransferDetails) -> bytes:
-    kck = crypto.get_keccak()
+    kck = crypto_helpers.get_keccak()
     kck.update(rr.out_key)
     kck.update(rr.tx_pub_key)
     if rr.additional_tx_pub_keys:
@@ -25,17 +24,17 @@ def compute_hash(rr: MoneroTransferDetails) -> bytes:
 
 def export_key_image(
     creds: AccountCreds, subaddresses: Subaddresses, td: MoneroTransferDetails
-) -> tuple[Point, Sig]:
-    out_key = crypto.decodepoint(td.out_key)
-    tx_pub_key = crypto.decodepoint(td.tx_pub_key)
+) -> tuple[crypto.Point, Sig]:
+    out_key = crypto_helpers.decodepoint(td.out_key)
+    tx_pub_key = crypto_helpers.decodepoint(td.tx_pub_key)
 
     additional_tx_pub_key = None
     if len(td.additional_tx_pub_keys) == 1:  # compression
-        additional_tx_pub_key = crypto.decodepoint(td.additional_tx_pub_keys[0])
+        additional_tx_pub_key = crypto_helpers.decodepoint(td.additional_tx_pub_keys[0])
     elif td.additional_tx_pub_keys:
         if td.internal_output_index >= len(td.additional_tx_pub_keys):
             raise ValueError("Wrong number of additional derivations")
-        additional_tx_pub_key = crypto.decodepoint(
+        additional_tx_pub_key = crypto_helpers.decodepoint(
             td.additional_tx_pub_keys[td.internal_output_index]
         )
 
@@ -56,14 +55,14 @@ def export_key_image(
 def _export_key_image(
     creds: AccountCreds,
     subaddresses: Subaddresses,
-    pkey: Point,
-    tx_pub_key: Point,
-    additional_tx_pub_key: Point | None,
+    pkey: crypto.Point,
+    tx_pub_key: crypto.Point,
+    additional_tx_pub_key: crypto.Point | None,
     out_idx: int,
     test: bool = True,
     sub_addr_major: int | None = None,
     sub_addr_minor: int | None = None,
-) -> tuple[Point, Sig]:
+) -> tuple[crypto.Point, Sig]:
     """
     Generates key image for the TXO + signature for the key image
     """
@@ -79,7 +78,7 @@ def _export_key_image(
     )
     xi, ki, _ = r[:3]
 
-    phash = crypto.encodepoint(ki)
+    phash = crypto_helpers.encodepoint(ki)
     sig = generate_ring_signature(phash, ki, [pkey], xi, 0, test)
 
     return ki, sig
@@ -87,9 +86,9 @@ def _export_key_image(
 
 def generate_ring_signature(
     prefix_hash: bytes,
-    image: Point,
-    pubs: list[Point],
-    sec: Scalar,
+    image: crypto.Point,
+    pubs: list[crypto.Point],
+    sec: crypto.Scalar,
     sec_idx: int,
     test: bool = False,
 ) -> Sig:
@@ -104,7 +103,7 @@ def generate_ring_signature(
         if not crypto.point_eq(t, pubs[sec_idx]):
             raise ValueError("Invalid sec key")
 
-        k_i = monero.generate_key_image(crypto.encodepoint(pubs[sec_idx]), sec)
+        k_i = monero.generate_key_image(crypto_helpers.encodepoint(pubs[sec_idx]), sec)
         if not crypto.point_eq(k_i, image):
             raise ValueError("Key image invalid")
         for k in pubs:
@@ -129,7 +128,7 @@ def generate_ring_signature(
             crypto.encodepoint_into(mvbuff[buff_off : buff_off + 32], tmp3)
             buff_off += 32
 
-            tmp3 = crypto.hash_to_point_into(None, crypto.encodepoint(pubs[i]))
+            tmp3 = crypto.hash_to_point_into(None, crypto_helpers.encodepoint(pubs[i]))
             tmp2 = crypto.scalarmult_into(None, tmp3, k)
             crypto.encodepoint_into(mvbuff[buff_off : buff_off + 32], tmp2)
             buff_off += 32
@@ -143,7 +142,7 @@ def generate_ring_signature(
             crypto.encodepoint_into(mvbuff[buff_off : buff_off + 32], tmp2)
             buff_off += 32
 
-            tmp3 = crypto.hash_to_point_into(None, crypto.encodepoint(tmp3))
+            tmp3 = crypto.hash_to_point_into(None, crypto_helpers.encodepoint(tmp3))
             tmp2 = crypto.add_keys3_into(None, sig[i][1], tmp3, sig[i][0], image)
             crypto.encodepoint_into(mvbuff[buff_off : buff_off + 32], tmp2)
             buff_off += 32

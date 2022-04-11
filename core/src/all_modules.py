@@ -598,16 +598,18 @@ if not utils.BITCOIN_ONLY:
     import apps.monero.signing.step_09_sign_input
     apps.monero.signing.step_10_sign_final
     import apps.monero.signing.step_10_sign_final
+    apps.monero.xmr
+    import apps.monero.xmr
     apps.monero.xmr.addresses
     import apps.monero.xmr.addresses
     apps.monero.xmr.bulletproof
     import apps.monero.xmr.bulletproof
+    apps.monero.xmr.chacha_poly
+    import apps.monero.xmr.chacha_poly
     apps.monero.xmr.credentials
     import apps.monero.xmr.credentials
-    apps.monero.xmr.crypto
-    import apps.monero.xmr.crypto
-    apps.monero.xmr.crypto.chacha_poly
-    import apps.monero.xmr.crypto.chacha_poly
+    apps.monero.xmr.crypto_helpers
+    import apps.monero.xmr.crypto_helpers
     apps.monero.xmr.keccak_hasher
     import apps.monero.xmr.keccak_hasher
     apps.monero.xmr.key_image

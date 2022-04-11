@@ -6,7 +6,6 @@ from trezor.enums import MoneroNetworkType
 from apps.monero.xmr.networks import net_version
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.crypto import Point
     from trezor.messages import MoneroAccountPublicAddress
     from trezor.messages import MoneroTransactionDestinationEntry
 

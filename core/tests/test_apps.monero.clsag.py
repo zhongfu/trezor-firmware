@@ -1,7 +1,7 @@
 from common import *
 
 if not utils.BITCOIN_ONLY:
-    from apps.monero.xmr import crypto, mlsag
+    from apps.monero.xmr import crypto, crypto_helpers, mlsag
     from apps.monero.xmr.serialize_messages.tx_ct_key import CtKey
     from trezor.crypto import monero as tcry
     from trezor.crypto import random
@@ -23,13 +23,13 @@ class TestMoneroClsag(unittest.TestCase):
         c = crypto.Scalar()
         D_8 = crypto.Point()
         tmp_bf = bytearray(32)
-        C_offset_bf = crypto.encodepoint(C_offset)
+        C_offset_bf = crypto_helpers.encodepoint(C_offset)
 
         crypto.sc_copy(c, sc1)
         point_mul8_into(D_8, sD)
 
-        hsh_P = crypto.get_keccak()  # domain, I, D, P, C, C_offset
-        hsh_C = crypto.get_keccak()  # domain, I, D, P, C, C_offset
+        hsh_P = crypto_helpers.get_keccak()  # domain, I, D, P, C, C_offset
+        hsh_C = crypto_helpers.get_keccak()  # domain, I, D, P, C, C_offset
         hsh_P.update(mlsag._HASH_KEY_CLSAG_AGG_0)
         hsh_C.update(mlsag._HASH_KEY_CLSAG_AGG_1)
 
@@ -46,10 +46,10 @@ class TestMoneroClsag(unittest.TestCase):
         hsh_PC(crypto.encodepoint_into(tmp_bf, sI))
         hsh_PC(crypto.encodepoint_into(tmp_bf, sD))
         hsh_PC(C_offset_bf)
-        mu_P = crypto.decodeint(hsh_P.digest())
-        mu_C = crypto.decodeint(hsh_C.digest())
+        mu_P = crypto_helpers.decodeint(hsh_P.digest())
+        mu_C = crypto_helpers.decodeint(hsh_C.digest())
 
-        c_to_hash = crypto.get_keccak()  # domain, P, C, C_offset, message, L, R
+        c_to_hash = crypto_helpers.get_keccak()  # domain, P, C, C_offset, message, L, R
         c_to_hash.update(mlsag._HASH_KEY_CLSAG_ROUND)
         for i in range(len(pubs)):
             c_to_hash.update(pubs[i].dest)
@@ -107,31 +107,31 @@ class TestMoneroClsag(unittest.TestCase):
         ring = []
         for i in range(ring_size - 1):
             tk = TmpKey(
-                crypto.encodepoint(
+                crypto_helpers.encodepoint(
                     crypto.scalarmult_base_into(None, crypto.random_scalar())
                 ),
-                crypto.encodepoint(
+                crypto_helpers.encodepoint(
                     crypto.scalarmult_base_into(None, crypto.random_scalar())
                 ),
             )
             ring.append(tk)
 
         index = index if index is not None else random.uniform(len(ring))
-        ring.insert(index, TmpKey(crypto.encodepoint(P), crypto.encodepoint(C)))
+        ring.insert(index, TmpKey(crypto_helpers.encodepoint(P), crypto_helpers.encodepoint(C)))
         ring2 = list(ring)
         mg_buffer = []
 
         self.assertTrue(
             crypto.point_eq(
                 crypto.scalarmult_base_into(None, priv),
-                crypto.decodepoint(ring[index].dest),
+                crypto_helpers.decodepoint(ring[index].dest),
             )
         )
         self.assertTrue(
             crypto.point_eq(
                 crypto.scalarmult_base_into(None, crypto.sc_sub_into(None, msk, alpha)),
                 crypto.point_sub_into(
-                    None, crypto.decodepoint(ring[index].commitment), Cp
+                    None, crypto_helpers.decodepoint(ring[index].commitment), Cp
                 ),
             )
         )
@@ -140,23 +140,23 @@ class TestMoneroClsag(unittest.TestCase):
             msg, ring, CtKey(priv, msk), alpha, Cp, index, mg_buffer,
         )
 
-        sD = crypto.decodepoint(mg_buffer[-1])
-        sc1 = crypto.decodeint(mg_buffer[-2])
-        scalars = [crypto.decodeint(x) for x in mg_buffer[1:-2]]
+        sD = crypto_helpers.decodepoint(mg_buffer[-1])
+        sc1 = crypto_helpers.decodeint(mg_buffer[-2])
+        scalars = [crypto_helpers.decodeint(x) for x in mg_buffer[1:-2]]
         H = crypto.Point()
         sI = crypto.Point()
 
-        crypto.hash_to_point_into(H, crypto.encodepoint(P))
+        crypto.hash_to_point_into(H, crypto_helpers.encodepoint(P))
         crypto.scalarmult_into(sI, H, priv)  # I = p*H
         return msg, scalars, sc1, sI, sD, ring2, Cp
 
     def verify_monero_generated(self, clsag):
         msg = ubinascii.unhexlify(clsag["msg"])
-        sI = crypto.decodepoint(ubinascii.unhexlify(clsag["sI"]))
-        sD = crypto.decodepoint(ubinascii.unhexlify(clsag["sD"]))
-        sc1 = crypto.decodeint(ubinascii.unhexlify(clsag["sc1"]))
-        Cout = crypto.decodepoint(ubinascii.unhexlify(clsag["cout"]))
-        scalars = [crypto.decodeint(ubinascii.unhexlify(x)) for x in clsag["ss"]]
+        sI = crypto_helpers.decodepoint(ubinascii.unhexlify(clsag["sI"]))
+        sD = crypto_helpers.decodepoint(ubinascii.unhexlify(clsag["sD"]))
+        sc1 = crypto_helpers.decodeint(ubinascii.unhexlify(clsag["sc1"]))
+        Cout = crypto_helpers.decodepoint(ubinascii.unhexlify(clsag["cout"]))
+        scalars = [crypto_helpers.decodeint(ubinascii.unhexlify(x)) for x in clsag["ss"]]
         ring = []
         for e in clsag["ring"]:
             ring.append(TmpKey(ubinascii.unhexlify(e[0]), ubinascii.unhexlify(e[1])))
@@ -329,8 +329,8 @@ class TestMoneroClsag(unittest.TestCase):
         res = self.gen_clsag_sig(ring_size=11, index=5)
         msg, scalars, sc1, sI, sD, ring2, Cp = res
         with self.assertRaises(ValueError):
-            ring2[5].dest = crypto.encodepoint(
-                point_mul8_into(None, crypto.decodepoint(ring2[5].dest))
+            ring2[5].dest = crypto_helpers.encodepoint(
+                point_mul8_into(None, crypto_helpers.decodepoint(ring2[5].dest))
             )
             self.verify_clsag(msg, scalars, sc1, sI, sD, ring2, Cp)
 
@@ -338,8 +338,8 @@ class TestMoneroClsag(unittest.TestCase):
         res = self.gen_clsag_sig(ring_size=11, index=5)
         msg, scalars, sc1, sI, sD, ring2, Cp = res
         with self.assertRaises(ValueError):
-            ring2[5].commitment = crypto.encodepoint(
-                point_mul8_into(None, crypto.decodepoint(ring2[5].dest))
+            ring2[5].commitment = crypto_helpers.encodepoint(
+                point_mul8_into(None, crypto_helpers.decodepoint(ring2[5].dest))
             )
             self.verify_clsag(msg, scalars, sc1, sI, sD, ring2, Cp)
 

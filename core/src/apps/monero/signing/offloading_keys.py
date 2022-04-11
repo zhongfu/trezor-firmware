@@ -3,10 +3,9 @@ from typing import TYPE_CHECKING
 
 from trezor import utils
 
-from apps.monero.xmr import crypto
+from apps.monero.xmr import crypto, crypto_helpers
 
 if TYPE_CHECKING:
-    from apps.monero.xmr.crypto import Scalar
     from trezor.messages import (
         MoneroTransactionDestinationEntry,
         MoneroTransactionSourceEntry,
@@ -21,7 +20,7 @@ _BUILD_KEY_BUFFER = bytearray(_SECRET_LENGTH + _DISCRIMINATOR_LENGTH + _INDEX_LE
 
 def _build_key(
     secret: bytes,
-    discriminator: bytes | None = None,
+    discriminator: bytes,
     index: int | None = None,
     out: bytes | None = None,
 ) -> bytes:
@@ -51,7 +50,7 @@ def _build_key(
             offset += 1
             index = shifted
 
-    return crypto.keccak_2hash(key_buff, out)
+    return crypto_helpers.keccak_2hash(key_buff, out)
 
 
 def hmac_key_txin(key_hmac: bytes, idx: int) -> bytes:
@@ -117,11 +116,11 @@ def key_signature(master: bytes, idx: int, is_iv: bool = False) -> bytes:
     return _build_key(master, b"sig-iv" if is_iv else b"sig-key", idx)
 
 
-def det_comm_masks(key_enc: bytes, idx: int) -> Scalar:
+def det_comm_masks(key_enc: bytes, idx: int) -> crypto.Scalar:
     """
     Deterministic output commitment masks
     """
-    return crypto.decodeint(_build_key(key_enc, b"out-mask", idx))
+    return crypto_helpers.decodeint(_build_key(key_enc, b"out-mask", idx))
 
 
 def gen_hmac_vini(
@@ -154,7 +153,7 @@ def gen_hmac_vini(
     kwriter.write(vini_bin)
 
     hmac_key_vini = hmac_key_txin(key, idx)
-    hmac_vini = crypto.compute_hmac(hmac_key_vini, kwriter.get_digest())
+    hmac_vini = crypto_helpers.compute_hmac(hmac_key_vini, kwriter.get_digest())
     return hmac_vini
 
 
@@ -172,7 +171,7 @@ def gen_hmac_vouti(
     kwriter.write(tx_out_bin)
 
     hmac_key_vouti = hmac_key_txout(key, idx)
-    hmac_vouti = crypto.compute_hmac(hmac_key_vouti, kwriter.get_digest())
+    hmac_vouti = crypto_helpers.compute_hmac(hmac_key_vouti, kwriter.get_digest())
     return hmac_vouti
 
 
@@ -189,7 +188,7 @@ def gen_hmac_tsxdest(
     kwriter.write(protobuf.dump_message_buffer(dst_entr))
 
     hmac_key = hmac_key_txdst(key, idx)
-    hmac_tsxdest = crypto.compute_hmac(hmac_key, kwriter.get_digest())
+    hmac_tsxdest = crypto_helpers.compute_hmac(hmac_key, kwriter.get_digest())
     return hmac_tsxdest
 
 

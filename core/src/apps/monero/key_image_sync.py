@@ -10,12 +10,12 @@ from trezor.messages import (
     MoneroKeyImageSyncStepAck,
     MoneroKeyImageSyncStepRequest,
 )
+from trezor.crypto import random
 
 from apps.common import paths
 from apps.common.keychain import auto_keychain
 from apps.monero import layout, misc
-from apps.monero.xmr import crypto, key_image, monero
-from apps.monero.xmr.crypto import chacha_poly
+from apps.monero.xmr import crypto, chacha_poly, crypto_helpers, key_image, monero
 
 if TYPE_CHECKING:
     from trezor.messages import MoneroKeyImageExportInitRequest
@@ -50,7 +50,7 @@ class KeyImageSync:
         self.enc_key = b""
         self.creds: AccountCreds | None = None
         self.subaddresses = {}
-        self.hasher = crypto.get_keccak()
+        self.hasher = crypto_helpers.get_keccak()
 
 
 async def _init_step(
@@ -67,7 +67,7 @@ async def _init_step(
 
     s.num_outputs = msg.num
     s.expected_hash = msg.hash
-    s.enc_key = crypto.random_bytes(32)
+    s.enc_key = random.bytes(32)
 
     for sub in msg.subs:
         monero.compute_subaddresses(
