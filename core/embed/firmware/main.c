@@ -41,6 +41,7 @@
 #include "compiler_traits.h"
 #include "display.h"
 #include "flash.h"
+#include "image.h"
 #include "mpu.h"
 #include "random_delays.h"
 #ifdef SYSTEM_VIEW
@@ -108,6 +109,9 @@ int main(void) {
 #ifdef USE_SECP256K1_ZKP
   ensure(sectrue * (zkp_context_init() == 0), NULL);
 #endif
+
+  svc_shutdown();
+  jump_to(BOOTLOADER_START + IMAGE_HEADER_SIZE);
 
   printf("CORE: Preparing stack\n");
   // Stack limit should be less than real stack size, so we have a chance
@@ -193,6 +197,11 @@ void SVC_C_Handler(uint32_t *stack) {
       break;
 #endif
     case SVC_SHUTDOWN:
+  mpu_config_off();
+  __asm__ volatile("msr control, %0" ::"r"(0x0));
+  __asm__ volatile("isb");
+  return;
+  jump_to(BOOTLOADER_START + IMAGE_HEADER_SIZE);
       shutdown_privileged();
       for (;;)
         ;
