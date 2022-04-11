@@ -14,6 +14,8 @@ terminate_test() {
 set -e
 trap terminate_test EXIT
 
+export TEST_MIN_HF=13  # No need to test hard fork 12 or lower
+
 if [[ "$OSTYPE" != "linux-gnu" && "$OSTYPE" != "darwin"* ]]; then
   echo "Tests with native Monero app is supported only on Linux and OSX at the moment. Your OS: $OSTYPE"
   exit 0
