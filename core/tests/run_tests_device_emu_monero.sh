@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-: "${RUN_PYTHON_TESTS:=0}"
 : "${FORCE_DOCKER_USE:=0}"
 
 CORE_DIR="$(SHELL_SESSION_FILE='' && cd "$( dirname "${BASH_SOURCE[0]}" )/.." >/dev/null 2>&1 && pwd )"
@@ -14,20 +13,6 @@ terminate_test() {
 
 set -e
 trap terminate_test EXIT
-
-# run tests
-export EC_BACKEND_FORCE=1
-export EC_BACKEND=1
-export TREZOR_TEST_GET_TX=1
-export TREZOR_TEST_LIVE_REFRESH=1
-export TREZOR_TEST_SIGN_CL0_HF9=0  # HF9 is no longer active
-export TREZOR_TEST_SIGN_CL1_HF9=1
-export TREZOR_TEST_SIGN_CL1_HF10=1
-error=0
-
-if [[ "$RUN_PYTHON_TESTS" != 0 ]]; then
-  python3 -m unittest trezor_monero_test.test_trezor || exit $?
-fi
 
 if [[ "$OSTYPE" != "linux-gnu" && "$OSTYPE" != "darwin"* ]]; then
   echo "Tests with native Monero app is supported only on Linux and OSX at the moment. Your OS: $OSTYPE"
