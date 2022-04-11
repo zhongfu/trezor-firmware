@@ -51,7 +51,7 @@ def derive_subaddress_public_key(
     """
     out_key - H_s(derivation || varint(output_index))G
     """
-    crypto.check_ed25519point(out_key)
+    crypto.ge25519_check(out_key)
     scalar = crypto.derivation_to_scalar(derivation, output_index)
     point2 = crypto.scalarmult_base_into(None, scalar)
     point4 = crypto.point_sub_into(None, out_key, point2)

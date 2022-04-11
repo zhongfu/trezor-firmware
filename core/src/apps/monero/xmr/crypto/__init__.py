@@ -22,7 +22,7 @@ def get_keccak(data: bytes | None = None) -> sha3_256:
     return sha3_256(data=data, keccak=True)
 
 
-fast_hash_into = tcry.xmr_fast_hash
+fast_hash_into = tcry.fast_hash_into
 
 
 def keccak_2hash(inp: bytes, buff: bytes | None = None) -> bytes:
@@ -60,21 +60,21 @@ def compute_hmac(key: bytes, msg: bytes) -> bytes:
 #
 
 
-decodepoint_into = tcry.ge25519_unpack_vartime
-encodepoint_into = tcry.ge25519_pack
+decodepoint_into = tcry.decodepoint_into
+encodepoint_into = tcry.encodepoint_into
 
-decodeint_into_noreduce = tcry.unpack256_modm_noreduce
-decodeint_into = tcry.unpack256_modm
-encodeint_into = tcry.pack256_modm
+decodeint_into_noreduce = tcry.decodeint_into_noreduce
+decodeint_into = tcry.decodeint_into
+encodeint_into = tcry.encodeint_into
 
-check_ed25519point = tcry.ge25519_check
+ge25519_check = tcry.ge25519_check
 
-scalarmult_base_into = tcry.ge25519_scalarmult_base
-scalarmult_into = tcry.ge25519_scalarmult
+scalarmult_base_into = tcry.scalarmult_base_into
+scalarmult_into = tcry.scalarmult_into
 
-point_add_into = tcry.ge25519_add
-point_sub_into = tcry.ge25519_sub
-point_eq = tcry.ge25519_eq
+point_add_into = tcry.point_add_into
+point_sub_into = tcry.point_sub_into
+point_eq = tcry.point_eq
 
 
 def decodepoint(x: bytes) -> Point:
@@ -102,30 +102,30 @@ INV_EIGHT_SC = decodeint(INV_EIGHT)
 #
 
 
-sc_copy = tcry.init256_modm
-sc_check = tcry.check256_modm
+sc_copy = tcry.sc_copy
+sc_check = tcry.sc_check
 
-sc_add_into = tcry.add256_modm
-sc_sub_into = tcry.sub256_modm
-sc_mul_into = tcry.mul256_modm
+sc_add_into = tcry.sc_add_into
+sc_sub_into = tcry.sc_sub_into
+sc_mul_into = tcry.sc_mul_into
 
-sc_iszero = tcry.iszero256_modm
+sc_iszero = tcry.sc_iszero
 
-sc_eq = tcry.eq256_modm
-sc_mulsub_into = tcry.mulsub256_modm
-sc_muladd_into = tcry.muladd256_modm
-sc_inv_into = tcry.inv256_modm
+sc_eq = tcry.sc_eq
+sc_mulsub_into = tcry.sc_mulsub_into
+sc_muladd_into = tcry.sc_muladd_into
+sc_inv_into = tcry.sc_inv_into
 
-random_scalar = tcry.xmr_random_scalar
+random_scalar = tcry.random_scalar
 
 
 #
 # GE - ed25519 group
 #
-ge25519_double_scalarmult_vartime_into = tcry.ge25519_double_scalarmult_vartime
+ge25519_double_scalarmult_vartime_into = tcry.ge25519_double_scalarmult_vartime_into
 
 
-identity_into = tcry.ge25519_set_neutral
+identity_into = tcry.identity_into
 
 """
 https://www.imperialviolet.org/2013/12/25/elligator.html
@@ -137,7 +137,7 @@ http://elligator.cr.yp.to/elligator-20130828.pdf
 # Monero specific
 #
 
-hash_to_scalar_into = tcry.xmr_hash_to_scalar
+hash_to_scalar_into = tcry.hash_to_scalar_into
 
 
 # H_p(buf)
@@ -145,7 +145,7 @@ hash_to_scalar_into = tcry.xmr_hash_to_scalar
 # Code adapted from MiniNero: https://github.com/monero-project/mininero
 # https://github.com/monero-project/research-lab/blob/master/whitepaper/ge_fromfe_writeup/ge_fromfe.pdf
 # http://archive.is/yfINb
-hash_to_point_into = tcry.xmr_hash_to_ec
+hash_to_point_into = tcry.hash_to_point_into
 
 
 #
@@ -153,12 +153,12 @@ hash_to_point_into = tcry.xmr_hash_to_ec
 #
 
 
-xmr_H = tcry.ge25519_set_xmr_h
+xmr_H = tcry.xmr_H
 
 
-add_keys2_into = tcry.xmr_add_keys2_vartime
-add_keys3_into = tcry.xmr_add_keys3_vartime
-gen_commitment_into = tcry.xmr_gen_c
+add_keys2_into = tcry.add_keys2_into
+add_keys3_into = tcry.add_keys3_into
+gen_commitment_into = tcry.gen_commitment_into
 
 
 def generate_key_derivation(pub: Point, sec: Scalar) -> Point:
@@ -166,7 +166,7 @@ def generate_key_derivation(pub: Point, sec: Scalar) -> Point:
     Key derivation: 8*(key2*key1)
     """
     sc_check(sec)  # checks that the secret key is uniform enough...
-    check_ed25519point(pub)
+    ge25519_check(pub)
     return tcry.xmr_generate_key_derivation(None, pub, sec)
 
 
@@ -174,7 +174,7 @@ def derivation_to_scalar(derivation: Point, output_index: int) -> Scalar:
     """
     H_s(derivation || varint(output_index))
     """
-    check_ed25519point(derivation)
+    ge25519_check(derivation)
     return tcry.xmr_derivation_to_scalar(None, derivation, output_index)
 
 
@@ -182,7 +182,7 @@ def derive_public_key(derivation: Point, output_index: int, B: Point) -> Point:
     """
     H_s(derivation || varint(output_index))G + B
     """
-    check_ed25519point(B)
+    ge25519_check(B)
     return tcry.xmr_derive_public_key(None, derivation, output_index, B)
 
 
@@ -224,7 +224,7 @@ def check_signature(data: bytes, c: Scalar, r: Scalar, pub: Point) -> bool:
     """
     EC signature verification
     """
-    check_ed25519point(pub)
+    ge25519_check(pub)
     if sc_check(c) != 0 or sc_check(r) != 0:
         raise ValueError("Signature error")
 
