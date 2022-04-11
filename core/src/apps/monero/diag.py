@@ -91,7 +91,7 @@ if __debug__:
             bpi.gc_fnc = gc.collect
             bpi.gc_trace = log_trace
 
-            vals = [crypto.sc_init((1 << 30) - 1 + 16), crypto.sc_init(22222)]
+            vals = [crypto.Scalar((1 << 30) - 1 + 16), crypto.Scalar(22222)]
             masks = [crypto.random_scalar(), crypto.random_scalar()]
             check_mem("BP pre input")
 

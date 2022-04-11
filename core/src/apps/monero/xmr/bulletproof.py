@@ -54,15 +54,15 @@ _tmp_bf_1 = bytearray(32)
 _tmp_bf_2 = bytearray(32)
 _tmp_bf_exp = bytearray(11 + 32 + 4)
 
-_tmp_pt_1 = crypto.new_point()
-_tmp_pt_2 = crypto.new_point()
-_tmp_pt_3 = crypto.new_point()
-_tmp_pt_4 = crypto.new_point()
+_tmp_pt_1 = crypto.Point()
+_tmp_pt_2 = crypto.Point()
+_tmp_pt_3 = crypto.Point()
+_tmp_pt_4 = crypto.Point()
 
-_tmp_sc_1 = crypto.new_scalar()
-_tmp_sc_2 = crypto.new_scalar()
-_tmp_sc_3 = crypto.new_scalar()
-_tmp_sc_4 = crypto.new_scalar()
+_tmp_sc_1 = crypto.Scalar()
+_tmp_sc_2 = crypto.Scalar()
+_tmp_sc_3 = crypto.Scalar()
+_tmp_sc_4 = crypto.Scalar()
 
 
 def _ensure_dst_key(dst: bytearray | None = None) -> bytearray:
@@ -80,7 +80,7 @@ def memcpy(
 
 
 def _alloc_scalars(num: int = 1) -> Iterator[Scalar]:
-    return (crypto.new_scalar() for _ in range(num))
+    return (crypto.Scalar() for _ in range(num))
 
 
 def _copy_key(dst: bytearray, src: bytes) -> bytearray:
@@ -187,7 +187,7 @@ def _sc_mul(
 def _sc_muladd(
     dst: bytearray, a, b, c, a_raw=None, b_raw=None, c_raw=None, raw: bool = False
 ):
-    dst = _ensure_dst_key(dst) if not raw else (dst if dst else crypto.new_scalar())
+    dst = _ensure_dst_key(dst) if not raw else (dst if dst else crypto.Scalar())
     if a:
         crypto.decodeint_into_noreduce(_tmp_sc_1, a)
     if b:
@@ -270,7 +270,7 @@ def _get_exponent(dst, base, idx):
     memcpy(_tmp_bf_exp, 0, base, 0, 32)
     memcpy(_tmp_bf_exp, 32, salt, 0, lsalt)
     dump_uvarint_b_into(idx, _tmp_bf_exp, 32 + lsalt)
-    crypto.keccak_hash_into(_tmp_bf_1, _tmp_bf_exp, final_size)
+    crypto.fast_hash_into(_tmp_bf_1, _tmp_bf_exp, final_size)
     crypto.hash_to_point_into(_tmp_pt_4, _tmp_bf_1)
     crypto.encodepoint_into(dst, _tmp_pt_4)
     return dst
@@ -541,7 +541,7 @@ class KeyVEval(KeyVBase):
         self.buff = (
             _ensure_dst_key()
             if not raw
-            else (crypto.new_scalar() if scalar else crypto.new_point())
+            else (crypto.Scalar() if scalar else crypto.Point())
         )
 
     def __getitem__(self, item):
@@ -666,7 +666,7 @@ class KeyVPowers(KeyVBase):
         super().__init__(size)
         self.x = x if not raw else crypto.decodeint_into_noreduce(None, x)
         self.raw = raw
-        self.cur = bytearray(32) if not raw else crypto.new_scalar()
+        self.cur = bytearray(32) if not raw else crypto.Scalar()
         self.last_idx = 0
 
     def __getitem__(self, item):
@@ -736,11 +736,11 @@ class KeyR0(KeyVBase):
         self.aR = aR
         self.raw = raw
         self.y = crypto.decodeint_into_noreduce(None, y)
-        self.yp = crypto.new_scalar()  # y^{i}
+        self.yp = crypto.Scalar()  # y^{i}
         self.z = crypto.decodeint_into_noreduce(None, z)
-        self.zt = crypto.new_scalar()  # z^{2 + \floor{i/N}}
-        self.p2 = crypto.new_scalar()  # 2^{i \% N}
-        self.res = crypto.new_scalar()  # tmp_sc_1
+        self.zt = crypto.Scalar()  # z^{2 + \floor{i/N}}
+        self.p2 = crypto.Scalar()  # 2^{i \% N}
+        self.res = crypto.Scalar()  # tmp_sc_1
 
         self.cur = bytearray(32) if not raw else None
         self.last_idx = 0
@@ -893,7 +893,7 @@ def _inner_product(a, b, dst=None):
     if len(a) != len(b):
         raise ValueError("Incompatible sizes of a and b")
     dst = _ensure_dst_key(dst)
-    crypto.sc_init_into(_tmp_sc_1, 0)
+    crypto.sc_copy(_tmp_sc_1, 0)
 
     for i in range(len(a)):
         crypto.decodeint_into_noreduce(_tmp_sc_2, a.to(i))
@@ -988,10 +988,10 @@ def _cross_inner_product(l0, r0, l1, r1):
     t1   = l0 . r1 + l1 . r0
     t2   = l1 . r1
     """
-    sc_t1 = crypto.new_scalar()
-    sc_t2 = crypto.new_scalar()
-    tl = crypto.new_scalar()
-    tr = crypto.new_scalar()
+    sc_t1 = crypto.Scalar()
+    sc_t2 = crypto.Scalar()
+    tl = crypto.Scalar()
+    tr = crypto.Scalar()
 
     for i in range(len(l0)):
         crypto.decodeint_into_noreduce(tl, l0.to(i))
@@ -1073,7 +1073,7 @@ class MultiExpSequential:
         else:
             self.size = 0
 
-        self.acc = crypto.identity()
+        self.acc = crypto.Point()
         self.tmp = _ensure_dst_key()
 
     def get_point(self, idx):
@@ -1117,7 +1117,7 @@ class BulletProofBuilder:
         self.twoN = KeyV(buffer=crypto.tcry.BP_TWO_N, const=True)
         self.fnc_det_mask = None
 
-        self.tmp_sc_1 = crypto.new_scalar()
+        self.tmp_sc_1 = crypto.Scalar()
         self.tmp_det_buff = bytearray(64 + 1 + 4)
 
         self.gc_fnc = gc.collect
@@ -1208,7 +1208,7 @@ class BulletProofBuilder:
         gc.collect()
         buff = bytearray(ln * 32)
         buff_mv = memoryview(buff)
-        sc = crypto.new_scalar()
+        sc = crypto.Scalar()
         for i in range(ln):
             crypto.random_scalar(sc)
             crypto.encodeint_into(buff_mv[i * 32 : (i + 1) * 32], sc)
@@ -1376,7 +1376,7 @@ class BulletProofBuilder:
         #  - $t   = l . r$
         l = _ensure_dst_keyvect(None, MN)
         r = _ensure_dst_keyvect(None, MN)
-        ts = crypto.new_scalar()
+        ts = crypto.Scalar()
         for i in range(MN):
             _sc_muladd(_tmp_bf_0, x, l1.to(i), l0.to(i))
             l.read(i, _tmp_bf_0)
@@ -1423,7 +1423,7 @@ class BulletProofBuilder:
 
         yinvpowL = KeyVPowers(MN, _invert(_tmp_bf_0, y), raw=True)
         yinvpowR = KeyVPowers(MN, _tmp_bf_0, raw=True)
-        tmp_pt = crypto.new_point()
+        tmp_pt = crypto.Point()
 
         Gprime = Gprec
         HprimeL = KeyVEval(
@@ -1758,8 +1758,8 @@ class BulletProofBuilder:
         z3p = _sc_sub(None, z3, y1)
 
         check2 = crypto.encodepoint(
-            crypto.ge25519_double_scalarmult_base_vartime(
-                crypto.decodeint(z3p), crypto.xmr_H(), crypto.decodeint(tmp)
+            crypto.ge25519_double_scalarmult_vartime_into(
+                None, crypto.xmr_H(), crypto.decodeint(z3p), crypto.decodeint(tmp)
             )
         )
         _add_keys(muex_acc, muex_acc, check2)

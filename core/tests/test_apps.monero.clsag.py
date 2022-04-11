@@ -20,8 +20,8 @@ class TmpKey:
 class TestMoneroClsag(unittest.TestCase):
     def verify_clsag(self, msg, ss, sc1, sI, sD, pubs, C_offset):
         n = len(pubs)
-        c = crypto.new_scalar()
-        D_8 = crypto.new_point()
+        c = crypto.Scalar()
+        D_8 = crypto.Point()
         tmp_bf = bytearray(32)
         C_offset_bf = crypto.encodepoint(C_offset)
 
@@ -58,11 +58,11 @@ class TestMoneroClsag(unittest.TestCase):
         c_to_hash.update(C_offset_bf)
         c_to_hash.update(msg)
 
-        c_p = crypto.new_scalar()
-        c_c = crypto.new_scalar()
-        L = crypto.new_point()
-        R = crypto.new_point()
-        tmp_pt = crypto.new_point()
+        c_p = crypto.Scalar()
+        c_c = crypto.Scalar()
+        L = crypto.Point()
+        R = crypto.Point()
+        tmp_pt = crypto.Point()
         i = 0
         while i < n:
             crypto.sc_mul_into(c_p, mu_P, c)
@@ -86,7 +86,7 @@ class TestMoneroClsag(unittest.TestCase):
             crypto.decodeint_into(c, chasher.digest())
             i += 1
         res = crypto.sc_sub_into(None, c, sc1)
-        if not crypto.sc_eq(res, crypto.sc_0()):
+        if not crypto.sc_eq(res, crypto.Scalar(0)):
             raise ValueError("Signature error")
 
     def gen_clsag_test(self, ring_size=11, index=None):
@@ -96,7 +96,7 @@ class TestMoneroClsag(unittest.TestCase):
 
     def gen_clsag_sig(self, ring_size=11, index=None):
         msg = random.bytes(32)
-        amnt = crypto.sc_init(random.uniform(0xFFFFFF) + 12)
+        amnt = crypto.Scalar(random.uniform(0xFFFFFF) + 12)
         priv = crypto.random_scalar()
         msk = crypto.random_scalar()
         alpha = crypto.random_scalar()
@@ -143,8 +143,8 @@ class TestMoneroClsag(unittest.TestCase):
         sD = crypto.decodepoint(mg_buffer[-1])
         sc1 = crypto.decodeint(mg_buffer[-2])
         scalars = [crypto.decodeint(x) for x in mg_buffer[1:-2]]
-        H = crypto.new_point()
-        sI = crypto.new_point()
+        H = crypto.Point()
+        sI = crypto.Point()
 
         crypto.hash_to_point_into(H, crypto.encodepoint(P))
         crypto.scalarmult_into(sI, H, priv)  # I = p*H
@@ -348,7 +348,7 @@ class TestMoneroClsag(unittest.TestCase):
         msg, scalars, sc1, sI, sD, ring2, Cp = res
         with self.assertRaises(ValueError):
             Cp = crypto.point_add_into(
-                None, Cp, crypto.scalarmult_base_into(None, crypto.sc_init(1))
+                None, Cp, crypto.scalarmult_base_into(None, crypto.Scalar(1))
             )
             self.verify_clsag(msg, scalars, sc1, sI, sD, ring2, Cp)
 

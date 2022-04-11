@@ -105,9 +105,9 @@ class State:
         self.rsig_offload: bool | None = False
 
         # sum of all inputs' pseudo out masks
-        self.sumpouts_alphas: Scalar = crypto.sc_0()
+        self.sumpouts_alphas: Scalar = crypto.Scalar(0)
         # sum of all output' pseudo out masks
-        self.sumout: Scalar = crypto.sc_0()
+        self.sumout: Scalar = crypto.Scalar(0)
 
         self.subaddresses: Subaddresses | None = {}
 

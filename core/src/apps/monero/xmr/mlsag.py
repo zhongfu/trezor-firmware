@@ -104,7 +104,7 @@ def generate_mlsag_simple(
 
     sk[0] = in_sk.dest
     sk[1] = crypto.sc_sub_into(None, in_sk.mask, a)
-    tmp_pt = crypto.new_point()
+    tmp_pt = crypto.Point()
 
     for i in range(cols):
         crypto.point_sub_into(
@@ -173,9 +173,9 @@ def generate_first_c_and_key_images(
         assert list_of_type(alpha, Scalar)
 
     tmp_buff = bytearray(32)
-    Hi = crypto.new_point()
-    aGi = crypto.new_point()
-    aHPi = crypto.new_point()
+    Hi = crypto.Point()
+    aGi = crypto.Point()
+    aHPi = crypto.Point()
     hasher = _hasher_message(message)
 
     for i in range(dsRows):
@@ -236,11 +236,11 @@ def generate_mlsag(
         mg_buff.append(None)  # type: ignore
 
     mg_buff[0] = int_serialize.dump_uvarint_b(cols)
-    cc = crypto.new_scalar()  # rv.cc
-    c = crypto.new_scalar()
-    L = crypto.new_point()
-    R = crypto.new_point()
-    Hi = crypto.new_point()
+    cc = crypto.Scalar()  # rv.cc
+    c = crypto.Scalar()
+    L = crypto.Point()
+    R = crypto.Point()
+    Hi = crypto.Point()
 
     # calculates the "first" c, key images and random scalars alpha
     c_old, II, alpha = generate_first_c_and_key_images(
@@ -251,7 +251,7 @@ def generate_mlsag(
     if i == 0:
         crypto.sc_copy(cc, c_old)
 
-    ss = [crypto.new_scalar() for _ in range(rows)]
+    ss = [crypto.Scalar() for _ in range(rows)]
     tmp_buff = bytearray(32)
 
     while i != index:
@@ -368,22 +368,22 @@ def _generate_clsag(
     index: int,
     mg_buff: list[bytearray],
 ) -> list[bytes]:
-    sI = crypto.new_point()  # sig.I
-    sD = crypto.new_point()  # sig.D
-    sc1 = crypto.new_scalar()  # sig.c1
+    sI = crypto.Point()  # sig.I
+    sD = crypto.Point()  # sig.D
+    sc1 = crypto.Scalar()  # sig.c1
     a = crypto.random_scalar()
-    H = crypto.new_point()
-    D = crypto.new_point()
+    H = crypto.Point()
+    D = crypto.Point()
     Cout_bf = crypto.encodepoint(Cout)
 
-    tmp_sc = crypto.new_scalar()
-    tmp = crypto.new_point()
+    tmp_sc = crypto.Scalar()
+    tmp = crypto.Point()
     tmp_bf = bytearray(32)
 
     crypto.hash_to_point_into(H, P[index])
     crypto.scalarmult_into(sI, H, p)  # I = p*H
     crypto.scalarmult_into(D, H, z)  # D = z*H
-    crypto.sc_mul_into(tmp_sc, z, crypto.sc_inv_eight())  # 1/8*z
+    crypto.sc_mul_into(tmp_sc, z, crypto.INV_EIGHT_SC)  # 1/8*z
     crypto.scalarmult_into(sD, H, tmp_sc)  # sig.D = 1/8*z*H
     sD = crypto.encodepoint(sD)
 
@@ -427,10 +427,10 @@ def _generate_clsag(
     c = crypto.decodeint(chasher.digest())
     del (chasher, H)
 
-    L = crypto.new_point()
-    R = crypto.new_point()
-    c_p = crypto.new_scalar()
-    c_c = crypto.new_scalar()
+    L = crypto.Point()
+    R = crypto.Point()
+    c_p = crypto.Scalar()
+    c_c = crypto.Scalar()
     i = (index + 1) % len(P)
     if i == 0:
         crypto.sc_copy(sc1, c)

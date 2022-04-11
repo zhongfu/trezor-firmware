@@ -115,12 +115,12 @@ def generate_ring_signature(
     memcpy(buff, 0, prefix_hash, 0, buff_off)
     mvbuff = memoryview(buff)
 
-    sum = crypto.sc_0()
-    k = crypto.sc_0()
+    sum = crypto.Scalar(0)
+    k = crypto.Scalar(0)
     sig = []
 
     for _ in range(len(pubs)):
-        sig.append([crypto.sc_0(), crypto.sc_0()])  # c, r
+        sig.append([crypto.Scalar(0), crypto.Scalar(0)])  # c, r
 
     for i in range(len(pubs)):
         if i == sec_idx:
@@ -137,8 +137,8 @@ def generate_ring_signature(
         else:
             sig[i] = [crypto.random_scalar(), crypto.random_scalar()]
             tmp3 = pubs[i]
-            tmp2 = crypto.ge25519_double_scalarmult_base_vartime(
-                sig[i][0], tmp3, sig[i][1]
+            tmp2 = crypto.ge25519_double_scalarmult_vartime_into(
+                None, tmp3, sig[i][0], sig[i][1]
             )
             crypto.encodepoint_into(mvbuff[buff_off : buff_off + 32], tmp2)
             buff_off += 32
@@ -150,7 +150,7 @@ def generate_ring_signature(
 
             crypto.sc_add_into(sum, sum, sig[i][0])
 
-    h = crypto.hash_to_scalar(buff)
+    h = crypto.hash_to_scalar_into(None, buff)
     sig[sec_idx][0] = crypto.sc_sub_into(None, h, sum)
     sig[sec_idx][1] = crypto.sc_mulsub_into(None, sig[sec_idx][0], sec, k)
     return sig

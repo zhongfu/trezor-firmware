@@ -444,7 +444,7 @@ def _ecdh_hash(shared_sec: bytes) -> bytes:
     data = bytearray(38)
     data[0:6] = b"amount"
     data[6:] = shared_sec
-    return crypto.cn_fast_hash_into(None, data)
+    return crypto.fast_hash_into(None, data)
 
 
 def _ecdh_encode(amount: int, amount_key: bytes) -> EcdhTuple:
@@ -454,7 +454,7 @@ def _ecdh_encode(amount: int, amount_key: bytes) -> EcdhTuple:
     from apps.monero.xmr.serialize_messages.tx_ecdh import EcdhTuple
 
     ecdh_info = EcdhTuple(mask=crypto.NULL_KEY_ENC, amount=bytearray(32))
-    amnt = crypto.sc_init(amount)
+    amnt = crypto.Scalar(amount)
     crypto.encodeint_into(ecdh_info.amount, amnt)
     crypto.xor8(ecdh_info.amount, _ecdh_hash(amount_key))
     return ecdh_info

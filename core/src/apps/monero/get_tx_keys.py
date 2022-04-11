@@ -62,8 +62,8 @@ async def get_tx_keys(
 
         plain_buff = bytearray(plain_buff)
         view_pub = crypto.decodepoint(msg.view_public_key)
-        tx_priv = crypto.new_scalar()
-        derivation = crypto.new_point()
+        tx_priv = crypto.Scalar()
+        derivation = crypto.Point()
         n_keys = len(plain_buff) // 32
         for c in range(n_keys):
             crypto.decodeint_into(tx_priv, plain_buff, 32 * c)

@@ -144,7 +144,7 @@ def generate_tx_spend_and_key_image(
     :param received_index: subaddress index this payment was received to
     :return:
     """
-    if not crypto.sc_isnonzero(ack.spend_key_private):
+    if crypto.sc_iszero(ack.spend_key_private):
         raise ValueError("Watch-only wallet not supported")
 
     # derive secret key with subaddress - step 1: original CN derivation
@@ -285,7 +285,7 @@ def generate_monero_keys(seed: bytes) -> tuple[Scalar, Point, Scalar, Point]:
     crypto::secret_key account_base::generate(const crypto::secret_key& recovery_key, bool recover, bool two_random).
     """
     spend_sec, spend_pub = generate_keys(crypto.decodeint(seed))
-    hash = crypto.cn_fast_hash_into(None, crypto.encodeint(spend_sec))
+    hash = crypto.fast_hash_into(None, crypto.encodeint(spend_sec))
     view_sec, view_pub = generate_keys(crypto.decodeint(hash))
     return spend_sec, spend_pub, view_sec, view_pub
 
@@ -310,7 +310,4 @@ def commitment_mask(key: bytes, buff: Scalar | None = None) -> Scalar:
     data = bytearray(15 + 32)
     data[0:15] = b"commitment_mask"
     data[15:] = key
-    if buff:
-        return crypto.hash_to_scalar_into(buff, data)
-    else:
-        return crypto.hash_to_scalar(data)
+    return crypto.hash_to_scalar_into(buff, data)

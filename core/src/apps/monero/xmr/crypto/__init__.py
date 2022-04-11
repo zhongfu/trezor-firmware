@@ -18,24 +18,22 @@ random_bytes = random.bytes
 ct_equals = tcry.ct_equals
 
 
-def keccak_factory(data: bytes | None = None) -> sha3_256:
+def get_keccak(data: bytes | None = None) -> sha3_256:
     return sha3_256(data=data, keccak=True)
 
 
-get_keccak = keccak_factory
-keccak_hash_into = tcry.xmr_fast_hash
-cn_fast_hash_into = tcry.xmr_fast_hash
+fast_hash_into = tcry.xmr_fast_hash
 
 
 def keccak_2hash(inp: bytes, buff: bytes | None = None) -> bytes:
     buff = buff if buff else bytearray(32)
-    keccak_hash_into(buff, inp)
-    keccak_hash_into(buff, buff)
+    fast_hash_into(buff, inp)
+    fast_hash_into(buff, buff)
     return buff
 
 
 def compute_hmac(key: bytes, msg: bytes) -> bytes:
-    digestmod = keccak_factory
+    digestmod = get_keccak
     inner = digestmod()
     block_size = inner.block_size
     if len(key) > block_size:
@@ -60,13 +58,6 @@ def compute_hmac(key: bytes, msg: bytes) -> bytes:
 #
 # EC
 #
-
-
-new_point = tcry.ge25519_set_neutral
-
-
-def new_scalar() -> Scalar:
-    return tcry.init256_modm(None, 0)
 
 
 decodepoint_into = tcry.ge25519_unpack_vartime
@@ -106,33 +97,9 @@ INV_EIGHT = b"\x79\x2f\xdc\xe2\x29\xe5\x06\x61\xd0\xda\x1c\x7d\xb3\x9d\xd3\x07\x
 INV_EIGHT_SC = decodeint(INV_EIGHT)
 
 
-def sc_inv_eight() -> Scalar:
-    return INV_EIGHT_SC
-
-
 #
 # Zmod(order), scalar values field
 #
-
-
-def sc_0() -> Scalar:
-    return tcry.init256_modm(None, 0)
-
-
-def sc_0_into(r: Scalar) -> Scalar:
-    return tcry.init256_modm(r, 0)
-
-
-def sc_init(x: int) -> Scalar:
-    if x >= (1 << 64):
-        raise ValueError("Initialization works up to 64-bit only")
-    return tcry.init256_modm(None, x)
-
-
-def sc_init_into(r: Scalar, x: int) -> Scalar:
-    if x >= (1 << 64):
-        raise ValueError("Initialization works up to 64-bit only")
-    return tcry.init256_modm(r, x)
 
 
 sc_copy = tcry.init256_modm
@@ -142,41 +109,20 @@ sc_add_into = tcry.add256_modm
 sc_sub_into = tcry.sub256_modm
 sc_mul_into = tcry.mul256_modm
 
-
-def sc_isnonzero(c: Scalar) -> bool:
-    """
-    Returns true if scalar is non-zero
-    """
-    return not tcry.iszero256_modm(c)
-
+sc_iszero = tcry.iszero256_modm
 
 sc_eq = tcry.eq256_modm
 sc_mulsub_into = tcry.mulsub256_modm
 sc_muladd_into = tcry.muladd256_modm
 sc_inv_into = tcry.inv256_modm
 
-
-def random_scalar(r=None) -> Scalar:
-    return tcry.xmr_random_scalar(r if r is not None else new_scalar())
+random_scalar = tcry.xmr_random_scalar
 
 
 #
 # GE - ed25519 group
 #
-
-
-def ge25519_double_scalarmult_base_vartime(a, A, b) -> Point:
-    """
-    void ge25519_double_scalarmult_vartime(ge25519 *r, const ge25519 *p1, const bignum256modm s1, const bignum256modm s2);
-    r = a * A + b * B
-    """
-    R = tcry.ge25519_double_scalarmult_vartime(None, A, a, b)
-    return R
-
-
-def identity(byte_enc: bool = False) -> Point | bytes:
-    idd = tcry.ge25519_set_neutral()
-    return idd if not byte_enc else encodepoint(idd)
+ge25519_double_scalarmult_vartime_into = tcry.ge25519_double_scalarmult_vartime
 
 
 identity_into = tcry.ge25519_set_neutral
@@ -191,18 +137,7 @@ http://elligator.cr.yp.to/elligator-20130828.pdf
 # Monero specific
 #
 
-
-def hash_to_scalar(data: bytes, length: int | None = None):
-    """
-    H_s(P)
-    """
-    dt = data[:length] if length else data
-    return tcry.xmr_hash_to_scalar(None, dt)
-
-
-def hash_to_scalar_into(r: Scalar, data: bytes, length: int | None = None):
-    dt = data[:length] if length else data
-    return tcry.xmr_hash_to_scalar(r, dt)
+hash_to_scalar_into = tcry.xmr_hash_to_scalar
 
 
 # H_p(buf)
@@ -280,7 +215,7 @@ def generate_signature(data: bytes, priv: Scalar) -> tuple[Scalar, Scalar, Point
     comm = scalarmult_base_into(None, k)
 
     buff = data + encodepoint(pub) + encodepoint(comm)
-    c = hash_to_scalar(buff)
+    c = hash_to_scalar_into(None, buff)
     r = sc_mulsub_into(None, priv, c, k)
     return c, r, pub
 
@@ -297,9 +232,9 @@ def check_signature(data: bytes, c: Scalar, r: Scalar, pub: Point) -> bool:
         None, scalarmult_into(None, pub, c), scalarmult_base_into(None, r)
     )
     buff = data + encodepoint(pub) + encodepoint(tmp2)
-    tmp_c = hash_to_scalar(buff)
+    tmp_c = hash_to_scalar_into(None, buff)
     res = sc_sub_into(None, tmp_c, c)
-    return not sc_isnonzero(res)
+    return sc_iszero(res)
 
 
 def xor8(buff: bytearray, key: bytes) -> bytes:

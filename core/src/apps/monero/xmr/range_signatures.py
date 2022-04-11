@@ -23,7 +23,7 @@ def prove_range_bp_batch(amounts: list[int], masks: list[Scalar]) -> Bulletproof
     from apps.monero.xmr import bulletproof as bp
 
     bpi = bp.BulletProofBuilder()
-    bp_proof = bpi.prove_batch([crypto.sc_init(a) for a in amounts], masks)
+    bp_proof = bpi.prove_batch([crypto.Scalar(a) for a in amounts], masks)
     del (bpi, bp)
     gc.collect()
 
@@ -38,7 +38,7 @@ def verify_bp(bp_proof: Bulletproof, amounts: list[int], masks: list[Scalar]) ->
         bp_proof.V = []
         for i in range(len(amounts)):
             C = crypto.gen_commitment_into(None, masks[i], amounts[i])
-            crypto.scalarmult_into(C, C, crypto.sc_inv_eight())
+            crypto.scalarmult_into(C, C, crypto.INV_EIGHT_SC)
             bp_proof.V.append(crypto.encodepoint(C))
 
     bpi = bp.BulletProofBuilder()
