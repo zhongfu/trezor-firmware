@@ -61,12 +61,11 @@ async def init_transaction(
     state.fee = tsx_data.fee
     state.account_idx = tsx_data.account
     state.last_step = state.STEP_INIT
+    state.tx_type = signing.RctType.CLSAG
     if tsx_data.hard_fork:
         state.hard_fork = tsx_data.hard_fork
-
-    state.tx_type = (
-        signing.RctType.CLSAG if state.hard_fork >= 13 else signing.RctType.Bulletproof2
-    )
+    if state.hard_fork < 13:
+        raise ValueError("Unsupported hard-fork version")
 
     # Ensure change is correct
     _check_change(state, tsx_data.outputs)
@@ -414,4 +413,4 @@ def _encrypt_payment_id(
     derivation[32] = 0x8D  # ENCRYPTED_PAYMENT_ID_TAIL
     hash = crypto.fast_hash_into(None, derivation)
     pm_copy = bytearray(payment_id)
-    return crypto.xor8(pm_copy, hash)
+    return crypto_helpers.xor8(pm_copy, hash)

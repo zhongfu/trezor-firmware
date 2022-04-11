@@ -1,5 +1,5 @@
 """
-Generates a MLSAG signature for one input.
+Generates a clsag signature for one input.
 
 Mask Balancing.
 Sum of input masks has to be equal to the sum of output masks.
@@ -165,7 +165,7 @@ async def sign_input(
 
     state.mem_trace(4, True)
 
-    from apps.monero.xmr import mlsag
+    from apps.monero.xmr import clsag
     from apps.monero import signing
 
     mg_buffer = []
@@ -176,29 +176,18 @@ async def sign_input(
     state.mem_trace(5, True)
 
     assert state.full_message is not None
-    if state.tx_type == signing.RctType.CLSAG:
-        state.mem_trace("CLSAG")
-        mlsag.generate_clsag_simple(
-            state.full_message,
-            ring_pubkeys,
-            input_secret_key,
-            pseudo_out_alpha,
-            pseudo_out_c,
-            index,
-            mg_buffer,
-        )
-    else:
-        mlsag.generate_mlsag_simple(
-            state.full_message,
-            ring_pubkeys,
-            input_secret_key,
-            pseudo_out_alpha,
-            pseudo_out_c,
-            index,
-            mg_buffer,
-        )
+    state.mem_trace("CLSAG")
+    clsag.generate_clsag_simple(
+        state.full_message,
+        ring_pubkeys,
+        input_secret_key,
+        pseudo_out_alpha,
+        pseudo_out_c,
+        index,
+        mg_buffer,
+    )
 
-    del (CtKey, input_secret_key, pseudo_out_alpha, mlsag, ring_pubkeys)
+    del (CtKey, input_secret_key, pseudo_out_alpha, clsag, ring_pubkeys)
     state.mem_trace(6, True)
 
     from trezor.messages import MoneroTransactionSignInputAck

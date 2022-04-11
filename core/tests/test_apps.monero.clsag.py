@@ -1,7 +1,7 @@
 from common import *
 
 if not utils.BITCOIN_ONLY:
-    from apps.monero.xmr import crypto, crypto_helpers, mlsag
+    from apps.monero.xmr import crypto, crypto_helpers, clsag
     from apps.monero.xmr.serialize_messages.tx_ct_key import CtKey
     from trezor.crypto import monero as tcry
     from trezor.crypto import random
@@ -30,8 +30,8 @@ class TestMoneroClsag(unittest.TestCase):
 
         hsh_P = crypto_helpers.get_keccak()  # domain, I, D, P, C, C_offset
         hsh_C = crypto_helpers.get_keccak()  # domain, I, D, P, C, C_offset
-        hsh_P.update(mlsag._HASH_KEY_CLSAG_AGG_0)
-        hsh_C.update(mlsag._HASH_KEY_CLSAG_AGG_1)
+        hsh_P.update(clsag._HASH_KEY_CLSAG_AGG_0)
+        hsh_C.update(clsag._HASH_KEY_CLSAG_AGG_1)
 
         def hsh_PC(x):
             hsh_P.update(x)
@@ -50,7 +50,7 @@ class TestMoneroClsag(unittest.TestCase):
         mu_C = crypto_helpers.decodeint(hsh_C.digest())
 
         c_to_hash = crypto_helpers.get_keccak()  # domain, P, C, C_offset, message, L, R
-        c_to_hash.update(mlsag._HASH_KEY_CLSAG_ROUND)
+        c_to_hash.update(clsag._HASH_KEY_CLSAG_ROUND)
         for i in range(len(pubs)):
             c_to_hash.update(pubs[i].dest)
         for i in range(len(pubs)):
@@ -136,7 +136,7 @@ class TestMoneroClsag(unittest.TestCase):
             )
         )
 
-        mlsag.generate_clsag_simple(
+        clsag.generate_clsag_simple(
             msg, ring, CtKey(priv, msk), alpha, Cp, index, mg_buffer,
         )
 

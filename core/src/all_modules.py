@@ -606,6 +606,8 @@ if not utils.BITCOIN_ONLY:
     import apps.monero.xmr.bulletproof
     apps.monero.xmr.chacha_poly
     import apps.monero.xmr.chacha_poly
+    apps.monero.xmr.clsag
+    import apps.monero.xmr.clsag
     apps.monero.xmr.credentials
     import apps.monero.xmr.credentials
     apps.monero.xmr.crypto_helpers
@@ -614,8 +616,6 @@ if not utils.BITCOIN_ONLY:
     import apps.monero.xmr.keccak_hasher
     apps.monero.xmr.key_image
     import apps.monero.xmr.key_image
-    apps.monero.xmr.mlsag
-    import apps.monero.xmr.mlsag
     apps.monero.xmr.mlsag_hasher
     import apps.monero.xmr.mlsag_hasher
     apps.monero.xmr.monero
