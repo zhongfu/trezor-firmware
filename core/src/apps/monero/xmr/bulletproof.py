@@ -15,9 +15,10 @@ if TYPE_CHECKING:
     from .serialize_messages.tx_rsig_bulletproof import Bulletproof
 
     T = TypeVar("T")
+    ScalarDst = TypeVar("ScalarDst", bytearray, crypto.Scalar)
 
 else:
-    Generic = [object]  # type: ignore
+    Generic = (object,)
     T = 0  # type: ignore
 
 # Constants
@@ -50,7 +51,6 @@ _BP_IP12 = b"\xff\xff\xff\xff\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00\x0
 
 _tmp_bf_0 = bytearray(32)
 _tmp_bf_1 = bytearray(32)
-_tmp_bf_2 = bytearray(32)
 _tmp_bf_exp = bytearray(11 + 32 + 4)
 
 _tmp_pt_1 = crypto.Point()
@@ -78,10 +78,6 @@ def memcpy(
     return dst
 
 
-def _alloc_scalars(num: int = 1) -> Iterator[crypto.Scalar]:
-    return (crypto.Scalar() for _ in range(num))
-
-
 def _copy_key(dst: bytearray, src: bytes) -> bytearray:
     for i in range(32):
         dst[i] = src[i]
@@ -107,7 +103,11 @@ def _invert(dst: bytearray, x: bytes) -> bytearray:
 
 
 def _scalarmult_key(
-    dst: bytearray, P, s: bytes, s_raw: int | None = None, tmp_pt: Point = _tmp_pt_1
+    dst: bytearray,
+    P,
+    s: bytes,
+    s_raw: int | None = None,
+    tmp_pt: crypto.Point = _tmp_pt_1,
 ):
     # TODO: two functions based on s/s_raw ?
     dst = _ensure_dst_key(dst)
@@ -158,7 +158,7 @@ def _sc_sub(
     dst: bytearray | None,
     a: bytes | crypto.Scalar,
     b: bytes | crypto.Scalar,
-):
+) -> bytearray:
     dst = _ensure_dst_key(dst)
     if not isinstance(a, crypto.Scalar):
         crypto.decodeint_into_noreduce(_tmp_sc_1, a)
@@ -171,40 +171,43 @@ def _sc_sub(
     return dst
 
 
-def _sc_mul(
-    dst: bytearray | None, a: bytes, b: bytes | None = None, b_raw: bytes | None = None
-) -> bytearray:
+def _sc_mul(dst: bytearray | None, a: bytes, b: bytes | crypto.Scalar) -> bytearray:
     dst = _ensure_dst_key(dst)
     crypto.decodeint_into_noreduce(_tmp_sc_1, a)
-    if b:
+    if not isinstance(b, crypto.Scalar):
         crypto.decodeint_into_noreduce(_tmp_sc_2, b)
-    crypto.sc_mul_into(_tmp_sc_3, _tmp_sc_1, _tmp_sc_2 if b else b_raw)
+        b = _tmp_sc_2
+    crypto.sc_mul_into(_tmp_sc_3, _tmp_sc_1, b)
     crypto.encodeint_into(dst, _tmp_sc_3)
     return dst
 
 
 def _sc_muladd(
-    dst: bytearray, a, b, c, a_raw=None, b_raw=None, c_raw=None, raw: bool = False
-):
-    dst = _ensure_dst_key(dst) if not raw else (dst if dst else crypto.Scalar())
-    if a:
+    dst: ScalarDst,
+    a: bytes | crypto.Scalar,
+    b: bytes | crypto.Scalar,
+    c: bytes | crypto.Scalar,
+) -> ScalarDst:
+    if isinstance(dst, crypto.Scalar):
+        dst_sc = dst
+    else:
+        dst_sc = _tmp_sc_4
+    if not isinstance(a, crypto.Scalar):
         crypto.decodeint_into_noreduce(_tmp_sc_1, a)
-    if b:
+        a = _tmp_sc_1
+    if not isinstance(b, crypto.Scalar):
         crypto.decodeint_into_noreduce(_tmp_sc_2, b)
-    if c:
+        b = _tmp_sc_2
+    if not isinstance(c, crypto.Scalar):
         crypto.decodeint_into_noreduce(_tmp_sc_3, c)
-    crypto.sc_muladd_into(
-        _tmp_sc_4 if not raw else dst,
-        _tmp_sc_1 if a else a_raw,
-        _tmp_sc_2 if b else b_raw,
-        _tmp_sc_3 if c else c_raw,
-    )
-    if not raw:
-        crypto.encodeint_into(dst, _tmp_sc_4)
+        c = _tmp_sc_3
+    crypto.sc_muladd_into(dst_sc, a, b, c)
+    if not isinstance(dst, crypto.Scalar):
+        crypto.encodeint_into(dst, dst_sc)
     return dst
 
 
-def _sc_mulsub(dst, a, b, c):
+def _sc_mulsub(dst: bytearray | None, a: bytes, b: bytes, c: bytes) -> bytearray:
     dst = _ensure_dst_key(dst)
     crypto.decodeint_into_noreduce(_tmp_sc_1, a)
     crypto.decodeint_into_noreduce(_tmp_sc_2, b)
@@ -214,7 +217,7 @@ def _sc_mulsub(dst, a, b, c):
     return dst
 
 
-def _add_keys(dst, A, B):
+def _add_keys(dst: bytearray | None, A: bytes, B: bytes) -> bytearray:
     dst = _ensure_dst_key(dst)
     crypto.decodepoint_into(_tmp_pt_1, A)
     crypto.decodepoint_into(_tmp_pt_2, B)
@@ -223,7 +226,7 @@ def _add_keys(dst, A, B):
     return dst
 
 
-def _sub_keys(dst, A, B):
+def _sub_keys(dst: bytearray | None, A: bytes, B: bytes) -> bytearray:
     dst = _ensure_dst_key(dst)
     crypto.decodepoint_into(_tmp_pt_1, A)
     crypto.decodepoint_into(_tmp_pt_2, B)
@@ -232,7 +235,7 @@ def _sub_keys(dst, A, B):
     return dst
 
 
-def _add_keys2(dst, a, b, B):
+def _add_keys2(dst: bytearray | None, a: bytes, b: bytes, B: bytes) -> bytearray:
     dst = _ensure_dst_key(dst)
     crypto.decodeint_into_noreduce(_tmp_sc_1, a)
     crypto.decodeint_into_noreduce(_tmp_sc_2, b)
@@ -299,10 +302,10 @@ class KeyVBase(Generic[T]):
         return idx
 
     def __getitem__(self, item: int) -> T:
-        raise ValueError("Not supported")
+        raise NotImplementedError
 
     def __setitem__(self, key: int, value: T) -> None:
-        raise ValueError("Not supported")
+        raise NotImplementedError
 
     def __iter__(self) -> Iterator[T]:
         self.current_idx = 0
@@ -323,9 +326,9 @@ class KeyVBase(Generic[T]):
         return memcpy(buff, offset, self.to(self.idxize(idx)), 0, 32)
 
     def read(self, idx: int, buff: bytes, offset: int = 0) -> bytes:
-        raise ValueError
+        raise NotImplementedError
 
-    def slice(self, res, start, stop):
+    def slice(self, res, start: int, stop: int):
         for i in range(start, stop):
             res[i - start] = self[i]
         return res
@@ -338,7 +341,13 @@ _CHBITS = const(5)
 _CHSIZE = const(1 << _CHBITS)
 
 
-class KeyV(KeyVBase):
+if TYPE_CHECKING:
+    KeyVBaseType = KeyVBase
+else:
+    KeyVBaseType = (KeyVBase,)
+
+
+class KeyV(KeyVBaseType[T]):
     """
     KeyVector abstraction
     Constant precomputed buffers = bytes, frozen. Same operation as normal.
@@ -591,7 +600,7 @@ class KeyVConst(KeyVBase):
     def __getitem__(self, item):
         return self.elem
 
-    def to(self, idx, buff: bytearray | None = None, offset: int = 0):
+    def to(self, idx: int, buff: bytearray, offset: int = 0):
         memcpy(buff, offset, self.elem, 0, 32)
         return buff if buff else self.elem
 
@@ -1335,9 +1344,7 @@ class BulletProofBuilder:
         # r1_i = s_{Ri} y^{i}
         r0 = KeyR0(MN, N, aR, y, z)
         ypow = KeyVPowers(MN, y, raw=True)
-        r1 = KeyVEval(
-            MN, lambda i, d: _sc_mul(d, sR.to(i), None, ypow[i])  # noqa: F821
-        )
+        r1 = KeyVEval(MN, lambda i, d: _sc_mul(d, sR.to(i), ypow[i]))  # noqa: F821
         del aR
         self.gc(14)
 
@@ -1383,7 +1390,7 @@ class BulletProofBuilder:
             _sc_muladd(_tmp_bf_1, x, r1.to(i), r0.to(i))
             r.read(i, _tmp_bf_1)
 
-            _sc_muladd(ts, _tmp_bf_0, _tmp_bf_1, None, c_raw=ts, raw=True)
+            _sc_muladd(ts, _tmp_bf_0, _tmp_bf_1, ts)
 
         t = crypto_helpers.encodeint(ts)
         del (l0, l1, sL, sR, r0, r1, ypow, ts)
@@ -1398,7 +1405,7 @@ class BulletProofBuilder:
 
         zpow = crypto.sc_mul_into(None, zc, zc)
         for j in range(1, len(V) + 1):
-            _sc_muladd(taux, None, gamma[j - 1], taux, a_raw=zpow)
+            _sc_muladd(taux, zpow, gamma[j - 1], taux)
             crypto.sc_mul_into(zpow, zpow, zc)
         del (zc, zpow)
 
@@ -1758,7 +1765,10 @@ class BulletProofBuilder:
 
         check2 = crypto_helpers.encodepoint(
             crypto.ge25519_double_scalarmult_vartime_into(
-                None, crypto.xmr_H(), crypto_helpers.decodeint(z3p), crypto_helpers.decodeint(tmp)
+                None,
+                crypto.xmr_H(),
+                crypto_helpers.decodeint(z3p),
+                crypto_helpers.decodeint(tmp),
             )
         )
         _add_keys(muex_acc, muex_acc, check2)
