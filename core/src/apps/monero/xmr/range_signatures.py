@@ -29,7 +29,9 @@ def prove_range_bp_batch(amounts: list[int], masks: list[crypto.Scalar]) -> Bull
     return bp_proof
 
 
-def verify_bp(bp_proof: Bulletproof, amounts: list[int], masks: list[crypto.Scalar]) -> bool:
+def verify_bp(
+    bp_proof: Bulletproof, amounts: list[int], masks: list[crypto.Scalar]
+) -> bool:
     """Verifies Bulletproof"""
     from apps.monero.xmr import bulletproof as bp
 

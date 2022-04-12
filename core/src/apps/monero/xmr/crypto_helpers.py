@@ -89,7 +89,9 @@ def derivation_to_scalar(derivation: tcry.Point, output_index: int) -> tcry.Scal
     return tcry.xmr_derivation_to_scalar(None, derivation, output_index)
 
 
-def derive_public_key(derivation: tcry.Point, output_index: int, B: tcry.Point) -> tcry.Point:
+def derive_public_key(
+    derivation: tcry.Point, output_index: int, B: tcry.Point
+) -> tcry.Point:
     """
     H_s(derivation || varint(output_index))G + B
     """
@@ -97,7 +99,9 @@ def derive_public_key(derivation: tcry.Point, output_index: int, B: tcry.Point) 
     return tcry.xmr_derive_public_key(None, derivation, output_index, B)
 
 
-def derive_secret_key(derivation: tcry.Point, output_index: int, base: tcry.Scalar) -> tcry.Scalar:
+def derive_secret_key(
+    derivation: tcry.Point, output_index: int, base: tcry.Scalar
+) -> tcry.Scalar:
     """
     base + H_s(derivation || varint(output_index))
     """
@@ -115,7 +119,9 @@ def get_subaddress_secret_key(
     return tcry.xmr_get_subaddress_secret_key(None, major, minor, secret_key)
 
 
-def generate_signature(data: bytes, priv: tcry.Scalar) -> tuple[tcry.Scalar, tcry.Scalar, tcry.Point]:
+def generate_signature(
+    data: bytes, priv: tcry.Scalar
+) -> tuple[tcry.Scalar, tcry.Scalar, tcry.Point]:
     """
     Generate EC signature
     crypto_ops::generate_signature(const hash &prefix_hash, const public_key &pub, const secret_key &sec, signature &sig)
@@ -131,7 +137,9 @@ def generate_signature(data: bytes, priv: tcry.Scalar) -> tuple[tcry.Scalar, tcr
     return c, r, pub
 
 
-def check_signature(data: bytes, c: tcry.Scalar, r: tcry.Scalar, pub: tcry.Point) -> bool:
+def check_signature(
+    data: bytes, c: tcry.Scalar, r: tcry.Scalar, pub: tcry.Point
+) -> bool:
     """
     EC signature verification
     """

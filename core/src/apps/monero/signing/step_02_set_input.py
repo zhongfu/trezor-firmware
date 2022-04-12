@@ -48,7 +48,9 @@ async def set_input(
 
     # Secrets derivation
     # the UTXO's one-time address P
-    out_key = crypto_helpers.decodepoint(src_entr.outputs[src_entr.real_output].key.dest)
+    out_key = crypto_helpers.decodepoint(
+        src_entr.outputs[src_entr.real_output].key.dest
+    )
     # the tx_pub of our UTXO stored inside its transaction
     tx_key = crypto_helpers.decodepoint(src_entr.real_out_tx_key)
     additional_tx_pub_key = _get_additional_public_key(src_entr)

@@ -216,7 +216,9 @@ def generate_tx_spend_and_key_image_and_derivation(
     )
 
     additional_recv_derivation = (
-        crypto_helpers.generate_key_derivation(additional_tx_public_key, creds.view_key_private)
+        crypto_helpers.generate_key_derivation(
+            additional_tx_public_key, creds.view_key_private
+        )
         if additional_tx_public_key
         else None
     )
@@ -276,7 +278,9 @@ def generate_keys(recovery_key: crypto.Scalar) -> tuple[crypto.Scalar, crypto.Po
     return recovery_key, pub
 
 
-def generate_monero_keys(seed: bytes) -> tuple[crypto.Scalar, crypto.Point, crypto.Scalar, crypto.Point]:
+def generate_monero_keys(
+    seed: bytes,
+) -> tuple[crypto.Scalar, crypto.Point, crypto.Scalar, crypto.Point]:
     """
     Generates spend key / view key from the seed in the same manner as Monero code does.
 

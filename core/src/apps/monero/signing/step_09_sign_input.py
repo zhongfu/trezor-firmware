@@ -157,7 +157,9 @@ async def sign_input(
     )
     utils.ensure(
         crypto.point_eq(
-            crypto_helpers.decodepoint(src_entr.outputs[src_entr.real_output].key.commitment),
+            crypto_helpers.decodepoint(
+                src_entr.outputs[src_entr.real_output].key.commitment
+            ),
             crypto.gen_commitment_into(None, input_secret_key.mask, src_entr.amount),
         ),
         "Real source entry's mask does not equal spend key's",

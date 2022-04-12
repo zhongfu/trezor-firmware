@@ -14,8 +14,7 @@ from trezor.messages import (
 from apps.common import paths
 from apps.common.keychain import auto_keychain
 from apps.monero import layout, misc
-from apps.monero.xmr import crypto, crypto_helpers, key_image, monero
-from apps.monero.xmr import chacha_poly
+from apps.monero.xmr import chacha_poly, crypto, crypto_helpers, key_image, monero
 
 if TYPE_CHECKING:
     from trezor.messages import MoneroLiveRefreshStartRequest

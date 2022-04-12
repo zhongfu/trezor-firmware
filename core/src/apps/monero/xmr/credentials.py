@@ -4,6 +4,7 @@ from apps.monero.xmr import crypto, crypto_helpers
 from apps.monero.xmr.addresses import encode_addr
 from apps.monero.xmr.networks import net_version
 
+
 class AccountCreds:
     """
     Stores account private keys

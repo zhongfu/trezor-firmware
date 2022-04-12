@@ -22,8 +22,7 @@ from trezor.messages import MoneroGetTxKeyAck, MoneroGetTxKeyRequest
 from apps.common import paths
 from apps.common.keychain import auto_keychain
 from apps.monero import layout, misc
-from apps.monero.xmr import crypto, crypto_helpers
-from apps.monero.xmr import chacha_poly
+from apps.monero.xmr import chacha_poly, crypto, crypto_helpers
 
 _GET_TX_KEY_REASON_TX_DERIVATION = 1
 

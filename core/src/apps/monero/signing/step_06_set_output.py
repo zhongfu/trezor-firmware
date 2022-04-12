@@ -180,7 +180,9 @@ def _compute_tx_keys(
     # derivation = a*R or r*A or s*C
     derivation = _set_out_derivation(state, dst_entr, additional_txkey_priv)
     # amount key = H_s(derivation || i)
-    amount_key = crypto_helpers.derivation_to_scalar(derivation, state.current_output_index)
+    amount_key = crypto_helpers.derivation_to_scalar(
+        derivation, state.current_output_index
+    )
     # one-time destination address P = H_s(derivation || i)*G + B
     tx_out_key = crypto_helpers.derive_public_key(
         derivation,
@@ -256,7 +258,9 @@ def _range_proof(
     # If not last, do not proceed to the BP processing.
     if not last_in_batch:
         rsig_data_new = (
-            _return_rsig_data(mask=crypto_helpers.encodeint(mask)) if offload_mask else None
+            _return_rsig_data(mask=crypto_helpers.encodeint(mask))
+            if offload_mask
+            else None
         )
         return rsig_data_new, mask
 
@@ -404,7 +408,11 @@ def _return_rsig_data(
 
 
 def _get_ecdh_info_and_out_pk(
-    state: State, tx_out_key: crypto.Point, amount: int, mask: crypto.Scalar, amount_key: crypto.Scalar
+    state: State,
+    tx_out_key: crypto.Point,
+    amount: int,
+    mask: crypto.Scalar,
+    amount_key: crypto.Scalar,
 ) -> tuple[bytes, bytes, bytes]:
     """
     Calculates the Pedersen commitment C = aG + bH and returns it as CtKey.

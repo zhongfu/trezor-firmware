@@ -180,7 +180,8 @@ def _get_primary_change_address(state: State) -> MoneroAccountPublicAddress:
         state.creds.view_key_private, state.creds.spend_key_public, state.account_idx, 0
     )
     return MoneroAccountPublicAddress(
-        view_public_key=crypto_helpers.encodepoint(C), spend_public_key=crypto_helpers.encodepoint(D)
+        view_public_key=crypto_helpers.encodepoint(C),
+        spend_public_key=crypto_helpers.encodepoint(D),
     )
 
 
@@ -370,7 +371,8 @@ def _get_key_for_payment_id_encryption(
     from trezor.messages import MoneroAccountPublicAddress
 
     addr = MoneroAccountPublicAddress(
-        spend_public_key=crypto_helpers.NULL_KEY_ENC, view_public_key=crypto_helpers.NULL_KEY_ENC
+        spend_public_key=crypto_helpers.NULL_KEY_ENC,
+        view_public_key=crypto_helpers.NULL_KEY_ENC,
     )
     count = 0
     for dest in tsx_data.outputs:

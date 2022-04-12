@@ -8,13 +8,11 @@ so we can recover it just from the transaction and the spend key.
 The private tx keys are used in other numerous Monero features.
 """
 
+from trezor.crypto import random
 from trezor.messages import MoneroTransactionFinalAck
 
-from trezor.crypto import random
-
 from apps.monero import misc
-from apps.monero.xmr import crypto, crypto_helpers
-from apps.monero.xmr import chacha_poly
+from apps.monero.xmr import chacha_poly, crypto, crypto_helpers
 
 from .state import State
 

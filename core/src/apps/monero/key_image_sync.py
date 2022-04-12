@@ -2,6 +2,7 @@ import gc
 from typing import TYPE_CHECKING
 
 from trezor import log, wire
+from trezor.crypto import random
 from trezor.messages import (
     MoneroExportedKeyImage,
     MoneroKeyImageExportInitAck,
@@ -10,12 +11,11 @@ from trezor.messages import (
     MoneroKeyImageSyncStepAck,
     MoneroKeyImageSyncStepRequest,
 )
-from trezor.crypto import random
 
 from apps.common import paths
 from apps.common.keychain import auto_keychain
 from apps.monero import layout, misc
-from apps.monero.xmr import crypto, chacha_poly, crypto_helpers, key_image, monero
+from apps.monero.xmr import chacha_poly, crypto, crypto_helpers, key_image, monero
 
 if TYPE_CHECKING:
     from trezor.messages import MoneroKeyImageExportInitRequest
