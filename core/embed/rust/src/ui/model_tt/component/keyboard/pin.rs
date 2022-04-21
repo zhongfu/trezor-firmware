@@ -7,7 +7,7 @@ use crate::{
     ui::{
         component::{
             base::ComponentExt, Child, Component, Event, EventCtx, Label, LabelStyle, Maybe, Never,
-            Pad,
+            Pad, TimerToken,
         },
         display,
         geometry::{Alignment, Grid, Insets, Offset, Rect},
@@ -51,6 +51,7 @@ pub struct PinKeyboard<T> {
     cancel_btn: Child<Maybe<Button<&'static str>>>,
     confirm_btn: Child<Button<&'static str>>,
     digit_btns: [Child<Button<&'static str>>; DIGIT_COUNT],
+    warning_timer: Option<TimerToken>,
 }
 
 impl<T> PinKeyboard<T>
@@ -92,6 +93,7 @@ where
                 .initially_enabled(false)
                 .into_child(),
             digit_btns: Self::generate_digit_buttons(),
+            warning_timer: None,
         }
     }
 
@@ -181,6 +183,19 @@ where
     }
 
     fn event(&mut self, ctx: &mut EventCtx, event: Event) -> Option<Self::Msg> {
+        match event {
+            // Set up timer to switch off warning prompt.
+            Event::Attach if !self.major_warning.is_none() => {
+                self.warning_timer = Some(ctx.request_timer(Duration::from_secs(2)));
+            }
+            // Hide warning, show major prompt.
+            Event::Timer(token) if Some(token) == self.warning_timer => {
+                self.major_warning = None;
+                ctx.request_paint();
+            }
+            _ => {}
+        }
+
         self.textbox.event(ctx, event);
         if let Some(Clicked) = self.confirm_btn.event(ctx, event) {
             return Some(PinKeyboardMsg::Confirmed);
