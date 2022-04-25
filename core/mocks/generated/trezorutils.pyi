@@ -40,6 +40,13 @@ def halt(msg: str | None = None) -> None:
     """
     Halts execution.
     """
+
+
+# extmod/modtrezorutils/modtrezorutils.c
+def reboot_to_bootloader() -> None:
+    """
+    Reboots to bootloader.
+    """
 SCM_REVISION: bytes
 VERSION_MAJOR: int
 VERSION_MINOR: int
