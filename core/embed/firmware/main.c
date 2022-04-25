@@ -58,6 +58,12 @@
 // from util.s
 extern void shutdown_privileged(void);
 
+__attribute__((noreturn)) void reboot_to_bootloader() {
+  jump_to(BOOTLOADER_START + IMAGE_HEADER_SIZE);
+  for (;;)
+    ;
+}
+
 int main(void) {
   random_delays_init();
 
@@ -126,8 +132,7 @@ int main(void) {
   ensure(sectrue * (zkp_context_init() == 0), NULL);
 #endif
 
-  svc_shutdown();
-  jump_to(BOOTLOADER_START + IMAGE_HEADER_SIZE);
+  svc_reboot_to_bootloader();
 
   printf("CORE: Preparing stack\n");
   // Stack limit should be less than real stack size, so we have a chance
@@ -213,16 +218,17 @@ void SVC_C_Handler(uint32_t *stack) {
       break;
 #endif
     case SVC_SHUTDOWN:
-  //mpu_config_off();
-  mpu_config_jump_to_bootloader();
-  __asm__ volatile("msr control, %0" ::"r"(0x0));
-  __asm__ volatile("isb");
-  return;
-  jump_to(BOOTLOADER_START + IMAGE_HEADER_SIZE);
       shutdown_privileged();
       for (;;)
         ;
       break;
+    case SVC_REBOOT_TO_BOOTLOADER:
+      mpu_config_jump_to_bootloader();
+      __asm__ volatile("msr control, %0" ::"r"(0x0));
+      __asm__ volatile("isb");
+      // see stack layout in https://developer.arm.com/documentation/ka004005/latest
+      stack[6] = (uintptr_t)reboot_to_bootloader;
+      return;
     default:
       stack[0] = 0xffffffff;
       break;
