@@ -117,6 +117,19 @@ STATIC mp_obj_t mod_trezorutils_halt(size_t n_args, const mp_obj_t *args) {
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_trezorutils_halt_obj, 0, 1,
                                            mod_trezorutils_halt);
 
+
+/// def reboot_to_bootloader() -> None:
+///     """
+///     Reboots to bootloader.
+///     """
+STATIC mp_obj_t mod_trezorutils_reboot_to_bootloader() {
+  // actual reboot via trezorhal goes here:
+  ensure(secfalse, "reboot_to_bootloader");
+  return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_trezorutils_reboot_to_bootloader_obj,
+                                 mod_trezorutils_reboot_to_bootloader);
+
 STATIC mp_obj_str_t mod_trezorutils_revision_obj = {
     {&mp_type_bytes}, 0, sizeof(SCM_REVISION) - 1, (const byte *)SCM_REVISION};
 
@@ -136,6 +149,7 @@ STATIC const mp_rom_map_elem_t mp_module_trezorutils_globals_table[] = {
     {MP_ROM_QSTR(MP_QSTR_consteq), MP_ROM_PTR(&mod_trezorutils_consteq_obj)},
     {MP_ROM_QSTR(MP_QSTR_memcpy), MP_ROM_PTR(&mod_trezorutils_memcpy_obj)},
     {MP_ROM_QSTR(MP_QSTR_halt), MP_ROM_PTR(&mod_trezorutils_halt_obj)},
+    {MP_ROM_QSTR(MP_QSTR_reboot_to_bootloader), MP_ROM_PTR(&mod_trezorutils_reboot_to_bootloader_obj)},
     // various built-in constants
     {MP_ROM_QSTR(MP_QSTR_SCM_REVISION),
      MP_ROM_PTR(&mod_trezorutils_revision_obj)},
