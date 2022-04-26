@@ -5,6 +5,7 @@ from trezor.messages import RebootToBootloader, Success
 
 if TYPE_CHECKING:
     from typing import NoReturn
+    pass
 
 
 async def reboot_to_bootloader(ctx: wire.Context, msg: RebootToBootloader) -> NoReturn:
