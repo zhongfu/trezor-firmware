@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from trezor import ui, wire, workflow
 from trezor.messages import FirmwareHash, GetFirmwareHash
+from trezor.ui.layouts import draw_simple_text
 from trezor.utils import DISABLE_ANIMATION, firmware_hash
 
 if TYPE_CHECKING:
@@ -12,7 +13,7 @@ async def get_firmware_hash(ctx: Context, msg: GetFirmwareHash) -> FirmwareHash:
     render_func = None
     if not DISABLE_ANIMATION:
         workflow.close_others()
-        ui.layouts.draw_simple_text("Please wait")
+        draw_simple_text("Please wait")
         render_func = _render_progress
 
     try:
