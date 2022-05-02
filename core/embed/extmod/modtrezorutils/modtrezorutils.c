@@ -119,7 +119,7 @@ STATIC mp_obj_t mod_trezorutils_halt(size_t n_args, const mp_obj_t *args) {
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_trezorutils_halt_obj, 0, 1,
                                            mod_trezorutils_halt);
 
-/// def firmware_hash(challenge: bytes | None) -> bytes:
+/// def firmware_hash(challenge: bytes | None = None) -> bytes:
 ///     """
 ///     Computes the Blake2s hash of the firmware with an optional challenge as
 ///     the key.

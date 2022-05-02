@@ -43,7 +43,7 @@ def halt(msg: str | None = None) -> None:
 
 
 # extmod/modtrezorutils/modtrezorutils.c
-def firmware_hash(challenge: bytes | None) -> bytes:
+def firmware_hash(challenge: bytes | None = None) -> bytes:
     """
     Computes the Blake2s hash of the firmware with an optional challenge as
     the key.
