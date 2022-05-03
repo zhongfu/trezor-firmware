@@ -190,6 +190,7 @@ async def confirm_total(
         ctx,
         total_amount=format_coin_amount(spending, coin, amount_unit),
         fee_amount=format_coin_amount(fee, coin, amount_unit),
+        fee_rate_amount=f"({format_amount(99, 0)} sat/B)",
     )
 
 

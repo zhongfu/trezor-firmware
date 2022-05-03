@@ -400,6 +400,7 @@ async def confirm_total(
     ctx: wire.GenericContext,
     total_amount: str,
     fee_amount: str,
+    fee_rate_amount: str,
     title: str = "Confirm transaction",
     total_label: str = "Total amount:\n",
     fee_label: str = "\nincluding fee:\n",
