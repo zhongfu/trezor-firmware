@@ -24,6 +24,7 @@ from trezorlib.tools import H_
 
 pytestmark = [
     pytest.mark.skip_t2,
+    pytest.mark.skip_tr,
     pytest.mark.flaky(max_runs=5),
 ]
 
