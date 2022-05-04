@@ -188,7 +188,7 @@ async def show_address(
     raise NotImplementedError
 
 
-def show_pubkey(
+async def show_pubkey(
     ctx: wire.Context, pubkey: str, title: str = "Confirm public key"
 ) -> Awaitable[None]:
     return confirm_blob(
@@ -344,7 +344,7 @@ async def confirm_blob(
     raise NotImplementedError
 
 
-def confirm_address(
+async def confirm_address(
     ctx: wire.GenericContext,
     title: str,
     address: str,
@@ -370,7 +370,7 @@ async def confirm_text(
     raise NotImplementedError
 
 
-def confirm_amount(
+async def confirm_amount(
     ctx: wire.GenericContext,
     title: str,
     amount: str,

@@ -8,7 +8,9 @@ import trezorui2
 from ..common import button_request, interact
 
 if TYPE_CHECKING:
-    from typing import Any, NoReturn, Type
+    from typing import Any, NoReturn, Type, Awaitable, Iterable
+
+    from ..common import PropertyType
 
     ExceptionType = BaseException | Type[BaseException]
 
@@ -164,25 +166,67 @@ async def confirm_text(
         raise wire.ActionCancelled
 
 
+async def confirm(
+    ctx: wire.GenericContext,
+    br_type: str,
+    title: str,
+    data: str,
+    description: str | None = None,
+    br_code: ButtonRequestType = ButtonRequestType.Other,
+) -> Awaitable[None]:
+    return await confirm_text(
+        ctx=ctx,
+        br_type=br_type,
+        title=title,
+        data=data,
+        description=description,
+        br_code=br_code,
+    )
+
+
 async def show_success(
     ctx: wire.GenericContext,
     br_type: str,
     content: str,
-) -> None:
-    result = await interact(
-        ctx,
-        _RustLayout(
-            trezorui2.confirm_text(
-                title="Success",
-                data=content,
-                description="",
-            )
-        ),
-        br_type,
-        br_code=ButtonRequestType.Other,
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type=br_type,
+        title="Success",
+        data=content,
+        description="",
+        br_code=ButtonRequestType.Success,
     )
-    if result is not trezorui2.CONFIRMED:
-        raise wire.ActionCancelled
+
+
+async def confirm_reset_device(
+    ctx: wire.GenericContext, prompt: str, recovery: bool = False
+) -> Awaitable[None]:
+    return await confirm_action(
+        ctx,
+        "recover_device" if recovery else "setup_device",
+        "not implemented",
+        action="not implemented",
+        br_code=ButtonRequestType.ProtectCall
+        if recovery
+        else ButtonRequestType.ResetDevice,
+    )
+
+
+async def show_warning(
+    ctx: wire.GenericContext,
+    br_type: str,
+    content: str,
+    br_code: ButtonRequestType = ButtonRequestType.Warning,
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type=br_type,
+        title="Warning",
+        data=content,
+        description="",
+        br_code=br_code,
+    )
 
 
 async def show_address(
@@ -197,21 +241,15 @@ async def show_address(
     xpubs: Sequence[str] = (),
     address_extra: str | None = None,
     title_qr: str | None = None,
-) -> None:
-    result = await interact(
-        ctx,
-        _RustLayout(
-            trezorui2.confirm_text(
-                title="ADDRESS",
-                data=address,
-                description="Confirm address",
-            )
-        ),
-        "show_address",
-        ButtonRequestType.Address,
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type="show_address",
+        title="Show address",
+        data=address,
+        description="",
+        br_code=ButtonRequestType.Address,
     )
-    if result is not trezorui2.CONFIRMED:
-        raise wire.ActionCancelled
 
 
 async def confirm_output(
@@ -221,21 +259,16 @@ async def confirm_output(
     font_amount: int = ui.NORMAL,  # TODO cleanup @ redesign
     title: str = "Confirm sending",
     icon: str = ui.ICON_SEND,
-) -> None:
-    result = await interact(
-        ctx,
-        _RustLayout(
-            trezorui2.confirm_text(
-                title=title,
-                data=f"Send {amount} to {address}?",
-                description="Confirm Output",
-            )
-        ),
-        "confirm_output",
-        ButtonRequestType.Other,
+    br_code: ButtonRequestType = ButtonRequestType.ConfirmOutput,
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type="confirm_output",
+        title=title,
+        data=f"Send {amount} to {address}?",
+        description="",
+        br_code=br_code,
     )
-    if result is not trezorui2.CONFIRMED:
-        raise wire.ActionCancelled
 
 
 async def confirm_total(
@@ -248,21 +281,15 @@ async def confirm_total(
     icon_color: int = ui.GREEN,
     br_type: str = "confirm_total",
     br_code: ButtonRequestType = ButtonRequestType.SignTx,
-) -> None:
-    result = await interact(
-        ctx,
-        _RustLayout(
-            trezorui2.confirm_text(
-                title=title,
-                data=f"{total_label}{total_amount}\n{fee_label}{fee_amount}",
-                description="Confirm Output",
-            )
-        ),
-        br_type,
-        br_code,
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type=br_type,
+        title=title,
+        data=f"{total_label}{total_amount}\n{fee_label}{fee_amount}",
+        description="",
+        br_code=br_code,
     )
-    if result is not trezorui2.CONFIRMED:
-        raise wire.ActionCancelled
 
 
 async def confirm_blob(
@@ -276,21 +303,35 @@ async def confirm_blob(
     icon: str = ui.ICON_SEND,  # TODO cleanup @ redesign
     icon_color: int = ui.GREEN,  # TODO cleanup @ redesign
     ask_pagination: bool = False,
-) -> None:
-    result = await interact(
-        ctx,
-        _RustLayout(
-            trezorui2.confirm_text(
-                title=title,
-                data=str(data),
-                description=description,
-            )
-        ),
-        br_type,
-        br_code,
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type=br_type,
+        title=title,
+        data=str(data),
+        description=description,
+        br_code=br_code,
     )
-    if result is not trezorui2.CONFIRMED:
-        raise wire.ActionCancelled
+
+
+async def confirm_address(
+    ctx: wire.GenericContext,
+    title: str,
+    address: str,
+    description: str | None = "Address:",
+    br_type: str = "confirm_address",
+    br_code: ButtonRequestType = ButtonRequestType.Other,
+    icon: str = ui.ICON_SEND,  # TODO cleanup @ redesign
+    icon_color: int = ui.GREEN,  # TODO cleanup @ redesign
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type=br_type,
+        title=title,
+        data=address,
+        description=description,
+        br_code=br_code,
+    )
 
 
 def draw_simple_text(title: str, description: str = "") -> None:
@@ -353,6 +394,221 @@ async def show_error_and_raise(
     raise exc
 
 
+async def show_pubkey(
+    ctx: wire.Context, pubkey: str, title: str = "Confirm public key"
+) -> Awaitable[None]:
+    return await confirm_blob(
+        ctx,
+        br_type="show_pubkey",
+        title="Confirm public key",
+        data=pubkey,
+        br_code=ButtonRequestType.PublicKey,
+    )
+
+
+async def confirm_amount(
+    ctx: wire.GenericContext,
+    title: str,
+    amount: str,
+    description: str = "Amount:",
+    br_type: str = "confirm_amount",
+    br_code: ButtonRequestType = ButtonRequestType.Other,
+    icon: str = ui.ICON_SEND,  # TODO cleanup @ redesign
+    icon_color: int = ui.GREEN,  # TODO cleanup @ redesign
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type=br_type,
+        title=title,
+        data=amount,
+        description=description,
+        br_code=br_code,
+    )
+
+
+async def confirm_properties(
+    ctx: wire.GenericContext,
+    br_type: str,
+    title: str,
+    props: Iterable[PropertyType],
+    icon: str = ui.ICON_SEND,  # TODO cleanup @ redesign
+    icon_color: int = ui.GREEN,  # TODO cleanup @ redesign
+    hold: bool = False,
+    br_code: ButtonRequestType = ButtonRequestType.ConfirmOutput,
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type=br_type,
+        title=title,
+        data="\n".join(f"{name}: {value}" for name, value in props),
+        description="Confirm properties",
+        br_code=br_code,
+    )
+
+
+async def confirm_joint_total(
+    ctx: wire.GenericContext, spending_amount: str, total_amount: str
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type="confirm_joint_total",
+        title="Joint total",
+        data=f"Spending {spending_amount} out of total {total_amount}",
+        description="",
+        br_code=ButtonRequestType.SignTx,
+    )
+
+
+async def confirm_metadata(
+    ctx: wire.GenericContext,
+    br_type: str,
+    title: str,
+    content: str,
+    param: str | None = None,
+    br_code: ButtonRequestType = ButtonRequestType.SignTx,
+    hide_continue: bool = False,
+    hold: bool = False,
+    param_font: int = ui.BOLD,
+    icon: str = ui.ICON_SEND,  # TODO cleanup @ redesign
+    icon_color: int = ui.GREEN,  # TODO cleanup @ redesign
+    larger_vspace: bool = False,  # TODO cleanup @ redesign
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type=br_type,
+        title=title,
+        data=content,
+        description="Confirm metadata",
+        br_code=br_code,
+    )
+
+
+async def confirm_replacement(
+    ctx: wire.GenericContext, description: str, txid: str
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type="confirm_replacement",
+        title="Confirm replacement",
+        data=f"Replace {txid}?",
+        description="",
+    )
+
+
+async def confirm_modify_output(
+    ctx: wire.GenericContext,
+    address: str,
+    sign: int,
+    amount_change: str,
+    amount_new: str,
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type="confirm_modify_output",
+        title="Confirm modify output",
+        data=f"Sign: {sign}, address: {address}, amount_change: {amount_change}, amount_new: {amount_new}?",
+        description="",
+        br_code=ButtonRequestType.ConfirmOutput,
+    )
+
+
+async def confirm_modify_fee(
+    ctx: wire.GenericContext,
+    sign: int,
+    user_fee_change: str,
+    total_fee_new: str,
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type="confirm_modify_fee",
+        title="Confirm modify fee",
+        data=f"Sign: {sign}, change: {user_fee_change}, new: {total_fee_new}?",
+        description="",
+        br_code=ButtonRequestType.SignTx,
+    )
+
+
+async def confirm_coinjoin(
+    ctx: wire.GenericContext, coin_name: str, max_rounds: int, max_fee_per_vbyte: str
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type="confirm_coinjoin",
+        title="Confirm modify fee",
+        data=f"coin_name: {coin_name}, max_rounds: {max_rounds}, max_fee_per_vbyte: {max_fee_per_vbyte}?",
+        description="",
+    )
+
+
+# TODO cleanup @ redesign
+async def confirm_sign_identity(
+    ctx: wire.GenericContext, proto: str, identity: str, challenge_visual: str | None
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type="confirm_sign_identity",
+        title="Confirm sign identity",
+        data=f"proto: {proto}, identity: {identity}, challenge_visual: {challenge_visual}?",
+        description="",
+    )
+
+
+async def confirm_signverify(
+    ctx: wire.GenericContext, coin: str, message: str, address: str, verify: bool
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type="confirm_signverify",
+        title="Confirm sign verify",
+        data=f"coin: {coin}, message: {message}, address: {address}, verify: {verify}?",
+        description="",
+    )
+
+
+# TODO cleanup @ redesign
+async def confirm_backup(ctx: wire.GenericContext) -> bool:
+    result = await interact(
+        ctx,
+        _RustLayout(
+            trezorui2.confirm_text(
+                title="BACKUP STARTING",
+                data="Backup will start",
+                description="",
+            )
+        ),
+        br_type="confirm_backup",
+        br_code=ButtonRequestType.ResetDevice,
+    )
+
+    return result is trezorui2.CONFIRMED
+
+
+async def confirm_path_warning(
+    ctx: wire.GenericContext, path: str, path_type: str = "Path"
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type="confirm_path_warning",
+        title="Path warning",
+        data=path,
+        description=path_type,
+        br_code=ButtonRequestType.UnknownDerivationPath,
+    )
+
+
+async def show_xpub(
+    ctx: wire.GenericContext, xpub: str, title: str, cancel: str
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type="show_xpub",
+        title=title,
+        data=xpub,
+        description="",
+        br_code=ButtonRequestType.PublicKey,
+    )
+
+
 async def show_popup(
     title: str,
     description: str,
@@ -360,4 +616,56 @@ async def show_popup(
     description_param: str = "",
     timeout_ms: int = 3000,
 ) -> None:
-    raise NotImplementedError
+    return None
+
+
+async def should_show_more(
+    ctx: wire.GenericContext,
+    title: str,
+    para: Iterable[tuple[int, str]],
+    button_text: str = "Show all",
+    br_type: str = "should_show_more",
+    br_code: ButtonRequestType = ButtonRequestType.Other,
+    icon: str = ui.ICON_DEFAULT,
+    icon_color: int = ui.ORANGE_ICON,
+) -> bool:
+    return False
+
+
+async def confirm_payment_request(
+    ctx: wire.GenericContext,
+    recipient_name: str,
+    amount: str,
+    memos: list[str],
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type="confirm_payment_request",
+        title="Confirm payment request",
+        data=f"recipient_name: {recipient_name}, amount: {amount}, memos: {', '.join(m for m in memos)}?",
+        description="",
+        br_code=ButtonRequestType.ConfirmOutput,
+    )
+
+
+async def _show_modal(
+    ctx: wire.GenericContext,
+    br_type: str,
+    br_code: ButtonRequestType,
+    header: str,
+    subheader: str | None,
+    content: str,
+    button_confirm: str | None,
+    button_cancel: str | None,
+    icon: str,
+    icon_color: int,
+    exc: ExceptionType = wire.ActionCancelled,
+) -> Awaitable[None]:
+    return await confirm(
+        ctx=ctx,
+        br_type=br_type,
+        title=header,
+        data=content,
+        description=subheader,
+        br_code=br_code,
+    )
