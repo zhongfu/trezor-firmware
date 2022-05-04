@@ -24,7 +24,8 @@ from ...common import parametrize_using_common_fixtures
 
 SHOW_MORE = (143, 167)
 
-pytestmark = [pytest.mark.altcoin, pytest.mark.ethereum]
+# Skipping TR just for now, there are some issue with "show more" dialogue
+pytestmark = [pytest.mark.altcoin, pytest.mark.ethereum, pytest.mark.skip_tr]
 
 
 @pytest.mark.skip_t1

@@ -283,6 +283,12 @@ MESSAGE_LENGTHS = (
 @pytest.mark.skip_t1
 @pytest.mark.parametrize("message", MESSAGE_LENGTHS)
 def test_signmessage_pagination(client: Client, message):
+    # Czech characters seem to cause panic in R model
+    if message.startswith("Příšerně") and client.features.model == "R":
+        # Failing the test not to cause Rust panic, which would stop the emulator
+        # pytest.skip("R model does not support czech characters")
+        assert False
+
     message_read = ""
 
     def input_flow():
