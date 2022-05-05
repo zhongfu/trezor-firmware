@@ -127,7 +127,6 @@ core device ui2 test:
 core device R test:
   stage: test
   <<: *gitlab_caching
-  when: manual
   needs:
     - core unix frozen R debug build
   variables:
