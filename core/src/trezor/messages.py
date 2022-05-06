@@ -49,6 +49,7 @@ if TYPE_CHECKING:
     from trezor.enums import RequestType  # noqa: F401
     from trezor.enums import SafetyCheckLevel  # noqa: F401
     from trezor.enums import SdProtectOperationType  # noqa: F401
+    from trezor.enums import SignMode  # noqa: F401
     from trezor.enums import StellarAssetType  # noqa: F401
     from trezor.enums import StellarMemoType  # noqa: F401
     from trezor.enums import StellarSignerType  # noqa: F401
@@ -5284,6 +5285,304 @@ if TYPE_CHECKING:
 
         @classmethod
         def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["StellarSignedTx"]:
+            return isinstance(msg, cls)
+
+    class AnyType(protobuf.MessageType):
+        type_url: "str"
+        value: "bytes"
+
+        def __init__(
+            self,
+            *,
+            type_url: "str",
+            value: "bytes",
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["AnyType"]:
+            return isinstance(msg, cls)
+
+    class TerraGetAddress(protobuf.MessageType):
+        address_n: "list[int]"
+        show_display: "bool | None"
+
+        def __init__(
+            self,
+            *,
+            address_n: "list[int] | None" = None,
+            show_display: "bool | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraGetAddress"]:
+            return isinstance(msg, cls)
+
+    class TerraAddress(protobuf.MessageType):
+        address: "str"
+
+        def __init__(
+            self,
+            *,
+            address: "str",
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraAddress"]:
+            return isinstance(msg, cls)
+
+    class TerraGetPublicKey(protobuf.MessageType):
+        address_n: "list[int]"
+        show_display: "bool | None"
+
+        def __init__(
+            self,
+            *,
+            address_n: "list[int] | None" = None,
+            show_display: "bool | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraGetPublicKey"]:
+            return isinstance(msg, cls)
+
+    class TerraPublicKey(protobuf.MessageType):
+        value: "bytes"
+
+        def __init__(
+            self,
+            *,
+            value: "bytes",
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraPublicKey"]:
+            return isinstance(msg, cls)
+
+    class TerraFee(protobuf.MessageType):
+        amount: "list[TerraCoin]"
+        gas_limit: "int"
+        payer: "str | None"
+        granter: "str | None"
+
+        def __init__(
+            self,
+            *,
+            gas_limit: "int",
+            amount: "list[TerraCoin] | None" = None,
+            payer: "str | None" = None,
+            granter: "str | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraFee"]:
+            return isinstance(msg, cls)
+
+    class TerraSignTx(protobuf.MessageType):
+        address_n: "list[int]"
+        msg_count: "int"
+        account_number: "int"
+        sequence: "int"
+        fee: "TerraFee"
+        chain_id: "str"
+        memo: "str | None"
+        timeout_height: "int | None"
+
+        def __init__(
+            self,
+            *,
+            msg_count: "int",
+            account_number: "int",
+            sequence: "int",
+            fee: "TerraFee",
+            chain_id: "str",
+            address_n: "list[int] | None" = None,
+            memo: "str | None" = None,
+            timeout_height: "int | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraSignTx"]:
+            return isinstance(msg, cls)
+
+    class TerraTxRequest(protobuf.MessageType):
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraTxRequest"]:
+            return isinstance(msg, cls)
+
+    class TerraCoin(protobuf.MessageType):
+        denom: "str"
+        amount: "str"
+
+        def __init__(
+            self,
+            *,
+            denom: "str",
+            amount: "str",
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraCoin"]:
+            return isinstance(msg, cls)
+
+    class TerraMsgSend(protobuf.MessageType):
+        from_address: "str"
+        to_address: "str"
+        amounts: "list[TerraCoin]"
+
+        def __init__(
+            self,
+            *,
+            from_address: "str",
+            to_address: "str",
+            amounts: "list[TerraCoin] | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraMsgSend"]:
+            return isinstance(msg, cls)
+
+    class TerraSignedTx(protobuf.MessageType):
+        signature: "bytes"
+        public_key: "bytes"
+
+        def __init__(
+            self,
+            *,
+            signature: "bytes",
+            public_key: "bytes",
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraSignedTx"]:
+            return isinstance(msg, cls)
+
+    class TerraTxBody(protobuf.MessageType):
+        messages: "list[AnyType]"
+        memo: "str"
+        timeout_height: "int"
+
+        def __init__(
+            self,
+            *,
+            memo: "str",
+            timeout_height: "int",
+            messages: "list[AnyType] | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraTxBody"]:
+            return isinstance(msg, cls)
+
+    class TerraModeInfo(protobuf.MessageType):
+        single: "Single | None"
+
+        def __init__(
+            self,
+            *,
+            single: "Single | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraModeInfo"]:
+            return isinstance(msg, cls)
+
+    class TerraSignerInfo(protobuf.MessageType):
+        public_key: "AnyType"
+        mode_info: "TerraModeInfo"
+        sequence: "int"
+
+        def __init__(
+            self,
+            *,
+            public_key: "AnyType",
+            mode_info: "TerraModeInfo",
+            sequence: "int",
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraSignerInfo"]:
+            return isinstance(msg, cls)
+
+    class TerraAuthInfo(protobuf.MessageType):
+        signer_infos: "list[TerraSignerInfo]"
+        fee: "TerraFee"
+
+        def __init__(
+            self,
+            *,
+            fee: "TerraFee",
+            signer_infos: "list[TerraSignerInfo] | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraAuthInfo"]:
+            return isinstance(msg, cls)
+
+    class TerraTx(protobuf.MessageType):
+        body: "TerraTxBody"
+        auth_info: "TerraAuthInfo"
+        signatures: "list[bytes]"
+
+        def __init__(
+            self,
+            *,
+            body: "TerraTxBody",
+            auth_info: "TerraAuthInfo",
+            signatures: "list[bytes] | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraTx"]:
+            return isinstance(msg, cls)
+
+    class TerraSignDoc(protobuf.MessageType):
+        body_bytes: "bytes"
+        auth_info_bytes: "bytes"
+        chain_id: "str"
+        account_number: "int"
+
+        def __init__(
+            self,
+            *,
+            body_bytes: "bytes",
+            auth_info_bytes: "bytes",
+            chain_id: "str",
+            account_number: "int",
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraSignDoc"]:
+            return isinstance(msg, cls)
+
+    class Single(protobuf.MessageType):
+        mode: "SignMode"
+
+        def __init__(
+            self,
+            *,
+            mode: "SignMode",
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["Single"]:
             return isinstance(msg, cls)
 
     class TezosGetAddress(protobuf.MessageType):

@@ -260,6 +260,14 @@ class MessageType(IntEnum):
     WebAuthnCredentials = 801
     WebAuthnAddResidentCredential = 802
     WebAuthnRemoveResidentCredential = 803
+    TerraGetAddress = 900
+    TerraAddress = 901
+    TerraGetPublicKey = 902
+    TerraPublicKey = 903
+    TerraSignTx = 904
+    TerraTxRequest = 905
+    TerraSignedTx = 906
+    TerraMsgSend = 907
 
 
 class FailureType(IntEnum):
@@ -448,6 +456,7 @@ class Capability(IntEnum):
     Shamir = 15
     ShamirGroups = 16
     PassphraseEntry = 17
+    Terra = 18
 
 
 class SdProtectOperationType(IntEnum):
@@ -529,6 +538,13 @@ class StellarSignerType(IntEnum):
     ACCOUNT = 0
     PRE_AUTH = 1
     HASH = 2
+
+
+class SignMode(IntEnum):
+    SIGN_MODE_UNSPECIFIED = 0
+    SIGN_MODE_DIRECT = 1
+    SIGN_MODE_TEXTUAL = 2
+    SIGN_MODE_LEGACY_AMINO_JSON = 127
 
 
 class TezosContractType(IntEnum):
@@ -6949,6 +6965,329 @@ class StellarSignedTx(protobuf.MessageType):
     ) -> None:
         self.public_key = public_key
         self.signature = signature
+
+
+class AnyType(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = None
+    FIELDS = {
+        1: protobuf.Field("type_url", "string", repeated=False, required=True),
+        2: protobuf.Field("value", "bytes", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        type_url: "str",
+        value: "bytes",
+    ) -> None:
+        self.type_url = type_url
+        self.value = value
+
+
+class TerraGetAddress(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 900
+    FIELDS = {
+        1: protobuf.Field("address_n", "uint32", repeated=True, required=False),
+        2: protobuf.Field("show_display", "bool", repeated=False, required=False),
+    }
+
+    def __init__(
+        self,
+        *,
+        address_n: Optional[Sequence["int"]] = None,
+        show_display: Optional["bool"] = None,
+    ) -> None:
+        self.address_n: Sequence["int"] = address_n if address_n is not None else []
+        self.show_display = show_display
+
+
+class TerraAddress(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 901
+    FIELDS = {
+        1: protobuf.Field("address", "string", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        address: "str",
+    ) -> None:
+        self.address = address
+
+
+class TerraGetPublicKey(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 902
+    FIELDS = {
+        1: protobuf.Field("address_n", "uint32", repeated=True, required=False),
+        2: protobuf.Field("show_display", "bool", repeated=False, required=False),
+    }
+
+    def __init__(
+        self,
+        *,
+        address_n: Optional[Sequence["int"]] = None,
+        show_display: Optional["bool"] = None,
+    ) -> None:
+        self.address_n: Sequence["int"] = address_n if address_n is not None else []
+        self.show_display = show_display
+
+
+class TerraPublicKey(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 903
+    FIELDS = {
+        1: protobuf.Field("value", "bytes", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        value: "bytes",
+    ) -> None:
+        self.value = value
+
+
+class TerraFee(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = None
+    FIELDS = {
+        1: protobuf.Field("amount", "TerraCoin", repeated=True, required=False),
+        2: protobuf.Field("gas_limit", "uint64", repeated=False, required=True),
+        3: protobuf.Field("payer", "string", repeated=False, required=False),
+        4: protobuf.Field("granter", "string", repeated=False, required=False),
+    }
+
+    def __init__(
+        self,
+        *,
+        gas_limit: "int",
+        amount: Optional[Sequence["TerraCoin"]] = None,
+        payer: Optional["str"] = None,
+        granter: Optional["str"] = None,
+    ) -> None:
+        self.amount: Sequence["TerraCoin"] = amount if amount is not None else []
+        self.gas_limit = gas_limit
+        self.payer = payer
+        self.granter = granter
+
+
+class TerraSignTx(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 904
+    FIELDS = {
+        1: protobuf.Field("address_n", "uint32", repeated=True, required=False),
+        2: protobuf.Field("msg_count", "uint32", repeated=False, required=True),
+        3: protobuf.Field("account_number", "uint64", repeated=False, required=True),
+        4: protobuf.Field("sequence", "uint64", repeated=False, required=True),
+        5: protobuf.Field("fee", "TerraFee", repeated=False, required=True),
+        6: protobuf.Field("chain_id", "string", repeated=False, required=True),
+        7: protobuf.Field("memo", "string", repeated=False, required=False),
+        8: protobuf.Field("timeout_height", "uint64", repeated=False, required=False),
+    }
+
+    def __init__(
+        self,
+        *,
+        msg_count: "int",
+        account_number: "int",
+        sequence: "int",
+        fee: "TerraFee",
+        chain_id: "str",
+        address_n: Optional[Sequence["int"]] = None,
+        memo: Optional["str"] = None,
+        timeout_height: Optional["int"] = None,
+    ) -> None:
+        self.address_n: Sequence["int"] = address_n if address_n is not None else []
+        self.msg_count = msg_count
+        self.account_number = account_number
+        self.sequence = sequence
+        self.fee = fee
+        self.chain_id = chain_id
+        self.memo = memo
+        self.timeout_height = timeout_height
+
+
+class TerraTxRequest(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 905
+
+
+class TerraCoin(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = None
+    FIELDS = {
+        1: protobuf.Field("denom", "string", repeated=False, required=True),
+        2: protobuf.Field("amount", "string", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        denom: "str",
+        amount: "str",
+    ) -> None:
+        self.denom = denom
+        self.amount = amount
+
+
+class TerraMsgSend(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 907
+    FIELDS = {
+        1: protobuf.Field("from_address", "string", repeated=False, required=True),
+        2: protobuf.Field("to_address", "string", repeated=False, required=True),
+        3: protobuf.Field("amounts", "TerraCoin", repeated=True, required=False),
+    }
+
+    def __init__(
+        self,
+        *,
+        from_address: "str",
+        to_address: "str",
+        amounts: Optional[Sequence["TerraCoin"]] = None,
+    ) -> None:
+        self.amounts: Sequence["TerraCoin"] = amounts if amounts is not None else []
+        self.from_address = from_address
+        self.to_address = to_address
+
+
+class TerraSignedTx(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 906
+    FIELDS = {
+        1: protobuf.Field("signature", "bytes", repeated=False, required=True),
+        2: protobuf.Field("public_key", "bytes", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        signature: "bytes",
+        public_key: "bytes",
+    ) -> None:
+        self.signature = signature
+        self.public_key = public_key
+
+
+class TerraTxBody(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = None
+    FIELDS = {
+        1: protobuf.Field("messages", "AnyType", repeated=True, required=False),
+        2: protobuf.Field("memo", "string", repeated=False, required=True),
+        3: protobuf.Field("timeout_height", "uint64", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        memo: "str",
+        timeout_height: "int",
+        messages: Optional[Sequence["AnyType"]] = None,
+    ) -> None:
+        self.messages: Sequence["AnyType"] = messages if messages is not None else []
+        self.memo = memo
+        self.timeout_height = timeout_height
+
+
+class TerraModeInfo(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = None
+    FIELDS = {
+        1: protobuf.Field("single", "Single", repeated=False, required=False),
+    }
+
+    def __init__(
+        self,
+        *,
+        single: Optional["Single"] = None,
+    ) -> None:
+        self.single = single
+
+
+class TerraSignerInfo(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = None
+    FIELDS = {
+        1: protobuf.Field("public_key", "AnyType", repeated=False, required=True),
+        2: protobuf.Field("mode_info", "TerraModeInfo", repeated=False, required=True),
+        3: protobuf.Field("sequence", "uint64", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        public_key: "AnyType",
+        mode_info: "TerraModeInfo",
+        sequence: "int",
+    ) -> None:
+        self.public_key = public_key
+        self.mode_info = mode_info
+        self.sequence = sequence
+
+
+class TerraAuthInfo(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = None
+    FIELDS = {
+        1: protobuf.Field("signer_infos", "TerraSignerInfo", repeated=True, required=False),
+        2: protobuf.Field("fee", "TerraFee", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        fee: "TerraFee",
+        signer_infos: Optional[Sequence["TerraSignerInfo"]] = None,
+    ) -> None:
+        self.signer_infos: Sequence["TerraSignerInfo"] = signer_infos if signer_infos is not None else []
+        self.fee = fee
+
+
+class TerraTx(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = None
+    FIELDS = {
+        1: protobuf.Field("body", "TerraTxBody", repeated=False, required=True),
+        2: protobuf.Field("auth_info", "TerraAuthInfo", repeated=False, required=True),
+        3: protobuf.Field("signatures", "bytes", repeated=True, required=False),
+    }
+
+    def __init__(
+        self,
+        *,
+        body: "TerraTxBody",
+        auth_info: "TerraAuthInfo",
+        signatures: Optional[Sequence["bytes"]] = None,
+    ) -> None:
+        self.signatures: Sequence["bytes"] = signatures if signatures is not None else []
+        self.body = body
+        self.auth_info = auth_info
+
+
+class TerraSignDoc(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = None
+    FIELDS = {
+        1: protobuf.Field("body_bytes", "bytes", repeated=False, required=True),
+        2: protobuf.Field("auth_info_bytes", "bytes", repeated=False, required=True),
+        3: protobuf.Field("chain_id", "string", repeated=False, required=True),
+        4: protobuf.Field("account_number", "uint64", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        body_bytes: "bytes",
+        auth_info_bytes: "bytes",
+        chain_id: "str",
+        account_number: "int",
+    ) -> None:
+        self.body_bytes = body_bytes
+        self.auth_info_bytes = auth_info_bytes
+        self.chain_id = chain_id
+        self.account_number = account_number
+
+
+class Single(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = None
+    FIELDS = {
+        1: protobuf.Field("mode", "SignMode", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        mode: "SignMode",
+    ) -> None:
+        self.mode = mode
 
 
 class TezosGetAddress(protobuf.MessageType):

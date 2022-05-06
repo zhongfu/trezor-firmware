@@ -1,0 +1,212 @@
+syntax = "proto2";
+package hw.trezor.messages.terra;
+
+// Sugar for easier handling in Java
+option java_package = "com.satoshilabs.trezor.lib.protobuf";
+option java_outer_classname = "TrezorMessageTerra";
+
+/**
+ * Used to encapsulate an arbitrary protobuf struct.
+ * Currently only used for serializing txs for signing.
+ * @embed
+ */
+ message AnyType {
+    required string type_url = 1; // canonical type name, e.g. /cosmos.tx.v1beta1.MsgSend
+    required bytes value = 2; // serialized protobuf struct
+}
+
+/**
+ * Request: Ask the device for a Terra address.
+ * @start
+ * @next TerraAddress
+ * @next Failure
+ */
+message TerraGetAddress {
+    repeated uint32 address_n = 1;  // BIP-32-style path to derive the key from master node
+    optional bool show_display = 2; // optionally prompt for confirmation on Trezor display
+}
+
+/**
+ * Response: A Terra address.
+ * @end
+ */
+message TerraAddress {
+    required string address = 1;    // prefixed bech32 Terra address
+}
+
+/**
+ * Request: Ask device for a public key corresponding to address_n path.
+ * @start
+ * @next TerraPublicKey
+ */
+message TerraGetPublicKey {
+    repeated uint32 address_n = 1;  // BIP-32 path to derive the key from master node
+    optional bool show_display = 2; // optionally show on display before sending the result
+}
+
+/**
+ * Response: A public key corresponding to address_n path.
+ * @end
+ */
+message TerraPublicKey {
+    required bytes value = 1;
+}
+
+/**
+ * Also used in Cosmos tx serialization
+ * @embed
+ */
+message TerraFee {
+    repeated TerraCoin amount = 1;
+    required uint64 gas_limit = 2;
+    optional string payer = 3;
+    optional string granter = 4;
+}
+
+/**
+ * Request: Starts the Terra transaction protocol flow.
+ * A transaction consists of these common fields and a series of Terra<Any>Msg messages.
+ * These parts form a JSON structure (a string) in Trezor's memory, which is signed to produce a TerraSignedTx.
+ * @start
+ * @next TerraTxRequest
+ * @next Failure
+*/
+message TerraSignTx {
+    repeated uint32 address_n = 1; // BIP-32-style path to derive the key from master node
+    required uint32 msg_count = 2; // count of Terra<Any>Msg to be included in this tx
+    required uint64 account_number = 3;
+    required uint64 sequence = 4;
+    required TerraFee fee = 5;
+    required string chain_id = 6;
+    optional string memo = 7;
+    optional uint64 timeout_height = 8;
+}
+
+/**
+ * Response: Trezor requests the next message or signals that it is ready to send a TerraSignedTx.
+ * @next TODO (possible messages)
+ */
+message TerraTxRequest {
+}
+
+/**
+ * Representation of Terra native currencies, e.g. LUNA, UST, ...
+ * @embed
+ */
+message TerraCoin {
+    required string denom = 1; // typ. with prefix, eg uluna, uust
+    required string amount = 2; // serialized in cosmos protobuf as string
+}
+
+/**
+ * Request: Ask the device to include a Terra send msg in the tx.
+ * @next TerraTxRequest
+ * @next TerraSignedTx
+ * @next Failure
+ */
+message TerraMsgSend {
+    required string from_address = 1;
+    required string to_address = 2;
+    repeated TerraCoin amounts = 3;
+}
+
+// other messages here
+
+/*
+todo: (from LedgerHQ/app-terra)
+        {"bank/MsgSend",                                "Send"},
+        {"bank/MsgMultiSend",                           "MultiSend"},
+        {"market/MsgSwapSend",                          "Swap Send"},
+        {"market/MsgSwap",                              "Swap"},
+        {"oracle/MsgExchangeRatePrevote",               "ExchangeRate Prevote"},
+        {"oracle/MsgExchangeRateVote",                  "ExchangeRate Vote"},
+        {"oracle/MsgDelegateFeedConsent",               "Delegate Feed Consent"},
+        {"oracle/MsgAggregateExchangeRatePrevote",      "Aggregate ExchangeRate Prevote"},
+        {"oracle/MsgAggregateExchangeRateVote",         "Aggregate ExchangeRate Vote"},
+        {"staking/MsgDelegate",                         "Delegate"},
+        {"staking/MsgUndelegate",                       "Undelegate"},
+        {"staking/MsgBeginRedelegate",                  "Redelegate"},
+        {"staking/MsgCreateValidator",                  "Create Validator"},
+        {"staking/MsgEditValidator",                    "Edit Validator"},
+        {"slashing/MsgUnjail",                          "Unjail"},
+        {"gov/MsgSubmitProposal",                       "Propose"},
+        {"gov/MsgDeposit",                              "Deposit"},
+        {"gov/MsgVote",                                 "Vote"},
+        {"wasm/MsgStoreCode",                           "Store Code"},
+        {"wasm/MsgInstantiateContract",                 "Instantiate Contract"},
+        {"wasm/MsgExecuteContract",                     "Execute Contract"},
+        {"wasm/MsgMigrateContract",                     "Migrate Contract"},
+        {"wasm/MsgUpdateContractOwner",                 "Update Contract Owner"},
+        {"crisis/MsgVerifyInvariant",                   "Verify Invariant"},
+        {"distribution/MsgWithdrawDelegationReward",    "Withdraw Reward"},
+        {"distribution/MsgWithdrawValidatorCommission", "Withdraw Commission"},
+        {"distribution/MsgModifyWithdrawAddress",       "Modify Withdraw Address"},
+        {"distribution/MsgFundCommunityPool",           "Fund Community Pool"},
+        {"evidence/MsgSubmitEvidence",                  "Submit Evidence"},
+        {"gov/MsgSubmitProposal",                       "Submit Proposal"},
+        {"gov/MsgDeposit",                              "Deposit"},
+        {"gov/MsgVote",                                 "Vote"},
+        {"msgauth/MsgGrantAuthorization",               "Grant Authorization"},
+        {"msgauth/MsgRevokeAuthorization",              "Revote Authorization"},
+        {"msgauth/MsgExecAuthorized",                   "Execute Authorized"},
+*/
+
+/**
+ * Response: A transaction signature and public key corresponding to the address_n path in TerraSignTx.
+ * @end
+ */
+message TerraSignedTx {
+	required bytes signature = 1;
+    required bytes public_key = 2;
+}
+
+// Extra messages for Cosmos native protobuf serdes
+
+message TerraTxBody {
+    repeated AnyType messages = 1;
+    required string memo = 2;
+    required uint64 timeout_height = 3;
+}
+
+message TerraModeInfo {
+    oneof sum {
+        Single single = 1;
+        // `multi` not implemented yet
+    }
+
+    message Single {
+        required SignMode mode = 1;
+    }
+
+    // from cosmos.tx.signing.v1beta1.SignMode
+    enum SignMode {
+        SIGN_MODE_UNSPECIFIED = 0;
+        SIGN_MODE_DIRECT = 1;
+        SIGN_MODE_TEXTUAL = 2;
+        SIGN_MODE_LEGACY_AMINO_JSON = 127;
+    }
+}
+
+message TerraSignerInfo {
+    required AnyType public_key = 1;
+    required TerraModeInfo mode_info = 2;
+    required uint64 sequence = 3;
+}
+
+message TerraAuthInfo {
+    repeated TerraSignerInfo signer_infos = 1;   
+    required TerraFee fee = 2;
+}
+
+message TerraTx {
+    required TerraTxBody body = 1;
+    required TerraAuthInfo auth_info = 2;
+    repeated bytes signatures = 3;
+}
+
+message TerraSignDoc {
+    required bytes body_bytes = 1;
+    required bytes auth_info_bytes = 2;
+    required string chain_id = 3;
+    required uint64 account_number = 4;
+}

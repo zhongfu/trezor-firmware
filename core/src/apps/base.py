@@ -70,6 +70,7 @@ def get_features() -> Features:
             Capability.NEM,
             Capability.Ripple,
             Capability.Stellar,
+            Capability.Terra,
             Capability.Tezos,
             Capability.U2F,
             Capability.Shamir,

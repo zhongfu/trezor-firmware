@@ -118,6 +118,8 @@ trezor.enums.SafetyCheckLevel
 import trezor.enums.SafetyCheckLevel
 trezor.enums.SdProtectOperationType
 import trezor.enums.SdProtectOperationType
+trezor.enums.SignMode
+import trezor.enums.SignMode
 trezor.enums.WordRequestType
 import trezor.enums.WordRequestType
 trezor.enums
@@ -724,6 +726,20 @@ if not utils.BITCOIN_ONLY:
     import apps.stellar.sign_tx
     apps.stellar.writers
     import apps.stellar.writers
+    apps.terra
+    import apps.terra
+    apps.terra.get_address
+    import apps.terra.get_address
+    apps.terra.get_public_key
+    import apps.terra.get_public_key
+    apps.terra.helpers
+    import apps.terra.helpers
+    apps.terra.layout
+    import apps.terra.layout
+    apps.terra.sign_tx
+    import apps.terra.sign_tx
+    apps.terra.tokens
+    import apps.terra.tokens
     apps.tezos
     import apps.tezos
     apps.tezos.get_address

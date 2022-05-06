@@ -47,6 +47,7 @@ from . import (
     ripple,
     settings,
     stellar,
+    terra,
     tezos,
     with_client,
 )
@@ -78,6 +79,7 @@ COMMAND_ALIASES = {
     "xrp": ripple.cli,
     "xlm": stellar.cli,
     "xtz": tezos.cli,
+    "luna": terra.cli,
     # firmware aliases:
     "fw": firmware.cli,
     "update-firmware": firmware.update,
@@ -360,6 +362,7 @@ cli.add_command(nem.cli)
 cli.add_command(ripple.cli)
 cli.add_command(settings.cli)
 cli.add_command(stellar.cli)
+cli.add_command(terra.cli)
 cli.add_command(tezos.cli)
 
 cli.add_command(firmware.cli)

@@ -357,4 +357,14 @@ enum MessageType {
     MessageType_WebAuthnCredentials = 801 [(wire_out) = true];
     MessageType_WebAuthnAddResidentCredential = 802 [(wire_in) = true];
     MessageType_WebAuthnRemoveResidentCredential = 803 [(wire_in) = true];
+
+    // Terra
+    MessageType_TerraGetAddress = 900 [(wire_in) = true];
+    MessageType_TerraAddress = 901 [(wire_out) = true];
+    MessageType_TerraGetPublicKey = 902 [(wire_in) = true];
+    MessageType_TerraPublicKey = 903 [(wire_out) = true];
+    MessageType_TerraSignTx = 904 [(wire_in) = true];
+    MessageType_TerraTxRequest = 905 [(wire_out) = true];
+    MessageType_TerraSignedTx = 906 [(wire_out) = true];
+    MessageType_TerraMsgSend = 907 [(wire_in) = true];
 }

@@ -252,6 +252,14 @@ if TYPE_CHECKING:
         WebAuthnCredentials = 801
         WebAuthnAddResidentCredential = 802
         WebAuthnRemoveResidentCredential = 803
+        TerraGetAddress = 900
+        TerraAddress = 901
+        TerraGetPublicKey = 902
+        TerraPublicKey = 903
+        TerraSignTx = 904
+        TerraTxRequest = 905
+        TerraSignedTx = 906
+        TerraMsgSend = 907
 
     class FailureType(IntEnum):
         UnexpectedMessage = 1
@@ -420,6 +428,7 @@ if TYPE_CHECKING:
         Shamir = 15
         ShamirGroups = 16
         PassphraseEntry = 17
+        Terra = 18
 
     class SdProtectOperationType(IntEnum):
         DISABLE = 0
@@ -488,6 +497,12 @@ if TYPE_CHECKING:
         ACCOUNT = 0
         PRE_AUTH = 1
         HASH = 2
+
+    class SignMode(IntEnum):
+        SIGN_MODE_UNSPECIFIED = 0
+        SIGN_MODE_DIRECT = 1
+        SIGN_MODE_TEXTUAL = 2
+        SIGN_MODE_LEGACY_AMINO_JSON = 127
 
     class TezosContractType(IntEnum):
         Implicit = 0

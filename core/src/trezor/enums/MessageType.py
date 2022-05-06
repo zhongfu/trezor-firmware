@@ -234,3 +234,11 @@ if not utils.BITCOIN_ONLY:
     WebAuthnCredentials = 801
     WebAuthnAddResidentCredential = 802
     WebAuthnRemoveResidentCredential = 803
+    TerraGetAddress = 900
+    TerraAddress = 901
+    TerraGetPublicKey = 902
+    TerraPublicKey = 903
+    TerraSignTx = 904
+    TerraTxRequest = 905
+    TerraSignedTx = 906
+    TerraMsgSend = 907

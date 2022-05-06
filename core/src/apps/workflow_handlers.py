@@ -181,6 +181,14 @@ def find_message_handler_module(msg_type: int) -> str:
         if msg_type == MessageType.BinanceSignTx:
             return "apps.binance.sign_tx"
 
+        # terra
+        if msg_type == MessageType.TerraGetAddress:
+            return "apps.terra.get_address"
+        if msg_type == MessageType.TerraGetPublicKey:
+            return "apps.terra.get_public_key"
+        if msg_type == MessageType.TerraSignTx:
+            return "apps.terra.sign_tx"
+
     raise ValueError
 
 
