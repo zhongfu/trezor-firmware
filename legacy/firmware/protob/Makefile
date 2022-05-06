@@ -2,13 +2,16 @@ ifneq ($(V),1)
 Q := @
 endif
 
-SKIPPED_MESSAGES := Binance Cardano DebugMonero Eos Monero Ontology Ripple SdProtect Tezos WebAuthn \
+SKIPPED_MESSAGES := Binance Cardano DebugMonero Eos Monero Ontology Ripple SdProtect Cosmos Tezos WebAuthn \
 	DebugLinkRecordScreen DebugLinkEraseSdCard DebugLinkWatchLayout \
 	GetOwnershipProof OwnershipProof GetOwnershipId OwnershipId AuthorizeCoinJoin DoPreauthorized \
 	CancelAuthorization DebugLinkLayout GetNonce \
 	TxAckInput TxAckOutput TxAckPrev TxAckPaymentRequest \
 	EthereumSignTypedData EthereumTypedDataStructRequest EthereumTypedDataStructAck \
-	EthereumTypedDataValueRequest EthereumTypedDataValueAck
+	EthereumTypedDataValueRequest EthereumTypedDataValueAck \
+	CosmosGetAddress CosmosAddress CosmosGetPublicKey CosmosPublicKey CosmosFee CosmosSignTx \
+	CosmosTxRequest CosmosCoin CosmosMsgSend CosmosSignedTx CosmosTxBody CosmosModeInfo CosmosSignerInfo \
+	CosmosAuthInfo CosmosTx CosmosSignDoc 
 
 ifeq ($(BITCOIN_ONLY), 1)
 SKIPPED_MESSAGES += Ethereum NEM Stellar

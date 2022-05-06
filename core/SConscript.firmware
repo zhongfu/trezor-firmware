@@ -602,6 +602,7 @@ if FROZEN:
             SOURCE_PY_DIR + 'trezor/enums/NEM*.py',
             SOURCE_PY_DIR + 'trezor/enums/Ripple*.py',
             SOURCE_PY_DIR + 'trezor/enums/Stellar*.py',
+            SOURCE_PY_DIR + 'trezor/enums/Cosmos*.py',
             SOURCE_PY_DIR + 'trezor/enums/Tezos*.py',
         ])
     )
@@ -658,6 +659,9 @@ if FROZEN:
         SOURCE_PY.extend(Glob(SOURCE_PY_DIR + 'apps/stellar/*.py'))
         SOURCE_PY.extend(Glob(SOURCE_PY_DIR + 'apps/stellar/*/*.py'))
         SOURCE_PY.extend(Glob(SOURCE_PY_DIR + 'trezor/enums/Stellar*.py'))
+
+        SOURCE_PY.extend(Glob(SOURCE_PY_DIR + 'apps/cosmos/*.py'))
+        SOURCE_PY.extend(Glob(SOURCE_PY_DIR + 'trezor/enums/Cosmos*.py'))
 
         SOURCE_PY.extend(Glob(SOURCE_PY_DIR + 'apps/tezos/*.py'))
         SOURCE_PY.extend(Glob(SOURCE_PY_DIR + 'trezor/enums/Tezos*.py'))

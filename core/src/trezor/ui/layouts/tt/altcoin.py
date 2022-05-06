@@ -12,6 +12,20 @@ from ...constants.tt import MONO_ADDR_PER_LINE
 from ..common import interact
 
 
+async def confirm_tx_cosmos(
+    ctx: wire.GenericContext, msg_count: str, fee: str
+) -> None:
+    text = Text("Confirm transaction", ui.ICON_SEND, ui.GREEN, new_lines=False)
+    text.normal(ui.GREY, "Messages: ", ui.FG)
+    text.bold(msg_count)
+    text.br()
+    text.normal(ui.GREY, "Fee: ", ui.FG)
+    text.bold(fee)
+    await raise_if_cancelled(
+        interact(ctx, HoldToConfirm(text), "confirm_total", ButtonRequestType.SignTx)
+    )
+
+
 async def confirm_total_ethereum(
     ctx: wire.GenericContext, total_amount: str, gas_price: str, fee_max: str
 ) -> None:

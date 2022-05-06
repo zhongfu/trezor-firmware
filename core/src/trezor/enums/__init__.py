@@ -252,6 +252,14 @@ if TYPE_CHECKING:
         WebAuthnCredentials = 801
         WebAuthnAddResidentCredential = 802
         WebAuthnRemoveResidentCredential = 803
+        CosmosGetAddress = 900
+        CosmosAddress = 901
+        CosmosGetPublicKey = 902
+        CosmosPublicKey = 903
+        CosmosSignTx = 904
+        CosmosTxRequest = 905
+        CosmosSignedTx = 906
+        CosmosMsgSend = 907
 
     class FailureType(IntEnum):
         UnexpectedMessage = 1
@@ -392,6 +400,12 @@ if TYPE_CHECKING:
         BYRON_WITNESS = 0
         SHELLEY_WITNESS = 1
 
+    class SignMode(IntEnum):
+        SIGN_MODE_UNSPECIFIED = 0
+        SIGN_MODE_DIRECT = 1
+        SIGN_MODE_TEXTUAL = 2
+        SIGN_MODE_LEGACY_AMINO_JSON = 127
+
     class BackupType(IntEnum):
         Bip39 = 0
         Slip39_Basic = 1
@@ -420,6 +434,7 @@ if TYPE_CHECKING:
         Shamir = 15
         ShamirGroups = 16
         PassphraseEntry = 17
+        Cosmos = 18
 
     class SdProtectOperationType(IntEnum):
         DISABLE = 0

@@ -234,3 +234,11 @@ if not utils.BITCOIN_ONLY:
     WebAuthnCredentials = 801
     WebAuthnAddResidentCredential = 802
     WebAuthnRemoveResidentCredential = 803
+    CosmosGetAddress = 900
+    CosmosAddress = 901
+    CosmosGetPublicKey = 902
+    CosmosPublicKey = 903
+    CosmosSignTx = 904
+    CosmosTxRequest = 905
+    CosmosSignedTx = 906
+    CosmosMsgSend = 907

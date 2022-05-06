@@ -118,6 +118,8 @@ trezor.enums.SafetyCheckLevel
 import trezor.enums.SafetyCheckLevel
 trezor.enums.SdProtectOperationType
 import trezor.enums.SdProtectOperationType
+trezor.enums.SignMode
+import trezor.enums.SignMode
 trezor.enums.WordRequestType
 import trezor.enums.WordRequestType
 trezor.enums
@@ -516,6 +518,20 @@ if not utils.BITCOIN_ONLY:
     import apps.cardano.sign_tx
     apps.common.mnemonic
     import apps.common.mnemonic
+    apps.cosmos
+    import apps.cosmos
+    apps.cosmos.get_address
+    import apps.cosmos.get_address
+    apps.cosmos.get_public_key
+    import apps.cosmos.get_public_key
+    apps.cosmos.helpers
+    import apps.cosmos.helpers
+    apps.cosmos.layout
+    import apps.cosmos.layout
+    apps.cosmos.sign_tx
+    import apps.cosmos.sign_tx
+    apps.cosmos.tokens
+    import apps.cosmos.tokens
     apps.eos
     import apps.eos
     apps.eos.actions

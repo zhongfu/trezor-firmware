@@ -26,6 +26,7 @@ ALTCOINS = (
     "nem",
     "ripple",
     "stellar",
+    "cosmos",
     "tezos",
     "webauthn",
     "zcash",
