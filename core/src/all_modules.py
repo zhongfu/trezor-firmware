@@ -528,6 +528,8 @@ if not utils.BITCOIN_ONLY:
     import apps.cosmos.helpers
     apps.cosmos.layout
     import apps.cosmos.layout
+    apps.cosmos.networks
+    import apps.cosmos.networks
     apps.cosmos.sign_tx
     import apps.cosmos.sign_tx
     apps.cosmos.tokens

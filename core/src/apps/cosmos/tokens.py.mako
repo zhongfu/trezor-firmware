@@ -17,25 +17,15 @@ class TokenInfo:
         self.decimals = decimals
 
 
-UNKNOWN_TOKEN = TokenInfo("UNKN", 0)
+UNKNOWN_TOKEN = TokenInfo("uUNKN", 0)
 
 
-def token_by_native_denom(chain_id: str, denom: str) -> TokenInfo:
-## % for token_chain_id, tokens in group_tokens(supported_on("trezor2", cosmos)).items():
-##     if chain_id == ${token_chain_id}:
-##         % for t in tokens:
-##         if denom == t.denom:
-##             return TokenInfo(${black_repr(t.symbol)}, ${t.decimals})  # ${t.chain} / ${t.name.strip()}
-##         % endfor
-## % endfor
-    return TokenInfo(denom, 0)
-
-def token_by_chain_address(chain_id: str, address: str) -> TokenInfo:
-## % for token_chain_id, tokens in group_tokens(supported_on("trezor2", cw20)).items():
-##     if chain_id == ${token_chain_id}:
-##         % for t in tokens:
-##         if address == ${black_repr(t.address_bytes)}:
-##             return TokenInfo(${black_repr(t.symbol)}, ${t.decimals})  # ${t.chain} / ${t.name.strip()}
-##         % endfor
-## % endfor
+def token_by_chain_type_tokenid(chain_id: str, token_type: str, token_id: str) -> TokenInfo:
+% for token_chain_id, tokens in group_tokens(supported_on("trezor2", cw20)).items():
+    if chain_id == "${token_chain_id}":
+        % for t in tokens:
+        if token_type == "${t.token_type}" and token_id == "${t.token_id}":
+            return TokenInfo(${black_repr(t.symbol)}, ${t.decimals})  # ${t.chain} / ${t.name.strip()}
+        % endfor
+% endfor
     return UNKNOWN_TOKEN
