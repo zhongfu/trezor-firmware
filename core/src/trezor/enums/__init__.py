@@ -299,6 +299,7 @@ if TYPE_CHECKING:
         Warning = 18
         PassphraseEntry = 19
         PinEntry = 20
+        UnknownChainId = 21
 
     class PinMatrixRequestType(IntEnum):
         Current = 1

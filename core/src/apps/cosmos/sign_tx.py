@@ -9,7 +9,7 @@ from trezor.messages import (
     CosmosTxRequest,
 )
 
-from apps.common import paths
+from apps.common import paths, safety_checks
 from apps.common.keychain import Keychain, auto_keychain
 
 from . import networks, layout
@@ -32,6 +32,13 @@ async def sign_tx(
 
     # if chain doesn't exist, then @with_keychain_from_chain_name should catch it
     chain = networks.by_chain_name(envelope.chain_name)
+
+    if envelope.chain_id != chain.chain_id:
+        if not safety_checks.is_strict():
+            raise wire.DataError("Chain ID not known for chain.")
+        
+        await layout.confirm_chain_id_warning_cosmos(ctx, envelope.chain_id, envelope.chain_name)
+
     hrp = chain.bech32_prefix
     address = address_from_public_key(node.public_key(), hrp)
 

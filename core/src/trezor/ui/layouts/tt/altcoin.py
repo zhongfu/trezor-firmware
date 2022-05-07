@@ -31,6 +31,28 @@ async def confirm_msg_count_and_signer_addr_cosmos(
     )
 
 
+async def confirm_chain_id_warning_cosmos(
+    ctx: wire.GenericContext, chain_id: str, chain_name: str
+) -> None:
+    text = Text("Confirm chain ID", ui.ICON_WRONG, ui.RED, new_lines=False)
+    text.normal("Chain ")
+    text.mono(chain_name)
+    text.normal("does not match chain ID")
+    text.br()
+    text.mono(chain_id)
+    text.normal(".")
+    text.br()
+    text.normal("Are you sure?")
+    await raise_if_cancelled(
+        interact(
+            ctx,
+            Confirm(text),
+            "chain_id_warning",
+            ButtonRequestType.UnknownChainId,
+        )
+    )
+
+
 async def confirm_fee_cosmos(
     ctx: wire.GenericContext, fee: str
 ) -> None:

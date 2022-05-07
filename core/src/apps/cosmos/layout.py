@@ -7,7 +7,11 @@ from trezor.messages import (
 )
 from trezor.strings import format_amount
 from trezor.ui.layouts import confirm_properties, confirm_blob
-from trezor.ui.layouts.altcoin import confirm_msg_count_and_signer_addr_cosmos, confirm_fee_cosmos
+from trezor.ui.layouts.altcoin import (
+    confirm_msg_count_and_signer_addr_cosmos,
+    confirm_fee_cosmos,
+    confirm_chain_id_warning_cosmos
+)
 
 from . import helpers, tokens
 
@@ -59,6 +63,18 @@ def require_confirm_tx(
     return confirm_fee_cosmos(
         ctx,
         fee=fee_str
+    )
+
+
+def show_chain_id_warning(
+    ctx: Context,
+    chain_id: str,
+    chain_name: str
+) -> Awaitable[None]:
+    return confirm_chain_id_warning_cosmos(
+        ctx,
+        chain_id,
+        chain_name
     )
 
 
