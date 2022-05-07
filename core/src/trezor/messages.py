@@ -1751,12 +1751,14 @@ if TYPE_CHECKING:
 
     class CosmosGetAddress(protobuf.MessageType):
         address_n: "list[int]"
+        chain_name: "str"
         show_display: "bool | None"
 
         def __init__(
             self,
             *,
             address_n: "list[int] | None" = None,
+            chain_name: "str | None" = None,
             show_display: "bool | None" = None,
         ) -> None:
             pass
@@ -1781,12 +1783,14 @@ if TYPE_CHECKING:
 
     class CosmosGetPublicKey(protobuf.MessageType):
         address_n: "list[int]"
+        chain_name: "str"
         show_display: "bool | None"
 
         def __init__(
             self,
             *,
             address_n: "list[int] | None" = None,
+            chain_name: "str | None" = None,
             show_display: "bool | None" = None,
         ) -> None:
             pass
@@ -1831,6 +1835,7 @@ if TYPE_CHECKING:
 
     class CosmosSignTx(protobuf.MessageType):
         address_n: "list[int]"
+        chain_name: "str"
         msg_count: "int"
         account_number: "int"
         sequence: "int"
@@ -1848,6 +1853,7 @@ if TYPE_CHECKING:
             fee: "CosmosFee",
             chain_id: "str",
             address_n: "list[int] | None" = None,
+            chain_name: "str | None" = None,
             memo: "str | None" = None,
             timeout_height: "int | None" = None,
         ) -> None:

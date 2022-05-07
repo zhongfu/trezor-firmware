@@ -12,13 +12,29 @@ from ...constants.tt import MONO_ADDR_PER_LINE
 from ..common import interact
 
 
-async def confirm_tx_cosmos(
-    ctx: wire.GenericContext, msg_count: str, fee: str
+async def confirm_msg_count_and_signer_addr_cosmos(
+    ctx: wire.GenericContext, msg_count: str, address: str
 ) -> None:
-    text = Text("Confirm transaction", ui.ICON_SEND, ui.GREEN, new_lines=False)
+    text = Text("Confirm signer", ui.ICON_SEND, ui.GREEN, new_lines=False, break_words=True)
     text.normal(ui.GREY, "Messages: ", ui.FG)
     text.bold(msg_count)
     text.br()
+    text.normal(ui.GREY, "Address: ", ui.FG)
+    text.bold(address)
+    await raise_if_cancelled(
+        interact(
+            ctx,
+            Confirm(text),
+            "confirm_msg_count_and_signer_addr_cosmos",
+            ButtonRequestType.ConfirmOutput
+        )
+    )
+
+
+async def confirm_fee_cosmos(
+    ctx: wire.GenericContext, fee: str
+) -> None:
+    text = Text("Confirm transaction", ui.ICON_SEND, ui.GREEN, new_lines=False)
     text.normal(ui.GREY, "Fee: ", ui.FG)
     text.bold(fee)
     await raise_if_cancelled(

@@ -3000,16 +3000,19 @@ class CosmosGetAddress(protobuf.MessageType):
     MESSAGE_WIRE_TYPE = 900
     FIELDS = {
         1: protobuf.Field("address_n", "uint32", repeated=True, required=False),
-        2: protobuf.Field("show_display", "bool", repeated=False, required=False),
+        2: protobuf.Field("chain_name", "string", repeated=False, required=False),
+        3: protobuf.Field("show_display", "bool", repeated=False, required=False),
     }
 
     def __init__(
         self,
         *,
         address_n: Optional[Sequence["int"]] = None,
+        chain_name: Optional["str"] = 'cosmoshub',
         show_display: Optional["bool"] = None,
     ) -> None:
         self.address_n: Sequence["int"] = address_n if address_n is not None else []
+        self.chain_name = chain_name
         self.show_display = show_display
 
 
@@ -3031,16 +3034,19 @@ class CosmosGetPublicKey(protobuf.MessageType):
     MESSAGE_WIRE_TYPE = 902
     FIELDS = {
         1: protobuf.Field("address_n", "uint32", repeated=True, required=False),
-        2: protobuf.Field("show_display", "bool", repeated=False, required=False),
+        2: protobuf.Field("chain_name", "string", repeated=False, required=False),
+        3: protobuf.Field("show_display", "bool", repeated=False, required=False),
     }
 
     def __init__(
         self,
         *,
         address_n: Optional[Sequence["int"]] = None,
+        chain_name: Optional["str"] = 'cosmoshub',
         show_display: Optional["bool"] = None,
     ) -> None:
         self.address_n: Sequence["int"] = address_n if address_n is not None else []
+        self.chain_name = chain_name
         self.show_display = show_display
 
 
@@ -3085,13 +3091,14 @@ class CosmosSignTx(protobuf.MessageType):
     MESSAGE_WIRE_TYPE = 904
     FIELDS = {
         1: protobuf.Field("address_n", "uint32", repeated=True, required=False),
-        2: protobuf.Field("msg_count", "uint32", repeated=False, required=True),
-        3: protobuf.Field("account_number", "uint64", repeated=False, required=True),
-        4: protobuf.Field("sequence", "uint64", repeated=False, required=True),
-        5: protobuf.Field("fee", "CosmosFee", repeated=False, required=True),
-        6: protobuf.Field("chain_id", "string", repeated=False, required=True),
-        7: protobuf.Field("memo", "string", repeated=False, required=False),
-        8: protobuf.Field("timeout_height", "uint64", repeated=False, required=False),
+        2: protobuf.Field("chain_name", "string", repeated=False, required=False),
+        3: protobuf.Field("msg_count", "uint32", repeated=False, required=True),
+        4: protobuf.Field("account_number", "uint64", repeated=False, required=True),
+        5: protobuf.Field("sequence", "uint64", repeated=False, required=True),
+        6: protobuf.Field("fee", "CosmosFee", repeated=False, required=True),
+        7: protobuf.Field("chain_id", "string", repeated=False, required=True),
+        8: protobuf.Field("memo", "string", repeated=False, required=False),
+        9: protobuf.Field("timeout_height", "uint64", repeated=False, required=False),
     }
 
     def __init__(
@@ -3103,6 +3110,7 @@ class CosmosSignTx(protobuf.MessageType):
         fee: "CosmosFee",
         chain_id: "str",
         address_n: Optional[Sequence["int"]] = None,
+        chain_name: Optional["str"] = 'cosmoshub',
         memo: Optional["str"] = None,
         timeout_height: Optional["int"] = None,
     ) -> None:
@@ -3112,6 +3120,7 @@ class CosmosSignTx(protobuf.MessageType):
         self.sequence = sequence
         self.fee = fee
         self.chain_id = chain_id
+        self.chain_name = chain_name
         self.memo = memo
         self.timeout_height = timeout_height
 

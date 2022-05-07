@@ -79,7 +79,7 @@ COMMAND_ALIASES = {
     "xrp": ripple.cli,
     "xlm": stellar.cli,
     "xtz": tezos.cli,
-    "luna": cosmos.cli,
+    "atom": cosmos.cli,
     # firmware aliases:
     "fw": firmware.cli,
     "update-firmware": firmware.update,

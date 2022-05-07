@@ -28,30 +28,48 @@ if TYPE_CHECKING:
 
 @expect(messages.CosmosAddress, field="address", ret_type=str)
 def get_address(
-    client: "TrezorClient", address_n: "Address", show_display: bool = False
+    client: "TrezorClient",
+    address_n: "Address",
+    chain_name: str,
+    show_display: bool = False
 ) -> "MessageType":
     return client.call(
-        messages.CosmosGetAddress(address_n=address_n, show_display=show_display)
+        messages.CosmosGetAddress(
+            address_n=address_n,
+            chain_name=chain_name,
+            show_display=show_display
+        )
     )
 
 
 @expect(messages.CosmosPublicKey, field="public_key", ret_type=bytes)
 def get_public_key(
-    client: "TrezorClient", address_n: "Address", show_display: bool = False
+    client: "TrezorClient",
+    address_n: "Address",
+    chain_name: str,
+    show_display: bool = False
 ) -> "MessageType":
     return client.call(
-        messages.CosmosGetPublicKey(address_n=address_n, show_display=show_display)
+        messages.CosmosGetPublicKey(
+            address_n=address_n,
+            chain_name=chain_name,
+            show_display=show_display
+        )
     )
 
 
 @session
 def sign_tx(
-    client: "TrezorClient", address_n: "Address", tx_json: dict
+    client: "TrezorClient",
+    address_n: "Address", 
+    chain_name: str,
+    tx_json: dict
 ) -> messages.CosmosSignedTx:
     msgs = tx_json["msgs"]
     tx_msg = tx_json.copy()
     tx_msg["msg_count"] = len(msgs)
     tx_msg["address_n"] = address_n
+    tx_msg["chain_name"] = chain_name
     envelope = dict_to_proto(messages.CosmosSignTx, tx_msg)
 
     response = client.call(envelope)

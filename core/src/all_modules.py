@@ -526,6 +526,8 @@ if not utils.BITCOIN_ONLY:
     import apps.cosmos.get_public_key
     apps.cosmos.helpers
     import apps.cosmos.helpers
+    apps.cosmos.keychain
+    import apps.cosmos.keychain
     apps.cosmos.layout
     import apps.cosmos.layout
     apps.cosmos.networks

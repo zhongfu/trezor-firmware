@@ -12,10 +12,12 @@ from trezor.messages import (
 from apps.common import paths
 from apps.common.keychain import Keychain, auto_keychain
 
-from . import helpers, layout
+from . import networks, layout
+from .helpers import address_from_public_key, produce_signdoc_bytes_for_signing
+from .keychain import with_keychain_from_chain_name
 
 
-@auto_keychain(__name__)
+@with_keychain_from_chain_name
 async def sign_tx(
     ctx: wire.Context, envelope: CosmosSignTx, keychain: Keychain
 ) -> CosmosSignedTx:
@@ -27,6 +29,13 @@ async def sign_tx(
 
     await paths.validate_path(ctx, keychain, envelope.address_n)
     node = keychain.derive(envelope.address_n)
+
+    # if chain doesn't exist, then @with_keychain_from_chain_name should catch it
+    chain = networks.by_chain_name(envelope.chain_name)
+    hrp = chain.bech32_prefix
+    address = address_from_public_key(node.public_key(), hrp)
+
+    await layout.require_confirm_msg_count_and_from_addr(ctx, envelope.msg_count, address)
 
     tx_req = CosmosTxRequest()
 
@@ -47,9 +56,9 @@ async def sign_tx(
 
     await layout.require_confirm_memo(ctx, envelope.memo)
 
-    await layout.require_confirm_tx(ctx, envelope.chain_id, envelope.msg_count, envelope.fee.amount)
+    await layout.require_confirm_tx(ctx, envelope.chain_id, envelope.fee.amount)
 
-    msg_pb = helpers.produce_signdoc_bytes_for_signing(node.public_key(), envelope, msgs)
+    msg_pb = produce_signdoc_bytes_for_signing(node.public_key(), envelope, msgs)
 
     signature_bytes = generate_content_signature(msg_pb, node.private_key())
 

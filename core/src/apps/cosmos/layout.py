@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING, Awaitable
-from . import tokens
 
 from trezor.enums import ButtonRequestType
 from trezor.messages import (
@@ -8,12 +7,22 @@ from trezor.messages import (
 )
 from trezor.strings import format_amount
 from trezor.ui.layouts import confirm_properties, confirm_blob
-from trezor.ui.layouts.altcoin import confirm_tx_cosmos
+from trezor.ui.layouts.altcoin import confirm_msg_count_and_signer_addr_cosmos, confirm_fee_cosmos
 
-from . import helpers
+from . import helpers, tokens
 
 if TYPE_CHECKING:
     from trezor.wire import Context
+
+
+def require_confirm_msg_count_and_from_addr(
+    ctx: Context, msg_count: int, address: str
+) -> Awaitable[None]:
+    return confirm_msg_count_and_signer_addr_cosmos(
+        ctx,
+        msg_count=str(msg_count),
+        address=address
+    )
 
 def require_confirm_send(ctx: Context, chain_id: str, msg: CosmosMsgSend, msg_idx: int, msg_count: int) -> Awaitable[None]:
     coins_fmt = (format_cosmos_native_amount(chain_id, coin) for coin in msg.amounts)
@@ -44,19 +53,17 @@ def require_confirm_memo(ctx: Context, memo_text: str) -> Awaitable[None]:
 def require_confirm_tx(
     ctx: Context,
     chain_id: str,
-    msg_count: int,
     fee: list[CosmosCoin],
 ) -> Awaitable[None]:
     fee_str = ', '.join((format_cosmos_native_amount(chain_id, coin) for coin in fee))
-    return confirm_tx_cosmos(
+    return confirm_fee_cosmos(
         ctx,
-        str(msg_count),
         fee=fee_str
     )
 
 
 def format_cosmos_native_amount(chain_id: str, coin: CosmosCoin) -> str:
-    token = tokens.token_by_native_denom(chain_id, coin.denom)
+    token = tokens.token_by_chain_type_tokenid(chain_id, "native", coin.denom)
     value = int(coin.amount)
 
     return format_cosmos_amount(value, token)
