@@ -41,6 +41,8 @@ class CoinsInfo(dict):
     `bitcoin` for btc-like coins,
     `eth` for ethereum networks,
     `erc20` for ERC20 tokens,
+    `cosmos` for Cosmos SDK networks,
+    `cw20` for Cosmos native tokens and CW20 tokens,
     `nem` for NEM mosaics,
     `misc` for other networks.
 
@@ -287,6 +289,87 @@ def _load_erc20_tokens():
     return tokens
 
 
+def _load_cosmos_networks_tokens():
+    """Load Cosmos chains and tokens from `cosmos/*/{chain,assetlist}.json`"""
+    chains_path = DEFS_DIR / "cosmos"
+    networks = []
+    tokens = []
+    # TODO include testnets?
+    for chain in sorted(filter(
+        lambda name: name[0] not in ('.', '_') and name != "testnets", # skip _IBC, .github, testnets
+        next(os.walk(chains_path))[1])
+    ):
+        chain_data = load_json(chains_path / chain / "chain.json")
+        # assetlist.json may not be present for some chains
+        try:
+            asset_data = load_json(chains_path / chain / "assetlist.json")
+        except FileNotFoundError:
+            asset_data = {}
+
+        # handle chain info
+
+        chain_name = chain_data["chain_name"]
+        # we currently assume the first asset in assetlist.json is likely the main native token
+        # it seems to be the case anyway, but it might not be guaranteed
+        # and we just use the chain_name if this chain has no assetlist.json
+        shortcut = asset_data["assets"][0]["symbol"] if asset_data else chain_name
+
+        is_testnet = chain_data["network_type"] == "testnet"
+        if is_testnet:
+            shortcut = "t" + shortcut
+
+        network = dict(
+            chain=chain_name, # should probably be == `chain`
+            chain_id=chain_data["chain_id"],
+            slip44=chain_data.get("slip44", 118), # default to cosmoshub deriv path
+            bech32_prefix=chain_data["bech32_prefix"],
+            key_algos=tuple(chain_data.get("key_algos", ("secp256k1",))),
+            shortcut=shortcut,
+            name=chain_data["pretty_name"],
+            key=f"cosmos:{chain_name}",
+        )
+        networks.append(network)
+
+        # handle token info
+        # we typically have native and cw20 tokens
+
+        for asset in asset_data.get("assets", []):
+            type_asset = asset.get("type_asset", "native")
+            assert type_asset in ("native", "cw20"), "unknown cosmos asset type"
+
+            # base can have a prefix e.g. if it's a cw20 token
+            token_id_parts = asset["base"].split(":")
+            assert len(token_id_parts) <= 2, "too many colon-delimited parts in cosmos token base denom"
+            token_id = token_id_parts[-1]
+
+            symbol = asset["symbol"]
+
+            # decide which decimals value to use
+            decimals_choices = tuple(filter(lambda unit: unit["denom"].lower() == symbol.lower(), asset["denom_units"]))
+            assert len(decimals_choices) <= 1, f"too many denom_units with denom == symbol for {chain}"
+            if len(decimals_choices) == 1:
+                decimals = decimals_choices[0]["exponent"]
+            else: # got nothing, let's pick the denom_unit with the highest exponent
+                decimals_choices = tuple(sorted(asset["denom_units"], key=lambda unit: unit["exponent"]))
+                decimals = decimals_choices[-1]["exponent"]
+
+            token = dict(
+                name=asset["name"],
+                chain=chain,
+                chain_id=network["chain_id"],
+                token_type=type_asset, # "native", "cw20", maybe others
+                token_id=token_id, # denom (e.g. uatom) if native, address if cw20
+                decimals=decimals,
+                shortcut=symbol,
+                symbol=symbol,
+                key=f"cw20:{chain}:{symbol}", # TODO should this still be "cw20" for native tokens?
+            )
+
+            tokens.append(token)
+
+    return networks, tokens
+
+
 def _load_nem_mosaics():
     """Loads NEM mosaics from `nem/nem_mosaics.json`"""
     mosaics = load_json("nem/nem_mosaics.json")
@@ -352,7 +435,8 @@ def latest_releases():
 
 
 def is_token(coin):
-    return coin["key"].startswith("erc20:")
+    key = coin["key"]
+    return key.startswith("erc20:") or key.startswith("cw20:")
 
 
 def support_info_single(support_data, coin):
@@ -572,13 +656,18 @@ def collect_coin_info():
     `coins` for btc-like coins,
     `eth` for ethereum networks,
     `erc20` for ERC20 tokens,
+    `cosmos` for Cosmos SDK networks,
+    `cw20` for Cosmos native tokens and CW20 tokens,
     `nem` for NEM mosaics,
     `misc` for other networks.
     """
+    cosmos, cw20 = _load_cosmos_networks_tokens()
     all_coins = CoinsInfo(
         bitcoin=_load_btc_coins(),
         eth=_load_ethereum_networks(),
         erc20=_load_erc20_tokens(),
+        cosmos=cosmos,
+        cw20=cw20,
         nem=_load_nem_mosaics(),
         misc=_load_misc(),
     )

@@ -13,7 +13,7 @@ SUPPORT_INFO = coin_info.get_support_data()
 VERSION_RE = re.compile(r"\d+.\d+.\d+")
 
 ERC20_DUPLICATE_KEY = "(AUTO) duplicate key"
-
+CW20_DUPLICATE_KEY = "(AUTO) duplicate key"
 
 def write_support_info():
     with open(os.path.join(coin_info.DEFS_DIR, "support.json"), "w") as f:
@@ -159,7 +159,7 @@ def find_supported_duplicate_tokens(coins_dict):
     result = []
     for _, supported, _ in all_support_dicts():
         for key in supported:
-            if not key.startswith("erc20:"):
+            if not key.startswith("erc20:") or not key.startswith("cw20:"):
                 continue
             if coins_dict.get(key, {}).get("duplicate"):
                 result.append(key)
@@ -168,9 +168,9 @@ def find_supported_duplicate_tokens(coins_dict):
 
 def process_erc20(coins_dict):
     """Make sure that:
-    * orphaned ERC20 support info is cleared out
-    * duplicate ERC20 tokens are not listed as supported
-    * non-duplicate ERC20 tokens are cleared out from the unsupported list
+    * orphaned ERC20/CW20 support info is cleared out
+    * duplicate ERC20/CW20 tokens are not listed as supported
+    * non-duplicate ERC20/CW20 tokens are cleared out from the unsupported list
     """
     erc20_dict = {
         key: coin.get("duplicate", False)
@@ -200,11 +200,11 @@ def process_erc20(coins_dict):
             if device in coin_info.MISSING_SUPPORT_MEANS_NO:
                 clear_support(device, key)
             else:
-                print(f"ERC20 on {device}: adding duplicate {key}")
+                print(f"ERC20/CW20 on {device}: adding duplicate {key}")
                 set_unsupported(device, key, ERC20_DUPLICATE_KEY)
 
         for key in nondups:
-            print(f"ERC20 on {device}: clearing non-duplicate {key}")
+            print(f"ERC20/CW20 on {device}: clearing non-duplicate {key}")
             clear_support(device, key)
 
 
@@ -230,6 +230,7 @@ def fix(dry_run):
 
     Prunes orphaned keys and ensures that ERC20 duplicate info matches support info.
     """
+    # TODO might need to handle CW20 tokens too
     all_coins, buckets = coin_info.coin_info_with_duplicates()
     clear_erc20_mixed_buckets(buckets)
     coins_dict = all_coins.as_dict()
@@ -247,7 +248,7 @@ def fix(dry_run):
 
 @cli.command()
 # fmt: off
-@click.option("-T", "--check-tokens", is_flag=True, help="Also check unsupported ERC20 tokens, ignored by default")
+@click.option("-T", "--check-tokens", is_flag=True, help="Also check unsupported ERC20/CW20 tokens, ignored by default")
 @click.option("-m", "--ignore-missing", is_flag=True, help="Do not fail on missing supportinfo")
 # fmt: on
 def check(check_tokens, ignore_missing):
@@ -327,7 +328,7 @@ def release(
     By default, marks duplicate tokens and testnets as unsupported, and all coins that
     don't have support info are set to the released firmware version.
 
-    The tool will ask you to confirm each added coin. ERC20 tokens are added
+    The tool will ask you to confirm each added coin. ERC20/CW20 tokens are added
     automatically. Use `--verbose` to see them.
     """
     latest_releases = coin_info.latest_releases()

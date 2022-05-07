@@ -196,6 +196,45 @@ def update_ethereum_networks(coins, support_info):
     return res
 
 
+def update_cw20(coins, networks, support_info):
+    # TODO skip disabled networks?
+    network_support = {n["chain"]: support_info.get(n["key"]) for n in networks}
+    network_testnets = {n["chain"] for n in networks if "Testnet" in n["name"]}
+    res = update_simple(coins, support_info, "cw20")
+    for coin in coins:
+        key = coin["key"]
+        chain = coin["chain"]
+
+        hidden = False
+        if chain in network_testnets:
+            hidden = True
+        if "deprecation" in coin: # we don't have any such coins yet
+            hidden = True
+
+        if network_support.get(chain, {}).get("suite"):
+            wallets = WALLET_SUITE
+        else:
+            wallets = {} # TODO: maybe something like Keplr? what about chain-specific wallets?
+
+        details = dict(
+            network=chain,
+            address=coin["token_id"], # native tokens will show up as the native denom, e.g. uatom
+            shortcut=coin["shortcut"],
+            links={},
+            wallet=wallets,
+        )
+        if hidden:
+            details["hidden"] = True
+        if coin.get("website"):
+            details["links"]["Homepage"] = coin["website"]
+        if coin.get("social", {}).get("github"):
+            details["links"]["Github"] = coin["social"]["github"]
+
+        dict_merge(res[key], details)
+
+    return res
+
+
 def update_nem_mosaics(coins, support_info):
     res = update_simple(coins, support_info, "mosaic")
     for coin in coins:
@@ -212,7 +251,7 @@ def check_missing_data(coins):
 
         if "Homepage" not in coin.get("links", {}):
             level = logging.WARNING
-            if k.startswith("erc20:"):
+            if k.startswith("erc20:") or k.startswith("cw20:"):
                 level = logging.INFO
             LOG.log(level, f"{k}: Missing homepage")
             hide = True
@@ -309,6 +348,8 @@ def main(refresh, api_key, verbose):
     coins.update(update_bitcoin(defs.bitcoin, support_info))
     coins.update(update_erc20(defs.erc20, defs.eth, support_info))
     coins.update(update_ethereum_networks(defs.eth, support_info))
+    coins.update(update_cw20(defs.cw20, defs.cosmos, support_info))
+    # above might cover cosmos networks too, since native tokens are included there
     coins.update(update_nem_mosaics(defs.nem, support_info))
     coins.update(update_simple(defs.misc, support_info, "coin"))
 

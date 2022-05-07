@@ -176,6 +176,19 @@ def check_eth(coins):
     return check_passed
 
 
+def check_cosmos(coins):
+    # same as `check_eth`, but not returning `check_eth(coins)` in case that gets changed
+    # this should do for now
+    check_passed = True
+    chains = find_collisions(coins, "chain")
+    for key, bucket in chains.items():
+        bucket_str = ", ".join(f"{coin['key']} ({coin['name']})" for coin in bucket)
+        chain_name_str = "colliding chain name " + crayon(None, key, bold=True) + ":"
+        print_log(logging.ERROR, chain_name_str, bucket_str)
+        check_passed = False
+    return check_passed
+
+
 def check_btc(coins):
     check_passed = True
 
@@ -274,7 +287,7 @@ def check_dups(buckets, print_at_level=logging.WARNING):
     `print_at_level` can be one of logging levels.
 
     The results are buckets of colliding symbols.
-    If the collision is only between ERC20 tokens, it's DEBUG.
+    If the collision is only between ERC20/CW20 tokens, it's DEBUG.
     If the collision includes one non-token, it's INFO.
     If the collision includes more than one non-token, it's ERROR and printed always.
     """
@@ -592,19 +605,19 @@ def check(backend, icons, show_duplicates):
     missing or invalid icons, backend responses, and uniform key information --
     i.e., that all coins of the same type have the same fields in their JSON data.
 
-    Uniformity check ignores NEM mosaics and ERC20 tokens, where non-uniformity is
+    Uniformity check ignores NEM mosaics and ERC20/CW20 tokens, where non-uniformity is
     expected.
 
     The `--show-duplicates` option can be set to:
 
-    - all: all shortcut collisions are shown, including colliding ERC20 tokens
+    - all: all shortcut collisions are shown, including colliding ERC20/CW20 tokens
 
-    - nontoken: only collisions that affect non-ERC20 coins are shown
+    - nontoken: only collisions that affect non-ERC20/CW20 coins are shown
 
-    - errors: only collisions between non-ERC20 tokens are shown. This is the default,
-    as a collision between two or more non-ERC20 tokens is an error.
+    - errors: only collisions between non-ERC20/CW20 tokens are shown. This is the default,
+    as a collision between two or more non-ERC20/CW20 tokens is an error.
 
-    In the output, duplicate ERC tokens will be shown in cyan; duplicate non-tokens
+    In the output, duplicate ERC20/CW20 tokens will be shown in cyan; duplicate non-tokens
     in red. An asterisk (*) next to symbol name means that even though it was detected
     as duplicate, it is still included in results.
 
@@ -671,7 +684,7 @@ def check(backend, icons, show_duplicates):
 
     print("Checking key uniformity...")
     for cointype, coinlist in defs.items():
-        if cointype in ("erc20", "nem"):
+        if cointype in ("erc20", "cw20", "nem"):
             continue
         if not check_key_uniformity(coinlist):
             all_checks_passed = False
@@ -699,7 +712,7 @@ def check(backend, icons, show_duplicates):
 @click.option("-E", "--exclude-type", metavar="TYPE", multiple=True, help="Exclude these categories")
 @click.option("-f", "--filter", metavar="FIELD=FILTER", multiple=True, help="Include only coins that match a filter")
 @click.option("-F", "--filter-exclude", metavar="FIELD=FILTER", multiple=True, help="Exclude coins that match a filter")
-@click.option("-t", "--exclude-tokens", is_flag=True, help="Exclude ERC20 tokens. Equivalent to '-E erc20'")
+@click.option("-t", "--exclude-tokens", is_flag=True, help="Exclude ERC20/CW20 tokens. Equivalent to '-E erc20,cw20'")
 @click.option("-d", "--device", metavar="NAME", help="Only include coins supported on a given device")
 # fmt: on
 def dump(
@@ -719,8 +732,8 @@ def dump(
     """Dump coin data in JSON format.
 
     This file is structured the same as the internal data. That is, top-level object
-    is a dict with keys: 'bitcoin', 'eth', 'erc20', 'nem' and 'misc'. Value for each
-    key is a list of dicts, each describing a known coin.
+    is a dict with keys: 'bitcoin', 'eth', 'erc20', 'cosmos', 'cw20', 'nem' and 'misc'.
+    Value for each key is a list of dicts, each describing a known coin.
 
     If '--list' is specified, the top-level object is instead a flat list of coins.
 
@@ -744,7 +757,7 @@ def dump(
     so '-f name=bit*' finds all coins whose names start with "bit" or "Bit".
     """
     if exclude_tokens:
-        exclude_type = ("erc20",)
+        exclude_type = ("erc20","cw20")
 
     if include and exclude:
         raise click.ClickException(
