@@ -29,5 +29,22 @@
     "eth:QKC:100007": false,
     "eth:QKC:100008": false,
     "eth:xDAI:100": false,
-    "eth:xDAI:200": false
+    "eth:xDAI:200": false,
+    "cw20:cryptoorgchain:CRO": false,
+    "cw20:cronos:CRO": false,
+    "erc20:eth:DAI": false,
+    "erc20:kov:DAI": false,
+    "cw20:axelar:DAI": false,
+    "erc20:eth:USDC": false,
+    "cw20:axelar:USDC": false,
+    "erc20:eth:USDT": false,
+    "cw20:axelar:USDT": false,
+    "erc20:eth:LIKE": false,
+    "cw20:likecoin:LIKE": false,
+    "erc20:eth:LUM": false,
+    "cw20:lumnetwork:LUM": false,
+    "erc20:eth:MEME": false,
+    "cw20:meme:MEME": false,
+    "erc20:eth:DEC": false,
+    "cw20:decentr:DEC": false
 }
