@@ -27,6 +27,6 @@
 [submodule "common/defs/ethereum/chains"]
 	path = common/defs/ethereum/chains
 	url = https://github.com/ethereum-lists/chains
-[submodule "common/defs/cosmos"]
-	path = common/defs/cosmos
+[submodule "common/defs/cosmos/chain-registry"]
+	path = common/defs/cosmos/chain-registry
 	url = https://github.com/cosmos/chain-registry

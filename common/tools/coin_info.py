@@ -290,8 +290,8 @@ def _load_erc20_tokens():
 
 
 def _load_cosmos_networks_tokens():
-    """Load Cosmos chains and tokens from `cosmos/*/{chain,assetlist}.json`"""
-    chains_path = DEFS_DIR / "cosmos"
+    """Load Cosmos chains and tokens from `cosmos/chain-registry/*/{chain,assetlist}.json`"""
+    chains_path = DEFS_DIR / "cosmos" / "chain-registry"
     networks = []
     tokens = []
     # TODO include testnets?
