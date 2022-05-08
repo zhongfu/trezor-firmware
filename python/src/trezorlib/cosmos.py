@@ -85,10 +85,9 @@ def sign_tx(
         if "type_url" not in msg:
             raise ValueError("msg has missing type")
 
-        if msg["type_url"] == "/cosmos.bank.v1beta1.MsgSend":
-            proto_msg = dict_to_proto(messages.CosmosBankV1beta1MsgSend, msg)
-        elif msg["type_url"] == "/cosmos.bank.v1beta1.MsgMultiSend":
-            proto_msg = dict_to_proto(messages.CosmosBankV1beta1MsgMultiSend, msg)
+        proto_type = _type_url_to_message_type(msg["type_url"])
+        if proto_type is not None:
+            proto_msg = dict_to_proto(proto_type, msg)
         else:
             raise ValueError("unknown msg type")
 
@@ -109,3 +108,16 @@ def sign_tx(
                     + type(response).__name__
                 )
             return response
+
+def _type_url_to_message_type(type_url: str) -> "MessageType":
+    message_name = "".join(
+        map(
+            lambda s: s[0].upper() + s[1:] if len(s) > 0 else s,
+            type_url.lstrip("/").split(".")
+        )
+    )
+
+    if not hasattr(messages, message_name):
+        return None
+    else:
+        return getattr(messages, message_name)

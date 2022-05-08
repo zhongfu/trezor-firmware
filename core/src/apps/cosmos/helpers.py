@@ -21,6 +21,8 @@ from trezor.messages import (
 )
 from trezor.protobuf import dump_message_buffer
 
+from . import messages
+
 if TYPE_CHECKING:
     from trezor.protobuf import MessageType
 
@@ -57,22 +59,18 @@ def produce_signdoc_bytes_for_signing(public_key: bytes, envelope: CosmosSignTx,
 
 def serialize_to_anytype(msg: MessageType) -> AnyType:
     if CosmosPublicKey.is_type_of(msg):
-        return AnyType(
-            type_url="/cosmos.crypto.secp256k1.PubKey",
-            value=dump_message_buffer(msg)
-        )
-    elif CosmosBankV1beta1MsgSend.is_type_of(msg):
-        return AnyType(
-            type_url="/cosmos.bank.v1beta1.MsgSend",
-            value=dump_message_buffer(msg)
-        )
-    elif CosmosBankV1beta1MsgMultiSend.is_type_of(msg):
-        return AnyType(
-            type_url="/cosmos.bank.v1beta1.MsgMultiSend",
-            value=dump_message_buffer(msg)
-        )
+        type_url = "/cosmos.crypto.secp256k1.PubKey"
     else:
-        raise wire.ProcessError("unknown tx message type")
+        message_info = messages.by_message_name(msg.MESSAGE_NAME)
+        if message_info is not None:
+            type_url = message_info.type_url
+        else:
+            raise wire.ProcessError("unknown tx message type")
+    
+    return AnyType(
+            type_url=type_url,
+            value=dump_message_buffer(msg)
+        )
 
 
 def generate_signdoc(envelope: CosmosSignTx, tx: CosmosTx) -> CosmosSignDoc:
