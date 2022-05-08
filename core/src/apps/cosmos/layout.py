@@ -32,6 +32,7 @@ def require_confirm_msg_count_and_from_addr(
 def require_confirm_send(ctx: Context, chain_id: str, msg: CosmosMsgSend, msg_idx: int, msg_count: int) -> Awaitable[None]:
     coins_fmt = (format_cosmos_native_amount(chain_id, coin) for coin in msg.amounts)
     props = [
+        ("From address:", msg.from_address),
         ("To address:", msg.to_address),
         ("Amounts:", ', '.join(coins_fmt)),
     ]
