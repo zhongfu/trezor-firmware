@@ -260,15 +260,15 @@ class MessageType(IntEnum):
     WebAuthnCredentials = 801
     WebAuthnAddResidentCredential = 802
     WebAuthnRemoveResidentCredential = 803
-    CosmosGetAddress = 900
-    CosmosAddress = 901
-    CosmosGetPublicKey = 902
-    CosmosPublicKey = 903
-    CosmosSignTx = 904
-    CosmosTxRequest = 905
-    CosmosSignedTx = 906
-    CosmosMsgSend = 907
-    CosmosMsgMultiSend = 908
+    CosmosGetAddress = 1000
+    CosmosAddress = 1001
+    CosmosGetPublicKey = 1002
+    CosmosPublicKey = 1003
+    CosmosSignTx = 1004
+    CosmosTxRequest = 1005
+    CosmosSignedTx = 1006
+    CosmosBankV1beta1MsgSend = 1100
+    CosmosBankV1beta1MsgMultiSend = 1101
 
 
 class FailureType(IntEnum):
@@ -2999,7 +2999,7 @@ class AnyType(protobuf.MessageType):
 
 
 class CosmosGetAddress(protobuf.MessageType):
-    MESSAGE_WIRE_TYPE = 900
+    MESSAGE_WIRE_TYPE = 1000
     FIELDS = {
         1: protobuf.Field("address_n", "uint32", repeated=True, required=False),
         2: protobuf.Field("chain_name", "string", repeated=False, required=False),
@@ -3019,7 +3019,7 @@ class CosmosGetAddress(protobuf.MessageType):
 
 
 class CosmosAddress(protobuf.MessageType):
-    MESSAGE_WIRE_TYPE = 901
+    MESSAGE_WIRE_TYPE = 1001
     FIELDS = {
         1: protobuf.Field("address", "string", repeated=False, required=True),
     }
@@ -3033,7 +3033,7 @@ class CosmosAddress(protobuf.MessageType):
 
 
 class CosmosGetPublicKey(protobuf.MessageType):
-    MESSAGE_WIRE_TYPE = 902
+    MESSAGE_WIRE_TYPE = 1002
     FIELDS = {
         1: protobuf.Field("address_n", "uint32", repeated=True, required=False),
         2: protobuf.Field("chain_name", "string", repeated=False, required=False),
@@ -3053,7 +3053,7 @@ class CosmosGetPublicKey(protobuf.MessageType):
 
 
 class CosmosPublicKey(protobuf.MessageType):
-    MESSAGE_WIRE_TYPE = 903
+    MESSAGE_WIRE_TYPE = 1003
     FIELDS = {
         1: protobuf.Field("value", "bytes", repeated=False, required=True),
     }
@@ -3090,7 +3090,7 @@ class CosmosFee(protobuf.MessageType):
 
 
 class CosmosSignTx(protobuf.MessageType):
-    MESSAGE_WIRE_TYPE = 904
+    MESSAGE_WIRE_TYPE = 1004
     FIELDS = {
         1: protobuf.Field("address_n", "uint32", repeated=True, required=False),
         2: protobuf.Field("chain_name", "string", repeated=False, required=False),
@@ -3128,7 +3128,7 @@ class CosmosSignTx(protobuf.MessageType):
 
 
 class CosmosTxRequest(protobuf.MessageType):
-    MESSAGE_WIRE_TYPE = 905
+    MESSAGE_WIRE_TYPE = 1005
 
 
 class CosmosCoin(protobuf.MessageType):
@@ -3148,8 +3148,8 @@ class CosmosCoin(protobuf.MessageType):
         self.amount = amount
 
 
-class CosmosMsgSend(protobuf.MessageType):
-    MESSAGE_WIRE_TYPE = 907
+class CosmosBankV1beta1MsgSend(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 1100
     FIELDS = {
         1: protobuf.Field("from_address", "string", repeated=False, required=True),
         2: protobuf.Field("to_address", "string", repeated=False, required=True),
@@ -3168,8 +3168,8 @@ class CosmosMsgSend(protobuf.MessageType):
         self.to_address = to_address
 
 
-class CosmosMsgMultiSend(protobuf.MessageType):
-    MESSAGE_WIRE_TYPE = 908
+class CosmosBankV1beta1MsgMultiSend(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 1101
     FIELDS = {
         1: protobuf.Field("inputs", "Input", repeated=True, required=False),
         2: protobuf.Field("outputs", "Output", repeated=True, required=False),
@@ -3186,7 +3186,7 @@ class CosmosMsgMultiSend(protobuf.MessageType):
 
 
 class CosmosSignedTx(protobuf.MessageType):
-    MESSAGE_WIRE_TYPE = 906
+    MESSAGE_WIRE_TYPE = 1006
     FIELDS = {
         1: protobuf.Field("signature", "bytes", repeated=False, required=True),
         2: protobuf.Field("public_key", "bytes", repeated=False, required=True),

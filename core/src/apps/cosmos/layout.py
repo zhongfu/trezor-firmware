@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING, Awaitable
 
 from trezor.enums import ButtonRequestType
 from trezor.messages import (
-    CosmosMsgMultiSend,
-    CosmosMsgSend,
+    CosmosBankV1beta1MsgMultiSend,
+    CosmosBankV1beta1MsgSend,
     CosmosCoin
 )
 from trezor.strings import format_amount
@@ -29,7 +29,7 @@ def require_confirm_msg_count_and_from_addr(
         address=address
     )
 
-def require_confirm_send(ctx: Context, chain_id: str, msg: CosmosMsgSend, msg_idx: int, msg_count: int) -> Awaitable[None]:
+def require_confirm_send(ctx: Context, chain_id: str, msg: CosmosBankV1beta1MsgSend, msg_idx: int, msg_count: int) -> Awaitable[None]:
     coins_fmt = (format_cosmos_native_amount(chain_id, coin) for coin in msg.amounts)
     props = [
         ("From address:", msg.from_address),
@@ -45,7 +45,7 @@ def require_confirm_send(ctx: Context, chain_id: str, msg: CosmosMsgSend, msg_id
         br_code=ButtonRequestType.ConfirmOutput
     )
 
-def require_confirm_multisend(ctx: Context, chain_id: str, msg: CosmosMsgMultiSend, msg_idx: int, msg_count: int) -> Awaitable[None]:
+def require_confirm_multisend(ctx: Context, chain_id: str, msg: CosmosBankV1beta1MsgMultiSend, msg_idx: int, msg_count: int) -> Awaitable[None]:
     props = []
 
     input_count = 0

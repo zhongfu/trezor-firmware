@@ -359,13 +359,15 @@ enum MessageType {
     MessageType_WebAuthnRemoveResidentCredential = 803 [(wire_in) = true];
 
     // Cosmos
-    MessageType_CosmosGetAddress = 900 [(wire_in) = true];
-    MessageType_CosmosAddress = 901 [(wire_out) = true];
-    MessageType_CosmosGetPublicKey = 902 [(wire_in) = true];
-    MessageType_CosmosPublicKey = 903 [(wire_out) = true];
-    MessageType_CosmosSignTx = 904 [(wire_in) = true];
-    MessageType_CosmosTxRequest = 905 [(wire_out) = true];
-    MessageType_CosmosSignedTx = 906 [(wire_out) = true];
-    MessageType_CosmosMsgSend = 907 [(wire_in) = true];
-    MessageType_CosmosMsgMultiSend = 908 [(wire_in) = true];
+    MessageType_CosmosGetAddress = 1000 [(wire_in) = true];
+    MessageType_CosmosAddress = 1001 [(wire_out) = true];
+    MessageType_CosmosGetPublicKey = 1002 [(wire_in) = true];
+    MessageType_CosmosPublicKey = 1003 [(wire_out) = true];
+    MessageType_CosmosSignTx = 1004 [(wire_in) = true];
+    MessageType_CosmosTxRequest = 1005 [(wire_out) = true];
+    MessageType_CosmosSignedTx = 1006 [(wire_out) = true];
+
+    // Cosmos: cosmos.bank.v1beta1
+    MessageType_CosmosBankV1beta1MsgSend = 1100 [(wire_in) = true];
+    MessageType_CosmosBankV1beta1MsgMultiSend = 1101 [(wire_in) = true];
 }

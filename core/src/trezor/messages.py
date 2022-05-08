@@ -1885,7 +1885,7 @@ if TYPE_CHECKING:
         def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["CosmosCoin"]:
             return isinstance(msg, cls)
 
-    class CosmosMsgSend(protobuf.MessageType):
+    class CosmosBankV1beta1MsgSend(protobuf.MessageType):
         from_address: "str"
         to_address: "str"
         amounts: "list[CosmosCoin]"
@@ -1900,10 +1900,10 @@ if TYPE_CHECKING:
             pass
 
         @classmethod
-        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["CosmosMsgSend"]:
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["CosmosBankV1beta1MsgSend"]:
             return isinstance(msg, cls)
 
-    class CosmosMsgMultiSend(protobuf.MessageType):
+    class CosmosBankV1beta1MsgMultiSend(protobuf.MessageType):
         inputs: "list[Input]"
         outputs: "list[Output]"
 
@@ -1916,7 +1916,7 @@ if TYPE_CHECKING:
             pass
 
         @classmethod
-        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["CosmosMsgMultiSend"]:
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["CosmosBankV1beta1MsgMultiSend"]:
             return isinstance(msg, cls)
 
     class CosmosSignedTx(protobuf.MessageType):

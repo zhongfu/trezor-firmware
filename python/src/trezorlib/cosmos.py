@@ -82,13 +82,13 @@ def sign_tx(
 
     sent_count = 0
     for msg in msgs:
-        if "type" not in msg:
+        if "type_url" not in msg:
             raise ValueError("msg has missing type")
 
-        if msg["type"] == "bank/MsgSend":
-            proto_msg = dict_to_proto(messages.CosmosMsgSend, msg)
-        elif msg["type"] == "bank/MsgMultiSend":
-            proto_msg = dict_to_proto(messages.CosmosMsgMultiSend, msg)
+        if msg["type_url"] == "/cosmos.bank.v1beta1.MsgSend":
+            proto_msg = dict_to_proto(messages.CosmosBankV1beta1MsgSend, msg)
+        elif msg["type_url"] == "/cosmos.bank.v1beta1.MsgMultiSend":
+            proto_msg = dict_to_proto(messages.CosmosBankV1beta1MsgMultiSend, msg)
         else:
             raise ValueError("unknown msg type")
 

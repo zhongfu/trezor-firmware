@@ -12,8 +12,8 @@ from trezor.messages import (
     CosmosPublicKey,
     CosmosSignDoc,
     CosmosSignTx,
-    CosmosMsgSend,
-    CosmosMsgMultiSend,
+    CosmosBankV1beta1MsgSend,
+    CosmosBankV1beta1MsgMultiSend,
     AnyType,
     CosmosSignerInfo,
     CosmosTx,
@@ -61,12 +61,12 @@ def serialize_to_anytype(msg: MessageType) -> AnyType:
             type_url="/cosmos.crypto.secp256k1.PubKey",
             value=dump_message_buffer(msg)
         )
-    elif CosmosMsgSend.is_type_of(msg):
+    elif CosmosBankV1beta1MsgSend.is_type_of(msg):
         return AnyType(
             type_url="/cosmos.bank.v1beta1.MsgSend",
             value=dump_message_buffer(msg)
         )
-    elif CosmosMsgMultiSend.is_type_of(msg):
+    elif CosmosBankV1beta1MsgMultiSend.is_type_of(msg):
         return AnyType(
             type_url="/cosmos.bank.v1beta1.MsgMultiSend",
             value=dump_message_buffer(msg)

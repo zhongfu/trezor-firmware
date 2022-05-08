@@ -148,7 +148,7 @@ message CosmosCoin {
  * @next CosmosSignedTx
  * @next Failure
  */
- message CosmosMsgSend {
+ message CosmosBankV1beta1MsgSend {
     required string from_address = 1;
     required string to_address = 2;
     repeated CosmosCoin amounts = 3;
@@ -160,7 +160,7 @@ message CosmosCoin {
  * @next CosmosSignedTx
  * @next Failure
  */
-message CosmosMsgMultiSend {
+message CosmosBankV1beta1MsgMultiSend {
     repeated Input inputs = 1;
     repeated Output outputs = 2;
 
