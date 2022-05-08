@@ -216,4 +216,7 @@ def token_by_chain_type_tokenid(chain_id: str, token_type: str, token_id: str) -
     if chain_id == "vidulum-1":
         if token_type == "native" and token_id == "uvdl":
             return TokenInfo("VDL", 6)  # vidulum / Vidulum
+    # fallback for missing denoms
+    if token_type == "native":
+        return TokenInfo(token_id, 0)
     return UNKNOWN_TOKEN

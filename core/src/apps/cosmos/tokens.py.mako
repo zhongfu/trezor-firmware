@@ -28,4 +28,7 @@ def token_by_chain_type_tokenid(chain_id: str, token_type: str, token_id: str) -
             return TokenInfo(${black_repr(t.symbol)}, ${t.decimals})  # ${t.chain} / ${t.name.strip()}
         % endfor
 % endfor
+    # fallback for missing denoms
+    if token_type == "native":
+        return TokenInfo(token_id, 0)
     return UNKNOWN_TOKEN
