@@ -268,6 +268,7 @@ class MessageType(IntEnum):
     CosmosTxRequest = 905
     CosmosSignedTx = 906
     CosmosMsgSend = 907
+    CosmosMsgMultiSend = 908
 
 
 class FailureType(IntEnum):
@@ -3167,6 +3168,23 @@ class CosmosMsgSend(protobuf.MessageType):
         self.to_address = to_address
 
 
+class CosmosMsgMultiSend(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 908
+    FIELDS = {
+        1: protobuf.Field("inputs", "Input", repeated=True, required=False),
+        2: protobuf.Field("outputs", "Output", repeated=True, required=False),
+    }
+
+    def __init__(
+        self,
+        *,
+        inputs: Optional[Sequence["Input"]] = None,
+        outputs: Optional[Sequence["Output"]] = None,
+    ) -> None:
+        self.inputs: Sequence["Input"] = inputs if inputs is not None else []
+        self.outputs: Sequence["Output"] = outputs if outputs is not None else []
+
+
 class CosmosSignedTx(protobuf.MessageType):
     MESSAGE_WIRE_TYPE = 906
     FIELDS = {
@@ -3296,6 +3314,40 @@ class CosmosSignDoc(protobuf.MessageType):
         self.auth_info_bytes = auth_info_bytes
         self.chain_id = chain_id
         self.account_number = account_number
+
+
+class Input(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = None
+    FIELDS = {
+        1: protobuf.Field("address", "string", repeated=False, required=True),
+        2: protobuf.Field("amounts", "CosmosCoin", repeated=True, required=False),
+    }
+
+    def __init__(
+        self,
+        *,
+        address: "str",
+        amounts: Optional[Sequence["CosmosCoin"]] = None,
+    ) -> None:
+        self.amounts: Sequence["CosmosCoin"] = amounts if amounts is not None else []
+        self.address = address
+
+
+class Output(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = None
+    FIELDS = {
+        1: protobuf.Field("address", "string", repeated=False, required=True),
+        2: protobuf.Field("amounts", "CosmosCoin", repeated=True, required=False),
+    }
+
+    def __init__(
+        self,
+        *,
+        address: "str",
+        amounts: Optional[Sequence["CosmosCoin"]] = None,
+    ) -> None:
+        self.amounts: Sequence["CosmosCoin"] = amounts if amounts is not None else []
+        self.address = address
 
 
 class Single(protobuf.MessageType):

@@ -367,4 +367,5 @@ enum MessageType {
     MessageType_CosmosTxRequest = 905 [(wire_out) = true];
     MessageType_CosmosSignedTx = 906 [(wire_out) = true];
     MessageType_CosmosMsgSend = 907 [(wire_in) = true];
+    MessageType_CosmosMsgMultiSend = 908 [(wire_in) = true];
 }

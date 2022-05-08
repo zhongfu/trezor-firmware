@@ -101,22 +101,8 @@ message CosmosCoin {
     required string amount = 2; // serialized in cosmos protobuf as string
 }
 
-/**
- * Request: Ask the device to include a Cosmos send msg in the tx.
- * @next CosmosTxRequest
- * @next CosmosSignedTx
- * @next Failure
- */
-message CosmosMsgSend {
-    required string from_address = 1;
-    required string to_address = 2;
-    repeated CosmosCoin amounts = 3;
-}
-
-// other messages here
-
 /*
-todo: (from LedgerHQ/app-cosmos)
+(from LedgerHQ/app-terra)
         {"bank/MsgSend",                                "Send"},
         {"bank/MsgMultiSend",                           "MultiSend"},
         {"market/MsgSwapSend",                          "Swap Send"},
@@ -153,6 +139,41 @@ todo: (from LedgerHQ/app-cosmos)
         {"msgauth/MsgRevokeAuthorization",              "Revote Authorization"},
         {"msgauth/MsgExecAuthorized",                   "Execute Authorized"},
 */
+
+// cosmos.bank.v1beta1
+
+/**
+ * Request: Ask the device to include a Cosmos MsgSend msg in the tx.
+ * @next CosmosTxRequest
+ * @next CosmosSignedTx
+ * @next Failure
+ */
+ message CosmosMsgSend {
+    required string from_address = 1;
+    required string to_address = 2;
+    repeated CosmosCoin amounts = 3;
+}
+
+/**
+ * Request: Ask the device to include a Cosmos MsgMultiSend msg in the tx.
+ * @next CosmosTxRequest
+ * @next CosmosSignedTx
+ * @next Failure
+ */
+message CosmosMsgMultiSend {
+    repeated Input inputs = 1;
+    repeated Output outputs = 2;
+
+    message Input {
+        required string address = 1;
+        repeated CosmosCoin amounts = 2;
+    }
+
+    message Output {
+        required string address = 1;
+        repeated CosmosCoin amounts = 2;
+    }
+}
 
 /**
  * Response: A transaction signature and public key corresponding to the address_n path in CosmosSignTx.

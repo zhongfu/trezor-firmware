@@ -13,6 +13,7 @@ from trezor.messages import (
     CosmosSignDoc,
     CosmosSignTx,
     CosmosMsgSend,
+    CosmosMsgMultiSend,
     AnyType,
     CosmosSignerInfo,
     CosmosTx,
@@ -63,6 +64,11 @@ def serialize_to_anytype(msg: MessageType) -> AnyType:
     elif CosmosMsgSend.is_type_of(msg):
         return AnyType(
             type_url="/cosmos.bank.v1beta1.MsgSend",
+            value=dump_message_buffer(msg)
+        )
+    elif CosmosMsgMultiSend.is_type_of(msg):
+        return AnyType(
+            type_url="/cosmos.bank.v1beta1.MsgMultiSend",
             value=dump_message_buffer(msg)
         )
     else:

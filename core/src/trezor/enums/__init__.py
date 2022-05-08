@@ -260,6 +260,7 @@ if TYPE_CHECKING:
         CosmosTxRequest = 905
         CosmosSignedTx = 906
         CosmosMsgSend = 907
+        CosmosMsgMultiSend = 908
 
     class FailureType(IntEnum):
         UnexpectedMessage = 1

@@ -242,3 +242,4 @@ if not utils.BITCOIN_ONLY:
     CosmosTxRequest = 905
     CosmosSignedTx = 906
     CosmosMsgSend = 907
+    CosmosMsgMultiSend = 908

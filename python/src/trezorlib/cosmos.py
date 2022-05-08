@@ -87,6 +87,8 @@ def sign_tx(
 
         if msg["type"] == "bank/MsgSend":
             proto_msg = dict_to_proto(messages.CosmosMsgSend, msg)
+        elif msg["type"] == "bank/MsgMultiSend":
+            proto_msg = dict_to_proto(messages.CosmosMsgMultiSend, msg)
         else:
             raise ValueError("unknown msg type")
 

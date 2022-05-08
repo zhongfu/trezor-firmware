@@ -3,6 +3,7 @@ from trezor.crypto.curve import secp256k1
 from trezor.crypto.hashlib import sha256
 from trezor.enums import MessageType
 from trezor.messages import (
+    CosmosMsgMultiSend,
     CosmosMsgSend,
     CosmosSignedTx,
     CosmosSignTx,
@@ -51,11 +52,14 @@ async def sign_tx(
     while len(msgs) < envelope.msg_count:
         msg = await ctx.call_any(
             tx_req,
-            MessageType.CosmosMsgSend
+            MessageType.CosmosMsgSend,
+            MessageType.CosmosMsgMultiSend
         )
 
         if CosmosMsgSend.is_type_of(msg):
             await layout.require_confirm_send(ctx, envelope.chain_id, msg, len(msgs) + 1, envelope.msg_count)
+        elif CosmosMsgMultiSend.is_type_of(msg):
+            await layout.require_confirm_multisend(ctx, envelope.chain_id, msg, len(msgs) + 1, envelope.msg_count)
         else:
             raise wire.ProcessError("input message unrecognized")
 

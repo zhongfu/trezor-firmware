@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Awaitable
 
 from trezor.enums import ButtonRequestType
 from trezor.messages import (
+    CosmosMsgMultiSend,
     CosmosMsgSend,
     CosmosCoin
 )
@@ -34,6 +35,35 @@ def require_confirm_send(ctx: Context, chain_id: str, msg: CosmosMsgSend, msg_id
         ("To address:", msg.to_address),
         ("Amounts:", ', '.join(coins_fmt)),
     ]
+
+    return confirm_properties(
+        ctx,
+        "confirm_amount",
+        title=f"({msg_idx}/{msg_count}) Confirm send",
+        props=props,
+        br_code=ButtonRequestType.ConfirmOutput
+    )
+
+def require_confirm_multisend(ctx: Context, chain_id: str, msg: CosmosMsgMultiSend, msg_idx: int, msg_count: int) -> Awaitable[None]:
+    props = []
+
+    input_count = 0
+    input_len = len(msg.inputs)
+    for input in msg.inputs:
+        coins_fmt = (format_cosmos_native_amount(chain_id, coin) for coin in input.amounts)
+        input_count += 1
+        progress = f"({input_count}/{input_len})"
+        props.append((f"{progress} Input address:", input.address))
+        props.append((f"{progress} Input amounts:", ', '.join(coins_fmt)))
+
+    output_count = 0
+    output_len = len(msg.outputs)
+    for output in msg.outputs:
+        coins_fmt = (format_cosmos_native_amount(chain_id, coin) for coin in output.amounts)
+        output_count += 1
+        progress = f"({output_count}/{output_len})"
+        props.append((f"{progress} Output address:", output.address))
+        props.append((f"{progress} Output amounts:", ', '.join(coins_fmt)))
 
     return confirm_properties(
         ctx,

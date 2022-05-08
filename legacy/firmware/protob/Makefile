@@ -10,8 +10,8 @@ SKIPPED_MESSAGES := Binance Cardano DebugMonero Eos Monero Ontology Ripple SdPro
 	EthereumSignTypedData EthereumTypedDataStructRequest EthereumTypedDataStructAck \
 	EthereumTypedDataValueRequest EthereumTypedDataValueAck \
 	CosmosGetAddress CosmosAddress CosmosGetPublicKey CosmosPublicKey CosmosFee CosmosSignTx \
-	CosmosTxRequest CosmosCoin CosmosMsgSend CosmosSignedTx CosmosTxBody CosmosModeInfo CosmosSignerInfo \
-	CosmosAuthInfo CosmosTx CosmosSignDoc 
+	CosmosTxRequest CosmosCoin CosmosMsgSend CosmosMsgMultiSend CosmosSignedTx CosmosTxBody CosmosModeInfo \
+	CosmosSignerInfo CosmosAuthInfo CosmosTx CosmosSignDoc 
 
 ifeq ($(BITCOIN_ONLY), 1)
 SKIPPED_MESSAGES += Ethereum NEM Stellar

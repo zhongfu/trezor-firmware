@@ -1903,6 +1903,22 @@ if TYPE_CHECKING:
         def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["CosmosMsgSend"]:
             return isinstance(msg, cls)
 
+    class CosmosMsgMultiSend(protobuf.MessageType):
+        inputs: "list[Input]"
+        outputs: "list[Output]"
+
+        def __init__(
+            self,
+            *,
+            inputs: "list[Input] | None" = None,
+            outputs: "list[Output] | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["CosmosMsgMultiSend"]:
+            return isinstance(msg, cls)
+
     class CosmosSignedTx(protobuf.MessageType):
         signature: "bytes"
         public_key: "bytes"
@@ -2021,6 +2037,38 @@ if TYPE_CHECKING:
 
         @classmethod
         def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["CosmosSignDoc"]:
+            return isinstance(msg, cls)
+
+    class Input(protobuf.MessageType):
+        address: "str"
+        amounts: "list[CosmosCoin]"
+
+        def __init__(
+            self,
+            *,
+            address: "str",
+            amounts: "list[CosmosCoin] | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["Input"]:
+            return isinstance(msg, cls)
+
+    class Output(protobuf.MessageType):
+        address: "str"
+        amounts: "list[CosmosCoin]"
+
+        def __init__(
+            self,
+            *,
+            address: "str",
+            amounts: "list[CosmosCoin] | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["Output"]:
             return isinstance(msg, cls)
 
     class Single(protobuf.MessageType):
