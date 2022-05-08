@@ -13,7 +13,7 @@ UNKNOWN_TOKEN = TokenInfo("uUNKN", 0)
 
 def token_by_chain_type_tokenid(chain_id: str, token_type: str, token_id: str) -> TokenInfo:
     if chain_id == "Oraichain":
-        if token_type == "native" and token_id == "orai":
+        if token_type == "native" and token_id == "uorai":
             return TokenInfo("ORAI", 6)  # oraichain / Oraichain
     if chain_id == "agoric-3":
         if token_type == "native" and token_id == "ubld":
