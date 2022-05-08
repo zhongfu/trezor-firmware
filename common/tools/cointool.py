@@ -12,6 +12,7 @@ from hashlib import sha256
 import click
 
 import coin_info
+from cosmos_message_info import get_cosmos_message_mapping
 
 try:
     import termcolor
@@ -109,6 +110,8 @@ def make_support_filter(support_info):
     return supported_on
 
 
+
+
 MAKO_FILTERS = {
     "c_str": c_str_filter,
     "ascii": ascii_filter,
@@ -125,6 +128,7 @@ def render_file(src, dst, coins, support_info):
     result = template.render(
         support_info=support_info,
         supported_on=make_support_filter(support_info),
+        cosmos_messages=get_cosmos_message_mapping(),
         **coins,
         **MAKO_FILTERS,
     )
