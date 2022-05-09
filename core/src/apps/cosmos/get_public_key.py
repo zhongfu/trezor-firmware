@@ -5,13 +5,15 @@ from trezor.messages import CosmosGetPublicKey, CosmosPublicKey
 from trezor.ui.layouts import show_pubkey
 
 from apps.common import paths
-from apps.common.keychain import Keychain, auto_keychain
+from apps.common.keychain import Keychain
+
+from .keychain import with_keychain_from_chain_name
 
 if TYPE_CHECKING:
     from trezor.wire import Context
 
 
-@auto_keychain(__name__)
+@with_keychain_from_chain_name
 async def get_public_key(
     ctx: Context, msg: CosmosGetPublicKey, keychain: Keychain
 ) -> CosmosPublicKey:

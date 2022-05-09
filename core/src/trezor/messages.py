@@ -1801,12 +1801,12 @@ if TYPE_CHECKING:
             return isinstance(msg, cls)
 
     class CosmosPublicKey(protobuf.MessageType):
-        value: "bytes"
+        public_key: "bytes"
 
         def __init__(
             self,
             *,
-            value: "bytes",
+            public_key: "bytes",
         ) -> None:
             pass
 

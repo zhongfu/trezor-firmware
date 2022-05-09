@@ -3075,15 +3075,15 @@ class CosmosGetPublicKey(protobuf.MessageType):
 class CosmosPublicKey(protobuf.MessageType):
     MESSAGE_WIRE_TYPE = 1003
     FIELDS = {
-        1: protobuf.Field("value", "bytes", repeated=False, required=True),
+        1: protobuf.Field("public_key", "bytes", repeated=False, required=True),
     }
 
     def __init__(
         self,
         *,
-        value: "bytes",
+        public_key: "bytes",
     ) -> None:
-        self.value = value
+        self.public_key = public_key
 
 
 class CosmosFee(protobuf.MessageType):

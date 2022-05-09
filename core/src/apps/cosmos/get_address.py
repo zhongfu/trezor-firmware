@@ -4,7 +4,7 @@ from trezor.messages import CosmosGetAddress, CosmosAddress
 from trezor.ui.layouts import show_address
 
 from apps.common import paths
-from apps.common.keychain import Keychain, auto_keychain
+from apps.common.keychain import Keychain
 
 from . import networks
 from .keychain import with_keychain_from_chain_name
