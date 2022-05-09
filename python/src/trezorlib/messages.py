@@ -3030,7 +3030,7 @@ class CosmosGetAddress(protobuf.MessageType):
         self,
         *,
         address_n: Optional[Sequence["int"]] = None,
-        chain_name: Optional["str"] = 'cosmoshub',
+        chain_name: Optional["str"] = 'Cosmos Hub',
         show_display: Optional["bool"] = None,
     ) -> None:
         self.address_n: Sequence["int"] = address_n if address_n is not None else []
@@ -3064,7 +3064,7 @@ class CosmosGetPublicKey(protobuf.MessageType):
         self,
         *,
         address_n: Optional[Sequence["int"]] = None,
-        chain_name: Optional["str"] = 'cosmoshub',
+        chain_name: Optional["str"] = 'Cosmos Hub',
         show_display: Optional["bool"] = None,
     ) -> None:
         self.address_n: Sequence["int"] = address_n if address_n is not None else []
@@ -3132,7 +3132,7 @@ class CosmosSignTx(protobuf.MessageType):
         fee: "CosmosFee",
         chain_id: "str",
         address_n: Optional[Sequence["int"]] = None,
-        chain_name: Optional["str"] = 'cosmoshub',
+        chain_name: Optional["str"] = 'Cosmos Hub',
         memo: Optional["str"] = None,
         timeout_height: Optional["int"] = None,
     ) -> None:
