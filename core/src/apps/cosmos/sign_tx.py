@@ -3,15 +3,13 @@ from trezor.crypto.curve import secp256k1
 from trezor.crypto.hashlib import sha256
 from trezor.enums import MessageType
 from trezor.messages import (
-    CosmosBankV1beta1MsgMultiSend,
-    CosmosBankV1beta1MsgSend,
     CosmosSignedTx,
     CosmosSignTx,
     CosmosTxRequest,
 )
 
 from apps.common import paths, safety_checks
-from apps.common.keychain import Keychain, auto_keychain
+from apps.common.keychain import Keychain
 
 from . import networks, layout
 from .helpers import address_from_public_key, produce_signdoc_bytes_for_signing
@@ -45,23 +43,12 @@ async def sign_tx(
 
     await layout.require_confirm_msg_count_and_from_addr(ctx, envelope.msg_count, address)
 
-    tx_req = CosmosTxRequest()
-
     msgs = []
 
     while len(msgs) < envelope.msg_count:
-        msg = await ctx.call_any(
-            tx_req,
-            MessageType.CosmosBankV1beta1MsgSend,
-            MessageType.CosmosBankV1beta1MsgMultiSend
+        msg = await get_next_msg(
+            ctx, envelope.chain_id, len(msgs) + 1, envelope.msg_count
         )
-
-        if CosmosBankV1beta1MsgSend.is_type_of(msg):
-            await layout.require_confirm_send(ctx, envelope.chain_id, msg, len(msgs) + 1, envelope.msg_count)
-        elif CosmosBankV1beta1MsgMultiSend.is_type_of(msg):
-            await layout.require_confirm_multisend(ctx, envelope.chain_id, msg, len(msgs) + 1, envelope.msg_count)
-        else:
-            raise wire.ProcessError("input message unrecognized")
 
         msgs.append(msg)
 
@@ -74,6 +61,33 @@ async def sign_tx(
     signature_bytes = generate_content_signature(msg_pb, node.private_key())
 
     return CosmosSignedTx(signature=signature_bytes, public_key=node.public_key())
+
+
+async def get_next_msg(
+    ctx: wire.Context, chain_id: str, msg_idx: int, msg_count: int
+) -> MessageType:
+    msg = await ctx.call_any(
+        CosmosTxRequest(),
+        MessageType.CosmosBankV1beta1MsgSend,
+        MessageType.CosmosBankV1beta1MsgMultiSend,
+        MessageType.CosmwasmWasmV1MsgClearAdmin,
+        MessageType.CosmwasmWasmV1MsgExecuteContract,
+        MessageType.CosmwasmWasmV1MsgInstantiateContract,
+        MessageType.CosmwasmWasmV1MsgMigrateContract,
+        MessageType.CosmwasmWasmV1MsgStoreCode,
+        MessageType.CosmwasmWasmV1MsgUpdateAdmin,
+        MessageType.TerraWasmV1beta1MsgClearContractAdmin,
+        MessageType.TerraWasmV1beta1MsgExecuteContract,
+        MessageType.TerraWasmV1beta1MsgInstantiateContract,
+        MessageType.TerraWasmV1beta1MsgMigrateCode,
+        MessageType.TerraWasmV1beta1MsgMigrateContract,
+        MessageType.TerraWasmV1beta1MsgStoreCode,
+        MessageType.TerraWasmV1beta1MsgUpdateContractAdmin,
+    )
+
+    await layout.require_confirm_cosmos_msg(ctx, chain_id, msg, msg_idx, msg_count)
+
+    return msg
 
 
 def generate_content_signature(json: bytes, private_key: bytes) -> bytes:

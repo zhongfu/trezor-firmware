@@ -1,9 +1,10 @@
 from typing import TYPE_CHECKING, Awaitable
 
-from trezor.enums import ButtonRequestType
+from trezor import wire
+from trezor.enums import ButtonRequestType, MessageType
 from trezor.messages import (
-    CosmosBankV1beta1MsgMultiSend,
     CosmosBankV1beta1MsgSend,
+    CosmosBankV1beta1MsgMultiSend,
     CosmosCoin
 )
 from trezor.strings import format_amount
@@ -29,51 +30,54 @@ def require_confirm_msg_count_and_from_addr(
         address=address
     )
 
-def require_confirm_send(ctx: Context, chain_id: str, msg: CosmosBankV1beta1MsgSend, msg_idx: int, msg_count: int) -> Awaitable[None]:
-    coins_fmt = (format_cosmos_native_amount(chain_id, coin) for coin in msg.amounts)
-    props = [
-        ("From address:", msg.from_address),
-        ("To address:", msg.to_address),
-        ("Amounts:", ', '.join(coins_fmt)),
-    ]
 
+def require_confirm_generic(
+    ctx: Context, msg_disp_name: str, props: list[tuple[str, str]], msg_idx: int, msg_count: int
+) -> Awaitable[None]:
     return confirm_properties(
         ctx,
-        "confirm_amount",
-        title=f"({msg_idx}/{msg_count}) Confirm send",
+        "confirm_generic",
+        title=f"({msg_idx}/{msg_count}) {msg_disp_name}",
         props=props,
         br_code=ButtonRequestType.ConfirmOutput
     )
 
-def require_confirm_multisend(ctx: Context, chain_id: str, msg: CosmosBankV1beta1MsgMultiSend, msg_idx: int, msg_count: int) -> Awaitable[None]:
-    props = []
 
-    input_count = 0
-    input_len = len(msg.inputs)
-    for input in msg.inputs:
-        coins_fmt = (format_cosmos_native_amount(chain_id, coin) for coin in input.amounts)
-        input_count += 1
-        progress = f"({input_count}/{input_len})"
-        props.append((f"{progress} Input address:", input.address))
-        props.append((f"{progress} Input amounts:", ', '.join(coins_fmt)))
+def require_confirm_cosmos_msg(
+    ctx: Context, chain_id: str, msg: MessageType, msg_idx: int, msg_count: int
+) -> Awaitable[None]:
+    if CosmosBankV1beta1MsgSend.is_type_of(msg):
+        type_disp = "Send"
+        props = [
+            ("From address:", msg.from_address),
+            ("To address:", msg.to_address),
+            ("Amounts:", format_cosmos_native_amounts(chain_id, msg.amounts)),
+        ]
+    elif CosmosBankV1beta1MsgMultiSend.is_type_of(msg):
+        type_disp = "Send"
+        props = []
 
-    output_count = 0
-    output_len = len(msg.outputs)
-    for output in msg.outputs:
-        coins_fmt = (format_cosmos_native_amount(chain_id, coin) for coin in output.amounts)
-        output_count += 1
-        progress = f"({output_count}/{output_len})"
-        props.append((f"{progress} Output address:", output.address))
-        props.append((f"{progress} Output amounts:", ', '.join(coins_fmt)))
+        input_count = 0
+        input_len = len(msg.inputs)
+        for input in msg.inputs:
+            input_count += 1
+            progress = f"({input_count}/{input_len})"
+            props.append((f"{progress} Input address:", input.address))
+            props.append((f"{progress} Input amounts:", format_cosmos_native_amounts(chain_id, input.amounts)))
 
-    return confirm_properties(
-        ctx,
-        "confirm_amount",
-        title=f"({msg_idx}/{msg_count}) Confirm send",
-        props=props,
-        br_code=ButtonRequestType.ConfirmOutput
+        output_count = 0
+        output_len = len(msg.outputs)
+        for output in msg.outputs:
+            output_count += 1
+            progress = f"({output_count}/{output_len})"
+            props.append((f"{progress} Output address:", output.address))
+            props.append((f"{progress} Output amounts:", format_cosmos_native_amounts(chain_id, output.amounts)))
+    else:
+        raise wire.ProcessError("input message unrecognized")
+
+    return require_confirm_generic(
+        ctx, type_disp, props, msg_idx, msg_count
     )
-
 
 def require_confirm_memo(ctx: Context, memo_text: str) -> Awaitable[None]:
     return confirm_blob(
@@ -106,6 +110,12 @@ def show_chain_id_warning(
         ctx,
         chain_id,
         chain_name
+    )
+
+
+def format_cosmos_native_amounts(chain_id: str, coins: list[CosmosCoin]) -> str:
+    return ', '.join(
+        format_cosmos_native_amount(chain_id, coin) for coin in coins
     )
 
 
