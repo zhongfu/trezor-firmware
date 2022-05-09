@@ -86,6 +86,8 @@ trezor.crypto.scripts
 import trezor.crypto.scripts
 trezor.crypto.slip39
 import trezor.crypto.slip39
+trezor.enums.AccessType
+import trezor.enums.AccessType
 trezor.enums.AmountUnit
 import trezor.enums.AmountUnit
 trezor.enums.BackupType

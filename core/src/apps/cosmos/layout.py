@@ -1,10 +1,24 @@
 from typing import TYPE_CHECKING, Awaitable
+from ubinascii import hexlify
 
 from trezor import wire
-from trezor.enums import ButtonRequestType, MessageType
+from trezor.enums import AccessType, ButtonRequestType, MessageType
 from trezor.messages import (
     CosmosBankV1beta1MsgSend,
     CosmosBankV1beta1MsgMultiSend,
+    CosmwasmWasmV1MsgClearAdmin,
+    CosmwasmWasmV1MsgExecuteContract,
+    CosmwasmWasmV1MsgInstantiateContract,
+    CosmwasmWasmV1MsgMigrateContract,
+    CosmwasmWasmV1MsgStoreCode,
+    CosmwasmWasmV1MsgUpdateAdmin,
+    TerraWasmV1beta1MsgClearContractAdmin,
+    TerraWasmV1beta1MsgExecuteContract,
+    TerraWasmV1beta1MsgInstantiateContract,
+    TerraWasmV1beta1MsgMigrateCode,
+    TerraWasmV1beta1MsgMigrateContract,
+    TerraWasmV1beta1MsgStoreCode,
+    TerraWasmV1beta1MsgUpdateContractAdmin,
     CosmosCoin
 )
 from trezor.strings import format_amount
@@ -46,6 +60,8 @@ def require_confirm_generic(
 def require_confirm_cosmos_msg(
     ctx: Context, chain_id: str, msg: MessageType, msg_idx: int, msg_count: int
 ) -> Awaitable[None]:
+
+    # cosmos.bank.*
     if CosmosBankV1beta1MsgSend.is_type_of(msg):
         type_disp = "Send"
         props = [
@@ -72,6 +88,138 @@ def require_confirm_cosmos_msg(
             progress = f"({output_count}/{output_len})"
             props.append((f"{progress} Output address:", output.address))
             props.append((f"{progress} Output amounts:", format_cosmos_native_amounts(chain_id, output.amounts)))
+
+    # cosmwasm.wasm.*, terra.wasm.*
+    elif CosmwasmWasmV1MsgClearAdmin.is_type_of(msg):
+        type_disp = "Clear admin"
+        props = [
+            ("From address:", msg.sender),
+            ("Contract:", msg.contract)
+        ]
+    elif TerraWasmV1beta1MsgClearContractAdmin.is_type_of(msg):
+        type_disp = "Clear admin"
+        props = [
+            ("From address:", msg.admin),
+            ("Contract:", msg.contract)
+        ]
+
+    elif CosmwasmWasmV1MsgUpdateAdmin.is_type_of(msg):
+        type_disp = "Update admin"
+        props = [
+            ("From address:", msg.sender),
+            ("New admin:", msg.new_admin),
+            ("Contract:", msg.contract)
+        ]
+    elif TerraWasmV1beta1MsgUpdateContractAdmin.is_type_of(msg):
+        type_disp = "Update admin"
+        props = [
+            ("From address:", msg.admin),
+            ("New admin:", msg.new_admin),
+            ("Contract:", msg.contract)
+        ]
+
+    elif CosmwasmWasmV1MsgExecuteContract.is_type_of(msg):
+        type_disp = "Exec. contract"
+        props = [
+            ("From address:", msg.sender),
+            ("Contract:", msg.contract),
+            ("Message:", try_decode_bytes(msg.msg))
+        ]
+        if len(msg.funds) > 0:
+            props.append(("Amounts:", format_cosmos_native_amounts(chain_id, msg.funds)))
+    elif TerraWasmV1beta1MsgExecuteContract.is_type_of(msg):
+        type_disp = "Exec. contract"
+        props = [
+            ("From address:", msg.sender),
+            ("Contract:", msg.contract),
+            ("Message:", try_decode_bytes(msg.execute_msg))
+        ]
+        if len(msg.coins) > 0:
+            props.append(("Amounts:", format_cosmos_native_amounts(chain_id, msg.coins)))
+
+    elif CosmwasmWasmV1MsgInstantiateContract.is_type_of(msg):
+        type_disp = "Inst. contract"
+        props = [
+            props.append(("From address:", msg.sender))
+        ]
+        
+        if msg.admin is not None:
+            props.append(("Admin:", msg.admin))
+
+        props.append(("Code ID:", msg.code_id))
+
+        if msg.label is not None:
+            props.append(("Label:", msg.label))
+
+        props.append(("Init message:", try_decode_bytes(msg.msg)))
+        props.append(("Amounts:", format_cosmos_native_amounts(chain_id, msg.funds)))
+    elif TerraWasmV1beta1MsgInstantiateContract.is_type_of(msg):
+        type_disp = "Inst. contract"
+        props = [
+            props.append(("From address:", msg.sender))
+        ]
+        
+        if msg.admin is not None:
+            props.append(("Admin:", msg.admin))
+
+        props.append(("Code ID:", msg.code_id))
+        props.append(("Init message:", try_decode_bytes(msg.init_msg)))
+        props.append(("Amounts:", format_cosmos_native_amounts(chain_id, msg.init_coins)))
+
+    elif TerraWasmV1beta1MsgMigrateCode.is_type_of(msg):
+        type_disp = "Migrate code"
+        props = [
+            ("From address:", msg.sender),
+            ("Code ID:", msg.code_id),
+            ("Code:", msg.wasm_byte_code)
+        ]
+
+    elif CosmwasmWasmV1MsgMigrateContract.is_type_of(msg):
+        type_disp = "Migr. contract"
+        props = [
+            ("From address:", msg.sender),
+            ("Contract:", msg.contract),
+            ("Code ID:", msg.code_id),
+            ("Migrate message:", try_decode_bytes(msg.msg))
+        ]
+    elif TerraWasmV1beta1MsgMigrateContract.is_type_of(msg):
+        type_disp = "Migr. contract"
+        props = [
+            ("From address:", msg.admin),
+            ("Contract:", msg.contract),
+            ("Code ID:", msg.new_code_id),
+            ("Migrate message:", try_decode_bytes(msg.migrate_msg))
+        ]
+
+    elif CosmwasmWasmV1MsgStoreCode.is_type_of(msg):
+        type_disp = "Store code"
+        props = [
+            ("From address:", msg.sender),
+            ("Code:", msg.wasm_byte_code)
+        ]
+
+        if msg.instantiate_permission is not None:
+            perm = msg.instantiate_permission.permission
+            if perm == AccessType.ACCESS_TYPE_UNSPECIFIED:
+                access_disp = "Unspecified"
+            elif perm == AccessType.ACCESS_TYPE_NOBODY:
+                access_disp = "Nobody"
+            elif perm == AccessType.ACCESS_TYPE_ONLY_ADDRESS:
+                access_disp = "Address: " + (msg.instantiate_permission.address or "(no addr)")
+            elif perm == AccessType.ACCESS_TYPE_EVERYBODY:
+                access_disp = "Everybody"
+            else:
+                raise wire.ProcessError("unknown instantiate_permission permission in cosmwasm.wasm.v1.MsgStoreCode")
+                
+            props.append(("Permissions:", access_disp))
+    elif TerraWasmV1beta1MsgStoreCode.is_type_of(msg):
+        type_disp = "Store code"
+        props = [
+            ("From address:", msg.sender),
+            ("Code:", msg.wasm_byte_code)
+        ]
+    
+    # matched nothing
     else:
         raise wire.ProcessError("input message unrecognized")
 
@@ -111,6 +259,13 @@ def show_chain_id_warning(
         chain_id,
         chain_name
     )
+
+
+def try_decode_bytes(input: bytes) -> str | bytes:
+    try:
+        return input.decode()
+    except UnicodeError:
+        return input
 
 
 def format_cosmos_native_amounts(chain_id: str, coins: list[CosmosCoin]) -> str:

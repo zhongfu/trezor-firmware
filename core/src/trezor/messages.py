@@ -16,6 +16,7 @@ def __getattr__(name: str) -> Any:
 
 if TYPE_CHECKING:
     from typing import TypeGuard
+    from trezor.enums import AccessType  # noqa: F401
     from trezor.enums import AmountUnit  # noqa: F401
     from trezor.enums import BackupType  # noqa: F401
     from trezor.enums import BinanceOrderSide  # noqa: F401
@@ -1919,6 +1920,252 @@ if TYPE_CHECKING:
         def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["CosmosBankV1beta1MsgMultiSend"]:
             return isinstance(msg, cls)
 
+    class CosmwasmWasmV1MsgClearAdmin(protobuf.MessageType):
+        sender: "str"
+        contract: "str"
+
+        def __init__(
+            self,
+            *,
+            sender: "str",
+            contract: "str",
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["CosmwasmWasmV1MsgClearAdmin"]:
+            return isinstance(msg, cls)
+
+    class CosmwasmWasmV1MsgUpdateAdmin(protobuf.MessageType):
+        sender: "str"
+        new_admin: "str"
+        contract: "str"
+
+        def __init__(
+            self,
+            *,
+            sender: "str",
+            new_admin: "str",
+            contract: "str",
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["CosmwasmWasmV1MsgUpdateAdmin"]:
+            return isinstance(msg, cls)
+
+    class CosmwasmWasmV1MsgExecuteContract(protobuf.MessageType):
+        sender: "str"
+        contract: "str"
+        msg: "bytes"
+        funds: "list[CosmosCoin]"
+
+        def __init__(
+            self,
+            *,
+            sender: "str",
+            contract: "str",
+            msg: "bytes",
+            funds: "list[CosmosCoin] | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["CosmwasmWasmV1MsgExecuteContract"]:
+            return isinstance(msg, cls)
+
+    class CosmwasmWasmV1MsgInstantiateContract(protobuf.MessageType):
+        sender: "str"
+        admin: "str | None"
+        code_id: "int"
+        label: "str | None"
+        msg: "bytes"
+        funds: "list[CosmosCoin]"
+
+        def __init__(
+            self,
+            *,
+            sender: "str",
+            code_id: "int",
+            msg: "bytes",
+            funds: "list[CosmosCoin] | None" = None,
+            admin: "str | None" = None,
+            label: "str | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["CosmwasmWasmV1MsgInstantiateContract"]:
+            return isinstance(msg, cls)
+
+    class CosmwasmWasmV1MsgMigrateContract(protobuf.MessageType):
+        sender: "str"
+        contract: "str"
+        code_id: "int"
+        msg: "bytes"
+
+        def __init__(
+            self,
+            *,
+            sender: "str",
+            contract: "str",
+            code_id: "int",
+            msg: "bytes",
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["CosmwasmWasmV1MsgMigrateContract"]:
+            return isinstance(msg, cls)
+
+    class CosmwasmWasmV1MsgStoreCode(protobuf.MessageType):
+        sender: "str"
+        wasm_byte_code: "bytes"
+        instantiate_permission: "AccessConfig | None"
+
+        def __init__(
+            self,
+            *,
+            sender: "str",
+            wasm_byte_code: "bytes",
+            instantiate_permission: "AccessConfig | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["CosmwasmWasmV1MsgStoreCode"]:
+            return isinstance(msg, cls)
+
+    class TerraWasmV1beta1MsgClearContractAdmin(protobuf.MessageType):
+        admin: "str"
+        contract: "str"
+
+        def __init__(
+            self,
+            *,
+            admin: "str",
+            contract: "str",
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraWasmV1beta1MsgClearContractAdmin"]:
+            return isinstance(msg, cls)
+
+    class TerraWasmV1beta1MsgUpdateContractAdmin(protobuf.MessageType):
+        admin: "str"
+        new_admin: "str"
+        contract: "str"
+
+        def __init__(
+            self,
+            *,
+            admin: "str",
+            new_admin: "str",
+            contract: "str",
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraWasmV1beta1MsgUpdateContractAdmin"]:
+            return isinstance(msg, cls)
+
+    class TerraWasmV1beta1MsgExecuteContract(protobuf.MessageType):
+        sender: "str"
+        contract: "str"
+        execute_msg: "bytes"
+        coins: "list[CosmosCoin]"
+
+        def __init__(
+            self,
+            *,
+            sender: "str",
+            contract: "str",
+            execute_msg: "bytes",
+            coins: "list[CosmosCoin] | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraWasmV1beta1MsgExecuteContract"]:
+            return isinstance(msg, cls)
+
+    class TerraWasmV1beta1MsgInstantiateContract(protobuf.MessageType):
+        sender: "str"
+        admin: "str | None"
+        code_id: "int"
+        init_msg: "bytes"
+        init_coins: "list[CosmosCoin]"
+
+        def __init__(
+            self,
+            *,
+            sender: "str",
+            code_id: "int",
+            init_msg: "bytes",
+            init_coins: "list[CosmosCoin] | None" = None,
+            admin: "str | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraWasmV1beta1MsgInstantiateContract"]:
+            return isinstance(msg, cls)
+
+    class TerraWasmV1beta1MsgMigrateCode(protobuf.MessageType):
+        code_id: "int"
+        sender: "str"
+        wasm_byte_code: "bytes"
+
+        def __init__(
+            self,
+            *,
+            code_id: "int",
+            sender: "str",
+            wasm_byte_code: "bytes",
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraWasmV1beta1MsgMigrateCode"]:
+            return isinstance(msg, cls)
+
+    class TerraWasmV1beta1MsgMigrateContract(protobuf.MessageType):
+        admin: "str"
+        contract: "str"
+        new_code_id: "int"
+        migrate_msg: "bytes"
+
+        def __init__(
+            self,
+            *,
+            admin: "str",
+            contract: "str",
+            new_code_id: "int",
+            migrate_msg: "bytes",
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraWasmV1beta1MsgMigrateContract"]:
+            return isinstance(msg, cls)
+
+    class TerraWasmV1beta1MsgStoreCode(protobuf.MessageType):
+        sender: "str"
+        wasm_byte_code: "bytes"
+
+        def __init__(
+            self,
+            *,
+            sender: "str",
+            wasm_byte_code: "bytes",
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["TerraWasmV1beta1MsgStoreCode"]:
+            return isinstance(msg, cls)
+
     class CosmosSignedTx(protobuf.MessageType):
         signature: "bytes"
         public_key: "bytes"
@@ -2069,6 +2316,22 @@ if TYPE_CHECKING:
 
         @classmethod
         def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["Output"]:
+            return isinstance(msg, cls)
+
+    class AccessConfig(protobuf.MessageType):
+        permission: "AccessType"
+        address: "str | None"
+
+        def __init__(
+            self,
+            *,
+            permission: "AccessType",
+            address: "str | None" = None,
+        ) -> None:
+            pass
+
+        @classmethod
+        def is_type_of(cls, msg: protobuf.MessageType) -> TypeGuard["AccessConfig"]:
             return isinstance(msg, cls)
 
     class Single(protobuf.MessageType):

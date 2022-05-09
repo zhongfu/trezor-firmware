@@ -370,4 +370,21 @@ enum MessageType {
     // Cosmos: cosmos.bank.v1beta1
     MessageType_CosmosBankV1beta1MsgSend = 1100 [(wire_in) = true];
     MessageType_CosmosBankV1beta1MsgMultiSend = 1101 [(wire_in) = true];
+
+    // CosmWasm: cosmwasm.wasm.v1
+    MessageType_CosmwasmWasmV1MsgClearAdmin = 1102 [(wire_in) = true];
+    MessageType_CosmwasmWasmV1MsgExecuteContract = 1103 [(wire_in) = true];
+    MessageType_CosmwasmWasmV1MsgInstantiateContract = 1104 [(wire_in) = true];
+    MessageType_CosmwasmWasmV1MsgMigrateContract = 1105 [(wire_in) = true];
+    MessageType_CosmwasmWasmV1MsgStoreCode = 1106 [(wire_in) = true];
+    MessageType_CosmwasmWasmV1MsgUpdateAdmin = 1107 [(wire_in) = true];
+
+    // Terra: terra.wasm.v1beta1
+    MessageType_TerraWasmV1beta1MsgClearContractAdmin = 1108 [(wire_in) = true];
+    MessageType_TerraWasmV1beta1MsgExecuteContract = 1109 [(wire_in) = true];
+    MessageType_TerraWasmV1beta1MsgInstantiateContract = 1110 [(wire_in) = true];
+    MessageType_TerraWasmV1beta1MsgMigrateCode = 1111 [(wire_in) = true];
+    MessageType_TerraWasmV1beta1MsgMigrateContract = 1112 [(wire_in) = true];
+    MessageType_TerraWasmV1beta1MsgStoreCode = 1113 [(wire_in) = true];
+    MessageType_TerraWasmV1beta1MsgUpdateContractAdmin = 1114 [(wire_in) = true];
 }

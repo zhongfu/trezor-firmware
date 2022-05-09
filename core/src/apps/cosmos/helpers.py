@@ -12,8 +12,6 @@ from trezor.messages import (
     CosmosPublicKey,
     CosmosSignDoc,
     CosmosSignTx,
-    CosmosBankV1beta1MsgSend,
-    CosmosBankV1beta1MsgMultiSend,
     AnyType,
     CosmosSignerInfo,
     CosmosTx,

@@ -10,7 +10,7 @@ option java_outer_classname = "TrezorMessageCosmos";
  * Currently only used for serializing txs for signing.
  * @embed
  */
- message AnyType {
+message AnyType {
     required string type_url = 1; // canonical type name, e.g. /cosmos.tx.v1beta1.MsgSend
     required bytes value = 2; // serialized protobuf struct
 }
@@ -94,6 +94,7 @@ message CosmosTxRequest {
 
 /**
  * Representation of Cosmos native currencies, e.g. ATOM, LUNA, ...
+ * Follows cosmos.base.v1beta1.Coin spec
  * @embed
  */
 message CosmosCoin {
@@ -173,6 +174,107 @@ message CosmosBankV1beta1MsgMultiSend {
         required string address = 1;
         repeated CosmosCoin amounts = 2;
     }
+}
+
+// cosmwasm.wasm.v1
+
+message CosmwasmWasmV1MsgClearAdmin {
+    required string sender = 1; // address
+    required string contract = 3; // id = 3; follows cosmwasm proto specification
+}
+
+message CosmwasmWasmV1MsgUpdateAdmin {
+    required string sender = 1;
+    required string new_admin = 2;
+    required string contract = 3;
+}
+
+message CosmwasmWasmV1MsgExecuteContract {
+    required string sender = 1; // address
+    required string contract = 2; // address
+    required bytes msg = 3; // json-encoded msg
+    repeated CosmosCoin funds = 5; // id = 5; follows cosmwasm proto specification
+}
+
+message CosmwasmWasmV1MsgInstantiateContract {
+    required string sender = 1;
+    optional string admin = 2; // also address
+    required uint64 code_id = 3;
+    optional string label = 4;
+    required bytes msg = 5;
+    repeated CosmosCoin funds = 6;
+}
+
+message CosmwasmWasmV1MsgMigrateContract {
+    required string sender = 1; // address
+    required string contract = 2; // address
+    required uint64 code_id = 3;
+    required bytes msg = 4;
+}
+
+message CosmwasmWasmV1MsgStoreCode {
+    required string sender = 1;
+    required bytes wasm_byte_code = 2;
+    reserved 3, 4;
+    optional AccessConfig instantiate_permission = 5;
+
+    message AccessConfig {
+        required AccessType permission = 1;
+        optional string address = 2; // required if ACCESS_TYPE_ONLY_ADDRESS
+    }
+
+    enum AccessType {
+        ACCESS_TYPE_UNSPECIFIED = 0;
+        ACCESS_TYPE_NOBODY = 1;
+        ACCESS_TYPE_ONLY_ADDRESS = 2;
+        ACCESS_TYPE_EVERYBODY = 3;
+    }
+}
+
+// terra.wasm.v1beta1
+
+message TerraWasmV1beta1MsgClearContractAdmin {
+    required string admin = 1; // address; current admin
+    required string contract = 2; // address
+}
+
+message TerraWasmV1beta1MsgUpdateContractAdmin {
+    required string admin = 1;
+    required string new_admin = 2;
+    required string contract = 3;
+}
+
+message TerraWasmV1beta1MsgExecuteContract {
+    required string sender = 1; // address
+    required string contract = 2; // address
+    required bytes execute_msg = 3; // json-encoded msg
+    repeated CosmosCoin coins = 5; // id = 5; follows terra proto spec
+}
+
+message TerraWasmV1beta1MsgInstantiateContract {
+    required string sender = 1;
+    optional string admin = 2; // also address
+    required uint64 code_id = 3;
+    required bytes init_msg = 4;
+    repeated CosmosCoin init_coins = 5;
+}
+
+message TerraWasmV1beta1MsgMigrateCode {
+    required uint64 code_id = 1;
+    required string sender = 2;
+    required bytes wasm_byte_code = 3;
+}
+
+message TerraWasmV1beta1MsgMigrateContract {
+    required string admin = 1; // address
+    required string contract = 2; // address
+    required uint64 new_code_id = 3;
+    required bytes migrate_msg = 4;
+}
+
+message TerraWasmV1beta1MsgStoreCode {
+    required string sender = 1;
+    required bytes wasm_byte_code = 2;
 }
 
 /**

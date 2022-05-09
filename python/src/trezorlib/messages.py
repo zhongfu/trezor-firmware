@@ -269,6 +269,19 @@ class MessageType(IntEnum):
     CosmosSignedTx = 1006
     CosmosBankV1beta1MsgSend = 1100
     CosmosBankV1beta1MsgMultiSend = 1101
+    CosmwasmWasmV1MsgClearAdmin = 1102
+    CosmwasmWasmV1MsgExecuteContract = 1103
+    CosmwasmWasmV1MsgInstantiateContract = 1104
+    CosmwasmWasmV1MsgMigrateContract = 1105
+    CosmwasmWasmV1MsgStoreCode = 1106
+    CosmwasmWasmV1MsgUpdateAdmin = 1107
+    TerraWasmV1beta1MsgClearContractAdmin = 1108
+    TerraWasmV1beta1MsgExecuteContract = 1109
+    TerraWasmV1beta1MsgInstantiateContract = 1110
+    TerraWasmV1beta1MsgMigrateCode = 1111
+    TerraWasmV1beta1MsgMigrateContract = 1112
+    TerraWasmV1beta1MsgStoreCode = 1113
+    TerraWasmV1beta1MsgUpdateContractAdmin = 1114
 
 
 class FailureType(IntEnum):
@@ -426,6 +439,13 @@ class CardanoTxSigningMode(IntEnum):
 class CardanoTxWitnessType(IntEnum):
     BYRON_WITNESS = 0
     SHELLEY_WITNESS = 1
+
+
+class AccessType(IntEnum):
+    ACCESS_TYPE_UNSPECIFIED = 0
+    ACCESS_TYPE_NOBODY = 1
+    ACCESS_TYPE_ONLY_ADDRESS = 2
+    ACCESS_TYPE_EVERYBODY = 3
 
 
 class SignMode(IntEnum):
@@ -3185,6 +3205,284 @@ class CosmosBankV1beta1MsgMultiSend(protobuf.MessageType):
         self.outputs: Sequence["Output"] = outputs if outputs is not None else []
 
 
+class CosmwasmWasmV1MsgClearAdmin(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 1102
+    FIELDS = {
+        1: protobuf.Field("sender", "string", repeated=False, required=True),
+        3: protobuf.Field("contract", "string", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        sender: "str",
+        contract: "str",
+    ) -> None:
+        self.sender = sender
+        self.contract = contract
+
+
+class CosmwasmWasmV1MsgUpdateAdmin(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 1107
+    FIELDS = {
+        1: protobuf.Field("sender", "string", repeated=False, required=True),
+        2: protobuf.Field("new_admin", "string", repeated=False, required=True),
+        3: protobuf.Field("contract", "string", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        sender: "str",
+        new_admin: "str",
+        contract: "str",
+    ) -> None:
+        self.sender = sender
+        self.new_admin = new_admin
+        self.contract = contract
+
+
+class CosmwasmWasmV1MsgExecuteContract(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 1103
+    FIELDS = {
+        1: protobuf.Field("sender", "string", repeated=False, required=True),
+        2: protobuf.Field("contract", "string", repeated=False, required=True),
+        3: protobuf.Field("msg", "bytes", repeated=False, required=True),
+        5: protobuf.Field("funds", "CosmosCoin", repeated=True, required=False),
+    }
+
+    def __init__(
+        self,
+        *,
+        sender: "str",
+        contract: "str",
+        msg: "bytes",
+        funds: Optional[Sequence["CosmosCoin"]] = None,
+    ) -> None:
+        self.funds: Sequence["CosmosCoin"] = funds if funds is not None else []
+        self.sender = sender
+        self.contract = contract
+        self.msg = msg
+
+
+class CosmwasmWasmV1MsgInstantiateContract(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 1104
+    FIELDS = {
+        1: protobuf.Field("sender", "string", repeated=False, required=True),
+        2: protobuf.Field("admin", "string", repeated=False, required=False),
+        3: protobuf.Field("code_id", "uint64", repeated=False, required=True),
+        4: protobuf.Field("label", "string", repeated=False, required=False),
+        5: protobuf.Field("msg", "bytes", repeated=False, required=True),
+        6: protobuf.Field("funds", "CosmosCoin", repeated=True, required=False),
+    }
+
+    def __init__(
+        self,
+        *,
+        sender: "str",
+        code_id: "int",
+        msg: "bytes",
+        funds: Optional[Sequence["CosmosCoin"]] = None,
+        admin: Optional["str"] = None,
+        label: Optional["str"] = None,
+    ) -> None:
+        self.funds: Sequence["CosmosCoin"] = funds if funds is not None else []
+        self.sender = sender
+        self.code_id = code_id
+        self.msg = msg
+        self.admin = admin
+        self.label = label
+
+
+class CosmwasmWasmV1MsgMigrateContract(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 1105
+    FIELDS = {
+        1: protobuf.Field("sender", "string", repeated=False, required=True),
+        2: protobuf.Field("contract", "string", repeated=False, required=True),
+        3: protobuf.Field("code_id", "uint64", repeated=False, required=True),
+        4: protobuf.Field("msg", "bytes", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        sender: "str",
+        contract: "str",
+        code_id: "int",
+        msg: "bytes",
+    ) -> None:
+        self.sender = sender
+        self.contract = contract
+        self.code_id = code_id
+        self.msg = msg
+
+
+class CosmwasmWasmV1MsgStoreCode(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 1106
+    FIELDS = {
+        1: protobuf.Field("sender", "string", repeated=False, required=True),
+        2: protobuf.Field("wasm_byte_code", "bytes", repeated=False, required=True),
+        5: protobuf.Field("instantiate_permission", "AccessConfig", repeated=False, required=False),
+    }
+
+    def __init__(
+        self,
+        *,
+        sender: "str",
+        wasm_byte_code: "bytes",
+        instantiate_permission: Optional["AccessConfig"] = None,
+    ) -> None:
+        self.sender = sender
+        self.wasm_byte_code = wasm_byte_code
+        self.instantiate_permission = instantiate_permission
+
+
+class TerraWasmV1beta1MsgClearContractAdmin(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 1108
+    FIELDS = {
+        1: protobuf.Field("admin", "string", repeated=False, required=True),
+        2: protobuf.Field("contract", "string", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        admin: "str",
+        contract: "str",
+    ) -> None:
+        self.admin = admin
+        self.contract = contract
+
+
+class TerraWasmV1beta1MsgUpdateContractAdmin(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 1114
+    FIELDS = {
+        1: protobuf.Field("admin", "string", repeated=False, required=True),
+        2: protobuf.Field("new_admin", "string", repeated=False, required=True),
+        3: protobuf.Field("contract", "string", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        admin: "str",
+        new_admin: "str",
+        contract: "str",
+    ) -> None:
+        self.admin = admin
+        self.new_admin = new_admin
+        self.contract = contract
+
+
+class TerraWasmV1beta1MsgExecuteContract(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 1109
+    FIELDS = {
+        1: protobuf.Field("sender", "string", repeated=False, required=True),
+        2: protobuf.Field("contract", "string", repeated=False, required=True),
+        3: protobuf.Field("execute_msg", "bytes", repeated=False, required=True),
+        5: protobuf.Field("coins", "CosmosCoin", repeated=True, required=False),
+    }
+
+    def __init__(
+        self,
+        *,
+        sender: "str",
+        contract: "str",
+        execute_msg: "bytes",
+        coins: Optional[Sequence["CosmosCoin"]] = None,
+    ) -> None:
+        self.coins: Sequence["CosmosCoin"] = coins if coins is not None else []
+        self.sender = sender
+        self.contract = contract
+        self.execute_msg = execute_msg
+
+
+class TerraWasmV1beta1MsgInstantiateContract(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 1110
+    FIELDS = {
+        1: protobuf.Field("sender", "string", repeated=False, required=True),
+        2: protobuf.Field("admin", "string", repeated=False, required=False),
+        3: protobuf.Field("code_id", "uint64", repeated=False, required=True),
+        4: protobuf.Field("init_msg", "bytes", repeated=False, required=True),
+        5: protobuf.Field("init_coins", "CosmosCoin", repeated=True, required=False),
+    }
+
+    def __init__(
+        self,
+        *,
+        sender: "str",
+        code_id: "int",
+        init_msg: "bytes",
+        init_coins: Optional[Sequence["CosmosCoin"]] = None,
+        admin: Optional["str"] = None,
+    ) -> None:
+        self.init_coins: Sequence["CosmosCoin"] = init_coins if init_coins is not None else []
+        self.sender = sender
+        self.code_id = code_id
+        self.init_msg = init_msg
+        self.admin = admin
+
+
+class TerraWasmV1beta1MsgMigrateCode(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 1111
+    FIELDS = {
+        1: protobuf.Field("code_id", "uint64", repeated=False, required=True),
+        2: protobuf.Field("sender", "string", repeated=False, required=True),
+        3: protobuf.Field("wasm_byte_code", "bytes", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        code_id: "int",
+        sender: "str",
+        wasm_byte_code: "bytes",
+    ) -> None:
+        self.code_id = code_id
+        self.sender = sender
+        self.wasm_byte_code = wasm_byte_code
+
+
+class TerraWasmV1beta1MsgMigrateContract(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 1112
+    FIELDS = {
+        1: protobuf.Field("admin", "string", repeated=False, required=True),
+        2: protobuf.Field("contract", "string", repeated=False, required=True),
+        3: protobuf.Field("new_code_id", "uint64", repeated=False, required=True),
+        4: protobuf.Field("migrate_msg", "bytes", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        admin: "str",
+        contract: "str",
+        new_code_id: "int",
+        migrate_msg: "bytes",
+    ) -> None:
+        self.admin = admin
+        self.contract = contract
+        self.new_code_id = new_code_id
+        self.migrate_msg = migrate_msg
+
+
+class TerraWasmV1beta1MsgStoreCode(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = 1113
+    FIELDS = {
+        1: protobuf.Field("sender", "string", repeated=False, required=True),
+        2: protobuf.Field("wasm_byte_code", "bytes", repeated=False, required=True),
+    }
+
+    def __init__(
+        self,
+        *,
+        sender: "str",
+        wasm_byte_code: "bytes",
+    ) -> None:
+        self.sender = sender
+        self.wasm_byte_code = wasm_byte_code
+
+
 class CosmosSignedTx(protobuf.MessageType):
     MESSAGE_WIRE_TYPE = 1006
     FIELDS = {
@@ -3347,6 +3645,23 @@ class Output(protobuf.MessageType):
         amounts: Optional[Sequence["CosmosCoin"]] = None,
     ) -> None:
         self.amounts: Sequence["CosmosCoin"] = amounts if amounts is not None else []
+        self.address = address
+
+
+class AccessConfig(protobuf.MessageType):
+    MESSAGE_WIRE_TYPE = None
+    FIELDS = {
+        1: protobuf.Field("permission", "AccessType", repeated=False, required=True),
+        2: protobuf.Field("address", "string", repeated=False, required=False),
+    }
+
+    def __init__(
+        self,
+        *,
+        permission: "AccessType",
+        address: Optional["str"] = None,
+    ) -> None:
+        self.permission = permission
         self.address = address
 
 

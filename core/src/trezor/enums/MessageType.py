@@ -243,3 +243,16 @@ if not utils.BITCOIN_ONLY:
     CosmosSignedTx = 1006
     CosmosBankV1beta1MsgSend = 1100
     CosmosBankV1beta1MsgMultiSend = 1101
+    CosmwasmWasmV1MsgClearAdmin = 1102
+    CosmwasmWasmV1MsgExecuteContract = 1103
+    CosmwasmWasmV1MsgInstantiateContract = 1104
+    CosmwasmWasmV1MsgMigrateContract = 1105
+    CosmwasmWasmV1MsgStoreCode = 1106
+    CosmwasmWasmV1MsgUpdateAdmin = 1107
+    TerraWasmV1beta1MsgClearContractAdmin = 1108
+    TerraWasmV1beta1MsgExecuteContract = 1109
+    TerraWasmV1beta1MsgInstantiateContract = 1110
+    TerraWasmV1beta1MsgMigrateCode = 1111
+    TerraWasmV1beta1MsgMigrateContract = 1112
+    TerraWasmV1beta1MsgStoreCode = 1113
+    TerraWasmV1beta1MsgUpdateContractAdmin = 1114
